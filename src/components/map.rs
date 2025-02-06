@@ -21,8 +21,8 @@ impl Plugin for Map {
 fn generate_map(mut commands: Commands) {
     for x in MAP_SPAWN_POS {
         for y in MAP_SPAWN_POS {
-            commands.spawn(SpriteBundle {
-                sprite: Sprite {
+            commands.spawn((
+                Sprite {
                     color: {
                         if (x + y) % 2 == 0 {
                             COLOR_DARK
@@ -33,9 +33,8 @@ fn generate_map(mut commands: Commands) {
                     custom_size: Some(Vec2::new(TILE_SIZE, TILE_SIZE)),
                     ..default()
                 },
-                transform: Transform::from_xyz(x as f32 * TILE_SIZE, y as f32 * TILE_SIZE, 0.),
-                ..default()
-            });
+                Transform::from_xyz(x as f32 * TILE_SIZE, y as f32 * TILE_SIZE, 0.),
+            ));
         }
     }
 }
