@@ -1,8 +1,7 @@
 use bevy::{prelude::*, window::PrimaryWindow};
 
 pub mod cube;
-
-pub(super) const FIGURE_SIZE: f32 = 40.;
+pub mod square;
 
 #[derive(Copy, Clone, Component)]
 pub enum FigureType {
@@ -19,7 +18,7 @@ pub struct FigurePlugin;
 impl Plugin for FigurePlugin {
     fn build(&self, app: &mut App) {
         app.add_systems(Startup, cube::spawn);
-        app.add_systems(Update, (drag_figure, stop_dragging));
+        app.add_systems(Update, (drag_figure, stop_dragging, square::hightligh_tile));
     }
 }
 
@@ -46,7 +45,7 @@ fn drag_figure(
                     if draggable.is_dragging {
                         transform.translation = Vec3::new(
                             cursor_world_pos.x,
-                            cursor_world_pos.y + 100.,
+                            cursor_world_pos.y + 50.,
                             transform.translation.z,
                         );
                     }
@@ -55,7 +54,6 @@ fn drag_figure(
         }
     }
 }
-
 fn stop_dragging(
     mut query: Query<&mut Figure>,
     mouse_input: Res<ButtonInput<MouseButton>>,
