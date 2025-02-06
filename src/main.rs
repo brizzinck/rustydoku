@@ -1,7 +1,7 @@
 use bevy::prelude::*;
 #[cfg(feature = "debug-inspector")]
 use bevy_inspector_egui::quick::WorldInspectorPlugin;
-use rustydoku::components::{camera::Camera, map::Map};
+use rustydoku::components::{camera::Camera, figures::FigurePlugin, map::Map};
 
 fn main() {
     let mut game = App::new();
@@ -12,6 +12,7 @@ fn main() {
 
     game.add_plugins(Map);
     game.add_plugins(Camera);
+    game.add_plugins(FigurePlugin);
 
     #[cfg(feature = "debug-inspector")]
     game.add_plugins(WorldInspectorPlugin::new());

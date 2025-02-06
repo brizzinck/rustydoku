@@ -2,11 +2,11 @@ use bevy::{
     app::{Plugin, Startup},
     prelude::*,
 };
-use std::ops::Range;
+use std::ops::RangeInclusive;
 
 const MAP_SIZE: i8 = 9;
 const TILE_SIZE: f32 = 40.0;
-const MAP_SPAWN_POS: Range<i8> = (-MAP_SIZE / 2)..(MAP_SIZE / 2);
+const MAP_SPAWN_POS: RangeInclusive<i8> = (-MAP_SIZE / 2)..=(MAP_SIZE / 2);
 const COLOR_LIGHT: Color = Color::srgb(0.9, 0.9, 0.9);
 const COLOR_DARK: Color = Color::srgb(0.5, 0.5, 0.5);
 
