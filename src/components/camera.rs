@@ -1,6 +1,6 @@
 use bevy::{
     app::{Plugin, Startup},
-    prelude::{Camera2dBundle, Commands},
+    prelude::*,
 };
 
 pub struct Camera;
