@@ -37,7 +37,7 @@ pub(super) fn spawn_child(commands: &mut Commands, parent: Entity, position: Vec
         .set_parent(parent);
 }
 
-pub(super) fn highlight_tile(
+pub(crate) fn highlight_tile(
     mut tile_query: Query<(&Tile, &mut Sprite, &GlobalTransform)>,
     mut square_query: Query<(&mut Square, &GlobalTransform)>,
 ) {
@@ -76,7 +76,7 @@ pub(super) fn highlight_tile(
     }
 }
 
-pub(super) fn place_figure(
+pub(crate) fn place_figure(
     mut commands: Commands,
     mut square_query: Query<(Entity, &mut Transform, &mut Square)>,
     mut tile_query: Query<(&mut Tile, &GlobalTransform)>, // Query for tiles

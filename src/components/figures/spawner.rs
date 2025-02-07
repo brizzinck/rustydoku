@@ -2,7 +2,7 @@ use super::{big_t_shape, cube, square, start_dragging, t_shape, Figure, FigureTy
 use bevy::prelude::*;
 use rand::Rng;
 
-pub(super) fn spawn_figures(mut commands: Commands) {
+pub(crate) fn spawn_figures(mut commands: Commands) {
     square::spawn(&mut commands, Vec2::new(-80.0, 160.));
     cube::spawn(&mut commands, Vec2::new(-140.0, 140.));
     t_shape::spawn(&mut commands, Vec2::new(0., 160.));

@@ -1,7 +1,4 @@
-use bevy::{
-    app::{Plugin, Startup},
-    prelude::*,
-};
+use bevy::prelude::*;
 #[cfg(feature = "debug-inspector")]
 use bevy_inspector_egui::prelude::*;
 use std::ops::RangeInclusive;
@@ -12,8 +9,6 @@ const MAP_SPAWN_POS: RangeInclusive<i8> = (-MAP_SIZE / 2)..=(MAP_SIZE / 2);
 const COLOR_LIGHT: Color = Color::srgb(0.9, 0.9, 0.9);
 const COLOR_DARK: Color = Color::srgb(0.5, 0.5, 0.5);
 
-pub struct Map;
-
 #[derive(Component, Default)]
 #[cfg_attr(feature = "debug-inspector", derive(Reflect, InspectorOptions))]
 #[cfg_attr(feature = "debug-inspector", reflect(Component, InspectorOptions))]
@@ -22,17 +17,7 @@ pub struct Tile {
     pub(crate) is_free: bool,
 }
 
-impl Plugin for Map {
-    fn build(&self, app: &mut bevy::prelude::App) {
-        app.add_systems(Startup, generate_map);
-        #[cfg(feature = "debug-inspector")]
-        {
-            app.register_type::<Tile>();
-        }
-    }
-}
-
-fn generate_map(mut commands: Commands) {
+pub(crate) fn generate_map(mut commands: Commands) {
     for x in MAP_SPAWN_POS {
         for y in MAP_SPAWN_POS {
             let color = if (x + y) % 2 == 0 {

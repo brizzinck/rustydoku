@@ -1,6 +1,5 @@
 use bevy::{prelude::*, window::PrimaryWindow};
-use spawner::spawn_figures;
-use square::{place_figure, Square};
+use square::Square;
 
 pub mod big_t_shape;
 pub mod cube;
@@ -21,17 +20,7 @@ pub struct Figure {
     pub is_dragging: bool,
 }
 
-pub struct FigurePlugin;
-
-impl Plugin for FigurePlugin {
-    fn build(&self, app: &mut App) {
-        app.add_systems(Startup, spawn_figures);
-        app.add_systems(Update, (drag_figure, stop_dragging, square::highlight_tile));
-        app.add_systems(PostUpdate, place_figure);
-    }
-}
-
-pub(super) fn start_dragging(
+pub(crate) fn start_dragging(
     trigger: Trigger<Pointer<Down>>,
     mut cubes: Query<(&mut Figure, Option<&Children>)>,
     mut square_query: Query<(&Parent, &mut Square)>,
@@ -51,7 +40,7 @@ pub(super) fn start_dragging(
     }
 }
 
-fn drag_figure(
+pub(crate) fn drag_figure(
     mut query: Query<(&mut Transform, &Figure)>,
     mouse_button_input: Res<ButtonInput<MouseButton>>,
     touch_input: Res<Touches>,
@@ -80,7 +69,7 @@ fn drag_figure(
     }
 }
 
-fn stop_dragging(
+pub(crate) fn stop_dragging(
     mut query: Query<(&mut Figure, Option<&Children>)>,
     mut square_query: Query<&mut Square>,
     mouse_input: Res<ButtonInput<MouseButton>>,
