@@ -1,12 +1,19 @@
 use bevy::{prelude::*, window::PrimaryWindow};
+use spawner::spawn_figures;
 use square::{place_figure, Square};
 
+pub mod big_t_shape;
 pub mod cube;
+pub mod spawner;
 pub mod square;
+pub mod t_shape;
 
 #[derive(Copy, Clone, Component)]
 pub enum FigureType {
     Cube,
+    TShape,
+    Square,
+    BigTShape,
 }
 
 #[derive(Copy, Clone, Component, Default, Debug)]
@@ -18,7 +25,7 @@ pub struct FigurePlugin;
 
 impl Plugin for FigurePlugin {
     fn build(&self, app: &mut App) {
-        app.add_systems(Startup, cube::spawn);
+        app.add_systems(Startup, spawn_figures);
         app.add_systems(Update, (drag_figure, stop_dragging, square::highlight_tile));
         app.add_systems(PostUpdate, place_figure);
     }

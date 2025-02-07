@@ -1,6 +1,6 @@
-use bevy::prelude::*;
-
+use super::spawner::spawn_empty_figure;
 use crate::components::map::{Tile, TILE_SIZE};
+use bevy::prelude::*;
 
 pub const SQUARE_SIZE: f32 = TILE_SIZE;
 
@@ -19,7 +19,12 @@ pub struct Square {
     pub(super) state: State,
 }
 
-pub(super) fn spawn(commands: &mut Commands, parent: Entity, position: Vec2) {
+pub(super) fn spawn(commands: &mut Commands, position: Vec2) {
+    let parent = spawn_empty_figure(commands, position);
+    spawn_child(commands, parent, Vec2::new(-0., 0.));
+}
+
+pub(super) fn spawn_child(commands: &mut Commands, parent: Entity, position: Vec2) {
     commands
         .spawn((
             Sprite {

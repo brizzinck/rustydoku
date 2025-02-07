@@ -27,8 +27,6 @@ impl Plugin for Map {
         app.add_systems(Startup, generate_map);
         #[cfg(feature = "debug-inspector")]
         {
-            use bevy::reflect::TypeRegistry;
-
             app.register_type::<Tile>();
         }
     }
