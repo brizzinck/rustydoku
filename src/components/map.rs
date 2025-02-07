@@ -2,6 +2,8 @@ use bevy::{
     app::{Plugin, Startup},
     prelude::*,
 };
+#[cfg(feature = "debug-inspector")]
+use bevy_inspector_egui::prelude::*;
 use std::ops::RangeInclusive;
 
 const MAP_SIZE: i8 = 9;
@@ -12,16 +14,23 @@ const COLOR_DARK: Color = Color::srgb(0.5, 0.5, 0.5);
 
 pub struct Map;
 
-#[derive(Component)]
+#[derive(Component, Default)]
+#[cfg_attr(feature = "debug-inspector", derive(Reflect, InspectorOptions))]
+#[cfg_attr(feature = "debug-inspector", reflect(Component, InspectorOptions))]
 pub struct Tile {
     pub(super) default_color: Color,
-    #[allow(dead_code)]
     pub(super) is_free: bool,
 }
 
 impl Plugin for Map {
     fn build(&self, app: &mut bevy::prelude::App) {
         app.add_systems(Startup, generate_map);
+        #[cfg(feature = "debug-inspector")]
+        {
+            use bevy::reflect::TypeRegistry;
+
+            app.register_type::<Tile>();
+        }
     }
 }
 
@@ -35,6 +44,7 @@ fn generate_map(mut commands: Commands) {
             };
 
             commands.spawn((
+                Name::new(format!("Tile ({}, {})", x, y)),
                 Sprite {
                     color,
                     custom_size: Some(Vec2::new(TILE_SIZE, TILE_SIZE)),

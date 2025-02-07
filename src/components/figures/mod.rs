@@ -1,4 +1,5 @@
 use bevy::{prelude::*, window::PrimaryWindow};
+use square::{place_figure, Square};
 
 pub mod cube;
 pub mod square;
@@ -18,12 +19,27 @@ pub struct FigurePlugin;
 impl Plugin for FigurePlugin {
     fn build(&self, app: &mut App) {
         app.add_systems(Startup, cube::spawn);
-        app.add_systems(Update, (drag_figure, stop_dragging, square::hightligh_tile));
+        app.add_systems(Update, (drag_figure, stop_dragging, square::highlight_tile));
+        app.add_systems(PostUpdate, place_figure);
     }
 }
 
-pub(super) fn start_dragging(_: Trigger<Pointer<Down>>, mut cube: Query<&mut Figure>) {
-    cube.single_mut().is_dragging = true;
+pub(super) fn start_dragging(
+    _: Trigger<Pointer<Down>>,
+    mut cube: Query<(Entity, &mut Figure, Option<&Children>)>,
+    mut square_query: Query<&mut Square>,
+) {
+    if let Ok((_, mut figure, children)) = cube.get_single_mut() {
+        figure.is_dragging = true;
+
+        if let Some(children) = children {
+            for &child in children.iter() {
+                if let Ok(mut square) = square_query.get_mut(child) {
+                    square.state = square::State::Dragging;
+                }
+            }
+        }
+    }
 }
 
 fn drag_figure(
@@ -54,14 +70,26 @@ fn drag_figure(
         }
     }
 }
+
 fn stop_dragging(
-    mut query: Query<&mut Figure>,
+    mut query: Query<(&mut Figure, Option<&Children>)>,
+    mut square_query: Query<&mut Square>,
     mouse_input: Res<ButtonInput<MouseButton>>,
     touch_input: Res<Touches>,
 ) {
     if mouse_input.just_released(MouseButton::Left) || touch_input.any_just_released() {
-        for mut draggable in &mut query {
+        for (mut draggable, children) in &mut query {
             draggable.is_dragging = false;
+
+            if let Some(children) = children {
+                for &child in children.iter() {
+                    if let Ok(mut square) = square_query.get_mut(child) {
+                        if let square::State::Placing(pos) = square.state {
+                            square.state = square::State::MustBePlaced(pos);
+                        }
+                    }
+                }
+            }
         }
     }
 }
