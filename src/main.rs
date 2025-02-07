@@ -3,9 +3,11 @@ use bevy::prelude::*;
 #[cfg(feature = "debug-inspector")]
 use bevy_inspector_egui::quick::WorldInspectorPlugin;
 
+use rustydoku::logic::check_combination;
 use rustydoku::plugins::default::RustydokuDefault;
+use rustydoku::plugins::game_zone::GameZonePlugin;
 use rustydoku::plugins::{camera::CameraPlugin, figure::FigurePlugin, map::MapPlugin};
-use rustydoku::{logic::check_combination, resource::Score};
+use rustydoku::resource::score::Score;
 
 fn main() {
     let mut game = App::new();
@@ -15,6 +17,7 @@ fn main() {
     game.add_plugins(MapPlugin);
     game.add_plugins(CameraPlugin);
     game.add_plugins(FigurePlugin);
+    game.add_plugins(GameZonePlugin);
 
     #[cfg(feature = "debug-inspector")]
     game.add_plugins(WorldInspectorPlugin::new());

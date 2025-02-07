@@ -1,6 +1,6 @@
 use crate::{
     components::map::{Tile, MAP_SIZE, TILE_SIZE},
-    resource::Score,
+    resource::score::Score,
 };
 use bevy::prelude::*;
 

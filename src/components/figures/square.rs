@@ -20,7 +20,7 @@ pub struct Square {
 }
 
 pub(super) fn spawn(commands: &mut Commands, position: Vec2) {
-    let parent = spawn_empty_figure(commands, position);
+    let parent = spawn_empty_figure(commands, position, &[Vec2::new(0., 0.)]);
     spawn_child(commands, parent, Vec2::new(-0., 0.));
 }
 

@@ -1,6 +1,2 @@
-use bevy::prelude::*;
-
-#[derive(Resource, Default)]
-pub struct Score {
-    pub(crate) value: i32,
-}
+pub mod game_zone;
+pub mod score;

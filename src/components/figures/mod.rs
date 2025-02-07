@@ -1,6 +1,10 @@
 use bevy::{prelude::*, window::PrimaryWindow};
 use square::Square;
 
+use crate::resource::game_zone::GameZone;
+
+use super::map::TILE_SIZE;
+
 pub mod big_t_shape;
 pub mod cube;
 pub mod spawner;
@@ -13,6 +17,12 @@ pub enum FigureType {
     TShape,
     Square,
     BigTShape,
+}
+
+#[derive(Component, Debug, Copy, Clone)]
+pub struct FigureBounds {
+    pub min: Vec2,
+    pub max: Vec2,
 }
 
 #[derive(Copy, Clone, Component, Default, Debug)]
@@ -41,27 +51,38 @@ pub(crate) fn start_dragging(
 }
 
 pub(crate) fn drag_figure(
-    mut query: Query<(&mut Transform, &Figure)>,
+    mut figure_query: Query<(&mut Transform, &Figure, &FigureBounds)>,
     mouse_button_input: Res<ButtonInput<MouseButton>>,
     touch_input: Res<Touches>,
     cursor: Query<&Window, With<PrimaryWindow>>,
     cameras: Query<(&Camera, &GlobalTransform)>,
+    game_zone: Res<GameZone>,
 ) {
     let (camera, camera_transform) = cameras.single();
 
     if mouse_button_input.pressed(MouseButton::Left) || touch_input.any_just_pressed() {
-        let cursor = cursor.single().cursor_position();
-
-        if let Some(cursor_pos) = cursor {
+        let window = cursor.single();
+        if let Some(cursor_pos) = window.cursor_position() {
             if let Ok(world_pos) = camera.viewport_to_world(camera_transform, cursor_pos) {
-                let cursor_world_pos = world_pos.origin;
-                for (mut transform, draggable) in &mut query {
-                    if draggable.is_dragging {
-                        transform.translation = Vec3::new(
-                            cursor_world_pos.x,
-                            cursor_world_pos.y + 50.,
-                            transform.translation.z,
-                        );
+                let mut desired = world_pos.origin;
+
+                for (mut transform, figure, bounds) in &mut figure_query {
+                    if figure.is_dragging {
+                        let min_offset = bounds.min * TILE_SIZE;
+                        let max_offset = bounds.max * TILE_SIZE;
+
+                        let min_x = game_zone.left_up.x - min_offset.x;
+                        let max_x = game_zone.right_down.x - max_offset.x;
+                        let min_y = game_zone.right_down.y - min_offset.y;
+                        let max_y = game_zone.left_up.y - max_offset.y;
+
+                        desired.x = desired.x.clamp(min_x, max_x);
+                        desired.y = desired.y.clamp(min_y, max_y);
+
+                        transform.translation.x = desired.x;
+                        transform.translation.y = desired.y;
+
+                        break;
                     }
                 }
             }
