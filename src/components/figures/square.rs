@@ -1,11 +1,11 @@
-use super::spawner::spawn_empty_figure;
+use super::{spawner::spawn_empty_figure, Figure};
 use crate::components::map::{Tile, TILE_SIZE};
 use bevy::prelude::*;
 
 pub const SQUARE_SIZE: f32 = TILE_SIZE;
 
 #[derive(Default, PartialEq, Debug)]
-pub enum State {
+pub enum SquareState {
     #[default]
     Idle,
     Dragging,
@@ -16,7 +16,7 @@ pub enum State {
 
 #[derive(Component, Default)]
 pub struct Square {
-    pub(super) state: State,
+    pub(super) state: SquareState,
 }
 
 pub(super) fn spawn(commands: &mut Commands, position: Vec2) {
@@ -38,41 +38,56 @@ pub(super) fn spawn_child(commands: &mut Commands, parent: Entity, position: Vec
 }
 
 pub(crate) fn highlight_tile(
-    mut tile_query: Query<(&Tile, &mut Sprite, &GlobalTransform)>,
-    mut square_query: Query<(&mut Square, &GlobalTransform)>,
+    mut tile_query: Query<(&Tile, &mut Sprite, &GlobalTransform, Entity)>,
+    figure_query: Query<(&mut Children, &Figure)>,
+    mut square_query: Query<(Entity, &GlobalTransform, &mut Square)>,
 ) {
-    for (tile, mut sprite, tile_transform) in &mut tile_query {
-        let tile_pos = tile_transform.translation().truncate();
-        let tile_grid_x = (tile_pos.x / TILE_SIZE).round() as i32;
-        let tile_grid_y = (tile_pos.y / TILE_SIZE).round() as i32;
+    let mut squares_on_tile = Vec::new();
+    let mut count = 0;
 
-        let mut is_over_tile = false;
+    for (children, figure) in figure_query.iter() {
+        if !figure.is_dragging {
+            continue;
+        }
 
-        for (mut square, square_transform) in &mut square_query {
-            if matches!(square.state, State::Idle | State::Placed(_)) {
-                continue;
-            }
+        count = children.len();
 
-            let square_pos = square_transform.translation().truncate();
-            let square_grid_x = (square_pos.x / TILE_SIZE).round() as i32;
-            let square_grid_y = (square_pos.y / TILE_SIZE).round() as i32;
+        for &child in children.iter() {
+            if let Ok((square_entity, square_transform, mut square)) = square_query.get_mut(child) {
+                square.state = SquareState::Dragging;
 
-            if tile_grid_x == square_grid_x && tile_grid_y == square_grid_y {
-                is_over_tile = true;
+                let square_pos = square_transform.translation().truncate();
+                let square_grid_x = (square_pos.x / TILE_SIZE).round() as i32;
+                let square_grid_y = (square_pos.y / TILE_SIZE).round() as i32;
 
-                if matches!(square.state, State::Dragging | State::Placing(_)) {
-                    square.state = State::Placing(tile_pos);
+                for (tile, mut sprite, tile_transform, tile_entity) in tile_query.iter_mut() {
+                    sprite.color = tile.default_color;
+
+                    let tile_pos = tile_transform.translation().truncate();
+                    let tile_grid_x = (tile_pos.x / TILE_SIZE).round() as i32;
+                    let tile_grid_y = (tile_pos.y / TILE_SIZE).round() as i32;
+
+                    if square_grid_x == tile_grid_x && square_grid_y == tile_grid_y && tile.is_free
+                    {
+                        squares_on_tile.push((square_entity, tile_pos, tile_entity));
+                    }
                 }
-
-                break;
             }
         }
 
-        sprite.color = if is_over_tile {
-            Color::srgb(0.0, 1.0, 0.0)
-        } else {
-            tile.default_color
-        };
+        break;
+    }
+
+    if !squares_on_tile.is_empty() && count == squares_on_tile.len() {
+        for entity in squares_on_tile {
+            let (entity, tile_pos, tile_entity) = entity;
+            if let Ok((_, _, mut square)) = square_query.get_mut(entity) {
+                if let Ok((_, mut sprite, _, _)) = tile_query.get_mut(tile_entity) {
+                    sprite.color = Color::srgb(0., 1., 0.);
+                }
+                square.state = SquareState::Placing(tile_pos);
+            }
+        }
     }
 }
 
@@ -82,8 +97,8 @@ pub(crate) fn place_figure(
     mut tile_query: Query<(&mut Tile, &GlobalTransform)>, // Query for tiles
 ) {
     for (entity, mut transform, mut square) in &mut square_query {
-        if let State::MustBePlaced(position) = square.state {
-            square.state = State::Placed(position);
+        if let SquareState::MustBePlaced(position) = square.state {
+            square.state = SquareState::Placed(position);
             commands.entity(entity).remove_parent();
             *transform = Transform::from_translation(Vec3::new(position.x, position.y, 0.5));
 

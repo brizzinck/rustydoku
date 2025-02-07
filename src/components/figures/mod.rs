@@ -32,7 +32,7 @@ pub(crate) fn start_dragging(
             if let Some(children) = children {
                 for &child in children.iter() {
                     if let Ok((_, mut square)) = square_query.get_mut(child) {
-                        square.state = square::State::Dragging;
+                        square.state = square::SquareState::Dragging;
                     }
                 }
             }
@@ -82,8 +82,8 @@ pub(crate) fn stop_dragging(
             if let Some(children) = children {
                 for &child in children.iter() {
                     if let Ok(mut square) = square_query.get_mut(child) {
-                        if let square::State::Placing(pos) = square.state {
-                            square.state = square::State::MustBePlaced(pos);
+                        if let square::SquareState::Placing(pos) = square.state {
+                            square.state = square::SquareState::MustBePlaced(pos);
                         }
                     }
                 }

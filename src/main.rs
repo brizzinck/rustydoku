@@ -1,5 +1,4 @@
 use bevy::prelude::*;
-use bevy::window::{Window, WindowResized};
 
 #[cfg(feature = "debug-inspector")]
 use bevy_inspector_egui::quick::WorldInspectorPlugin;
@@ -24,25 +23,6 @@ fn main() {
     game.insert_resource(Score::default());
 
     game.add_systems(PostUpdate, check_combination);
-    game.add_systems(Update, adapt_to_window_size);
 
     game.run();
-}
-
-fn adapt_to_window_size(
-    mut resize_events: EventReader<WindowResized>,
-    mut windows: Query<&mut Window>,
-) {
-    for event in resize_events.read() {
-        if let Ok(mut window) = windows.get_single_mut() {
-            let width = event.width;
-            let height = event.height;
-
-            if width > height {
-                window.resolution.set(height, width);
-            } else {
-                window.resolution.set(width, height);
-            }
-        }
-    }
 }
