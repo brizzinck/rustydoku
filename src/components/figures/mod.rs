@@ -25,17 +25,19 @@ impl Plugin for FigurePlugin {
 }
 
 pub(super) fn start_dragging(
-    _: Trigger<Pointer<Down>>,
-    mut cube: Query<(Entity, &mut Figure, Option<&Children>)>,
-    mut square_query: Query<&mut Square>,
+    trigger: Trigger<Pointer<Down>>,
+    mut cubes: Query<(&mut Figure, Option<&Children>)>,
+    mut square_query: Query<(&Parent, &mut Square)>,
 ) {
-    if let Ok((_, mut figure, children)) = cube.get_single_mut() {
-        figure.is_dragging = true;
+    if let Ok((parent, _)) = square_query.get(trigger.target) {
+        if let Ok((mut figure, children)) = cubes.get_mut(parent.get()) {
+            figure.is_dragging = true;
 
-        if let Some(children) = children {
-            for &child in children.iter() {
-                if let Ok(mut square) = square_query.get_mut(child) {
-                    square.state = square::State::Dragging;
+            if let Some(children) = children {
+                for &child in children.iter() {
+                    if let Ok((_, mut square)) = square_query.get_mut(child) {
+                        square.state = square::State::Dragging;
+                    }
                 }
             }
         }

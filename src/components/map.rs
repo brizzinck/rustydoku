@@ -6,7 +6,7 @@ use bevy::{
 use bevy_inspector_egui::prelude::*;
 use std::ops::RangeInclusive;
 
-const MAP_SIZE: i8 = 9;
+pub const MAP_SIZE: i8 = 9;
 pub const TILE_SIZE: f32 = 40.0;
 const MAP_SPAWN_POS: RangeInclusive<i8> = (-MAP_SIZE / 2)..=(MAP_SIZE / 2);
 const COLOR_LIGHT: Color = Color::srgb(0.9, 0.9, 0.9);
@@ -18,8 +18,8 @@ pub struct Map;
 #[cfg_attr(feature = "debug-inspector", derive(Reflect, InspectorOptions))]
 #[cfg_attr(feature = "debug-inspector", reflect(Component, InspectorOptions))]
 pub struct Tile {
-    pub(super) default_color: Color,
-    pub(super) is_free: bool,
+    pub(crate) default_color: Color,
+    pub(crate) is_free: bool,
 }
 
 impl Plugin for Map {
