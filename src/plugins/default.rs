@@ -1,5 +1,5 @@
 use bevy::prelude::*;
-use bevy::window::{WindowPlugin, WindowResized};
+use bevy::window::{WindowPlugin, WindowResized, WindowResolution};
 
 pub struct RustydokuDefault;
 
@@ -7,11 +7,9 @@ impl Plugin for RustydokuDefault {
     fn build(&self, app: &mut App) {
         app.add_plugins(DefaultPlugins.set(WindowPlugin {
             primary_window: Some(bevy::window::Window {
-                resolution: (480.0, 800.0).into(),
+                resolution: WindowResolution::new(480., 800.),
                 resizable: false,
-                title: "RustyDoku".to_string(),
-                fit_canvas_to_parent: true,
-                prevent_default_event_handling: false,
+                title: "Rustydoku".to_string(),
                 ..default()
             }),
             ..default()
