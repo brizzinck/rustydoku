@@ -91,22 +91,24 @@ pub(crate) fn highlight_tile(
     }
 }
 
-pub(crate) fn place_figure(
+pub(crate) fn place(
     mut commands: Commands,
     mut square_query: Query<(Entity, &mut Transform, &mut Square)>,
-    mut tile_query: Query<(&mut Tile, &GlobalTransform)>, // Query for tiles
+    mut tile_query: Query<(&mut Tile, &GlobalTransform, Entity, &mut Sprite)>, // Query for tiles
 ) {
     for (entity, mut transform, mut square) in &mut square_query {
         if let SquareState::MustBePlaced(position) = square.state {
             square.state = SquareState::Placed(position);
             commands.entity(entity).remove_parent();
-            *transform = Transform::from_translation(Vec3::new(position.x, position.y, 0.5));
 
-            for (mut tile, tile_transform) in &mut tile_query {
+            for (mut tile, tile_transform, tile_entity, mut sprite) in &mut tile_query {
                 let tile_pos = tile_transform.translation().truncate();
 
                 if tile_pos == position {
                     tile.is_free = false;
+                    sprite.color = tile.default_color;
+                    commands.entity(entity).set_parent(tile_entity);
+                    *transform = Transform::from_translation(Vec3::new(0., 0., 0.5));
                     break;
                 }
             }

@@ -3,7 +3,7 @@ use bevy::prelude::*;
 #[cfg(feature = "debug-inspector")]
 use bevy_inspector_egui::quick::WorldInspectorPlugin;
 
-use rustydoku::logic::check_combination;
+use rustydoku::logic::check::check_combination;
 use rustydoku::plugins::default::RustydokuDefault;
 use rustydoku::plugins::game_zone::GameZonePlugin;
 use rustydoku::plugins::{camera::CameraPlugin, figure::FigurePlugin, map::MapPlugin};
