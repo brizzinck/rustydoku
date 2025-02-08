@@ -4,7 +4,7 @@ use super::{
 };
 use bevy::prelude::*;
 
-pub fn spawn(commands: &mut Commands, position: Vec2) {
+pub fn spawn(commands: &mut Commands, position: Vec2) -> Entity {
     let squares_position = [
         Vec2::new(-1.0, 0.0),
         Vec2::new(0.0, 0.0),
@@ -17,4 +17,6 @@ pub fn spawn(commands: &mut Commands, position: Vec2) {
     for &offset in &squares_position {
         square::spawn_child(commands, parent, offset);
     }
+
+    parent
 }

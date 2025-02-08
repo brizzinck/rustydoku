@@ -2,11 +2,15 @@ use super::{big_t_shape, cube, square, start_dragging, t_shape, Figure, FigureBo
 use bevy::prelude::*;
 use rand::Rng;
 
-pub(crate) fn spawn_figures(mut commands: Commands) {
-    square::spawn(&mut commands, Vec2::new(-80.0, 160.));
-    cube::spawn(&mut commands, Vec2::new(-140.0, 140.));
-    t_shape::spawn(&mut commands, Vec2::new(0., 160.));
-    big_t_shape::spawn(&mut commands, Vec2::new(120., 160.));
+pub(crate) fn random_spawn_figure(commands: &mut Commands, position: Vec2) -> Entity {
+    let mut rng = rand::thread_rng();
+    match rng.gen_range(0..4) {
+        0 => cube::spawn(commands, position),
+        1 => square::spawn(commands, position),
+        2 => t_shape::spawn(commands, position),
+        3 => big_t_shape::spawn(commands, position),
+        _ => cube::spawn(commands, position),
+    }
 }
 
 pub(super) fn spawn_empty_figure(

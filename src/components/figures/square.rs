@@ -1,5 +1,8 @@
 use super::{spawner::spawn_empty_figure, Figure};
-use crate::components::map::{Tile, TILE_SIZE};
+use crate::{
+    components::map::{Tile, TILE_SIZE},
+    resource::figure_spawner::FigureSpawner,
+};
 use bevy::prelude::*;
 
 pub const SQUARE_SIZE: f32 = TILE_SIZE;
@@ -19,13 +22,13 @@ pub struct Square {
     pub(super) state: SquareState,
 }
 
-pub(super) fn spawn(commands: &mut Commands, position: Vec2) {
+pub(super) fn spawn(commands: &mut Commands, position: Vec2) -> Entity {
     let parent = spawn_empty_figure(commands, position, &[Vec2::new(0., 0.)]);
-    spawn_child(commands, parent, Vec2::new(-0., 0.));
+    spawn_child(commands, parent, Vec2::new(-0., 0.))
 }
 
-pub(super) fn spawn_child(commands: &mut Commands, parent: Entity, position: Vec2) {
-    commands
+pub(super) fn spawn_child(commands: &mut Commands, parent: Entity, position: Vec2) -> Entity {
+    let child = commands
         .spawn((
             Sprite {
                 custom_size: Some(Vec2::new(SQUARE_SIZE, SQUARE_SIZE)),
@@ -34,7 +37,10 @@ pub(super) fn spawn_child(commands: &mut Commands, parent: Entity, position: Vec
             Transform::from_xyz(position.x * SQUARE_SIZE, position.y * SQUARE_SIZE, 1.0),
             Square::default(),
         ))
-        .set_parent(parent);
+        .set_parent(parent)
+        .id();
+
+    child
 }
 
 pub(crate) fn highlight_tile(
@@ -93,12 +99,15 @@ pub(crate) fn highlight_tile(
 
 pub(crate) fn place(
     mut commands: Commands,
-    mut square_query: Query<(Entity, &mut Transform, &mut Square)>,
-    mut tile_query: Query<(&mut Tile, &GlobalTransform, Entity, &mut Sprite)>, // Query for tiles
+    mut square_query: Query<(Entity, &mut Transform, &mut Square, &Parent)>,
+    mut tile_query: Query<(&mut Tile, &GlobalTransform, Entity, &mut Sprite)>,
+    mut figure_spawner: ResMut<FigureSpawner>,
 ) {
-    for (entity, mut transform, mut square) in &mut square_query {
+    let mut placed = None;
+    for (entity, mut transform, mut square, parent) in &mut square_query {
         if let SquareState::MustBePlaced(position) = square.state {
             square.state = SquareState::Placed(position);
+            placed = Some(parent.get());
             commands.entity(entity).remove_parent();
 
             for (mut tile, tile_transform, tile_entity, mut sprite) in &mut tile_query {
@@ -113,5 +122,9 @@ pub(crate) fn place(
                 }
             }
         }
+    }
+    if let Some(parent) = placed {
+        commands.entity(parent).despawn();
+        figure_spawner.remove();
     }
 }

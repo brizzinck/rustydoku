@@ -22,7 +22,7 @@ pub fn setup_game_zone(mut commands: Commands) {
 
     let right_down = Vec2::new(
         half_map_size - TILE_SIZE / 2.0,
-        -half_map_size + TILE_SIZE / 2.0,
+        -half_map_size + TILE_SIZE / 2.0 - TILE_SIZE * 5.,
     );
 
     commands.insert_resource(GameZone {
