@@ -1,30 +1,25 @@
-use super::{spawner::spawn_empty_figure, Figure};
+use super::{spawner::spawn_empty_figure, Figure, FigureType};
 use crate::{
     components::map::{Tile, TILE_SIZE},
-    resource::figure_spawner::FigureSpawner,
+    resource::state_figure::StateFigure,
 };
 use bevy::prelude::*;
 
 pub const SQUARE_SIZE: f32 = TILE_SIZE;
 
-#[derive(Default, PartialEq, Debug)]
-pub enum SquareState {
-    #[default]
-    Idle,
-    Dragging,
-    Placing(Vec2),
-    MustBePlaced(Vec2),
-    Placed(Vec2),
-}
-
 #[derive(Component, Default)]
 pub struct Square {
-    pub(super) state: SquareState,
+    pub(super) parent: Option<Entity>,
 }
 
 pub(super) fn spawn(commands: &mut Commands, position: Vec2) -> Entity {
     let parent = spawn_empty_figure(commands, position, &[Vec2::new(0., 0.)]);
-    spawn_child(commands, parent, Vec2::new(-0., 0.))
+    let child = spawn_child(commands, parent, Vec2::new(0., 0.));
+    commands.entity(parent).insert(Figure {
+        squares: vec![child],
+    });
+    commands.entity(parent).insert(FigureType::Square);
+    child
 }
 
 pub(super) fn spawn_child(commands: &mut Commands, parent: Entity, position: Vec2) -> Entity {
@@ -35,7 +30,9 @@ pub(super) fn spawn_child(commands: &mut Commands, parent: Entity, position: Vec
                 ..Default::default()
             },
             Transform::from_xyz(position.x * SQUARE_SIZE, position.y * SQUARE_SIZE, 1.0),
-            Square::default(),
+            Square {
+                parent: Some(parent),
+            },
         ))
         .set_parent(parent)
         .id();
@@ -43,88 +40,60 @@ pub(super) fn spawn_child(commands: &mut Commands, parent: Entity, position: Vec
     child
 }
 
-pub(crate) fn highlight_tile(
+pub(crate) fn highlight(
     mut tile_query: Query<(&Tile, &mut Sprite, &GlobalTransform, Entity)>,
-    figure_query: Query<(&mut Children, &Figure)>,
+    figure_query: Query<&Figure>,
     mut square_query: Query<(Entity, &GlobalTransform, &mut Square)>,
+    state_figure: ResMut<StateFigure>,
 ) {
-    let mut squares_on_tile = Vec::new();
-    let mut count = 0;
+    for (tile, mut sprite, _, _) in tile_query.iter_mut() {
+        sprite.color = tile.default_color;
+    }
 
-    for (children, figure) in figure_query.iter() {
-        if !figure.is_dragging {
-            continue;
-        }
+    if let StateFigure::Dragging(figure) = *state_figure {
+        let all_tiles = tile_query
+            .iter()
+            .map(|(tile, _, transform, entity)| (tile, transform, entity))
+            .collect::<Vec<_>>();
 
-        count = children.len();
-
-        for &child in children.iter() {
-            if let Ok((square_entity, square_transform, mut square)) = square_query.get_mut(child) {
-                square.state = SquareState::Dragging;
-
-                let square_pos = square_transform.translation().truncate();
-                let square_grid_x = (square_pos.x / TILE_SIZE).round() as i32;
-                let square_grid_y = (square_pos.y / TILE_SIZE).round() as i32;
-
-                for (tile, mut sprite, tile_transform, tile_entity) in tile_query.iter_mut() {
-                    sprite.color = tile.default_color;
-
-                    let tile_pos = tile_transform.translation().truncate();
-                    let tile_grid_x = (tile_pos.x / TILE_SIZE).round() as i32;
-                    let tile_grid_y = (tile_pos.y / TILE_SIZE).round() as i32;
-
-                    if square_grid_x == tile_grid_x && square_grid_y == tile_grid_y && tile.is_free
-                    {
-                        squares_on_tile.push((square_entity, tile_pos, tile_entity));
+        let mut highlight_tiles = vec![];
+        if let Ok(figure) = figure_query.get(figure) {
+            for &square_entity in figure.squares.iter() {
+                if let Ok((_, square_transform, _)) = square_query.get_mut(square_entity) {
+                    if let Some(tile_entity) = check_for_place(square_transform, &all_tiles) {
+                        highlight_tiles.push(tile_entity);
                     }
                 }
             }
-        }
 
-        break;
-    }
-
-    if !squares_on_tile.is_empty() && count == squares_on_tile.len() {
-        for entity in squares_on_tile {
-            let (entity, tile_pos, tile_entity) = entity;
-            if let Ok((_, _, mut square)) = square_query.get_mut(entity) {
-                if let Ok((_, mut sprite, _, _)) = tile_query.get_mut(tile_entity) {
-                    sprite.color = Color::srgb(0., 1., 0.);
+            if highlight_tiles.len() == figure.squares.len() {
+                for tile_entity in highlight_tiles.into_iter() {
+                    if let Ok((_, mut sprite, _, _)) = tile_query.get_mut(tile_entity) {
+                        sprite.color = Color::srgb(0., 1., 0.);
+                    }
                 }
-                square.state = SquareState::Placing(tile_pos);
             }
         }
     }
 }
 
-pub(crate) fn place(
-    mut commands: Commands,
-    mut square_query: Query<(Entity, &mut Transform, &mut Square, &Parent)>,
-    mut tile_query: Query<(&mut Tile, &GlobalTransform, Entity, &mut Sprite)>,
-    mut figure_spawner: ResMut<FigureSpawner>,
-) {
-    let mut placed = None;
-    for (entity, mut transform, mut square, parent) in &mut square_query {
-        if let SquareState::MustBePlaced(position) = square.state {
-            square.state = SquareState::Placed(position);
-            placed = Some(parent.get());
-            commands.entity(entity).remove_parent();
+pub fn check_for_place(
+    transofrm: &GlobalTransform,
+    tile_query: &Vec<(&Tile, &GlobalTransform, Entity)>,
+) -> Option<Entity> {
+    let square_pos = transofrm.translation().truncate();
+    let square_grid_x = (square_pos.x / TILE_SIZE).round() as i32;
+    let square_grid_y = (square_pos.y / TILE_SIZE).round() as i32;
 
-            for (mut tile, tile_transform, tile_entity, mut sprite) in &mut tile_query {
-                let tile_pos = tile_transform.translation().truncate();
+    for (tile, tile_transform, tile_entity) in tile_query.iter() {
+        let tile_pos = tile_transform.translation().truncate();
+        let tile_grid_x = (tile_pos.x / TILE_SIZE).round() as i32;
+        let tile_grid_y = (tile_pos.y / TILE_SIZE).round() as i32;
 
-                if tile_pos == position {
-                    tile.is_free = false;
-                    sprite.color = tile.default_color;
-                    commands.entity(entity).set_parent(tile_entity);
-                    *transform = Transform::from_translation(Vec3::new(0., 0., 0.5));
-                    break;
-                }
-            }
+        if (square_grid_x == tile_grid_x && square_grid_y == tile_grid_y) && tile.square.is_none() {
+            return Some(*tile_entity);
         }
     }
-    if let Some(parent) = placed {
-        commands.entity(parent).despawn();
-        figure_spawner.remove();
-    }
+
+    None
 }

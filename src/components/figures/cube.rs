@@ -1,19 +1,15 @@
-use super::{spawner::spawn_empty_figure, square::spawn_child};
+use super::spawner::spawn_figure;
 use bevy::prelude::*;
 
 pub fn spawn(commands: &mut Commands, position: Vec2) -> Entity {
-    let squares_position = vec![
-        Vec2::new(-0.5, -0.5),
-        Vec2::new(0.5, 0.5),
-        Vec2::new(-0.5, 0.5),
-        Vec2::new(0.5, -0.5),
-    ];
-
-    let parent = spawn_empty_figure(commands, position, &squares_position);
-
-    for &offset in &squares_position {
-        spawn_child(commands, parent, offset);
-    }
-
-    parent
+    spawn_figure(
+        commands,
+        position,
+        &[
+            Vec2::new(-0.5, -0.5),
+            Vec2::new(0.5, 0.5),
+            Vec2::new(-0.5, 0.5),
+            Vec2::new(0.5, -0.5),
+        ],
+    )
 }

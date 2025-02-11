@@ -1,4 +1,4 @@
-use crate::logic::check::check_combination;
+use crate::logic::check_combo::check_combination;
 use bevy::prelude::*;
 
 pub struct RustydokuLogicPlugin;

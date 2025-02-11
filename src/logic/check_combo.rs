@@ -9,10 +9,10 @@ const GRID_SIZE: usize = MAP_SIZE as usize;
 /// Runs all checks combination and updates the score
 pub fn check_combination(
     mut commands: Commands,
-    mut tiles: Query<(&mut Tile, &Transform, &Children)>,
+    mut tiles: Query<(&mut Tile, &Transform)>,
     mut score: ResMut<Score>,
 ) {
-    let grid = build_grid(tiles.iter().map(|(tile, transform, _)| (tile, transform)));
+    let grid = build_grid(tiles.iter());
     let mut tiles_to_clear = Vec::new();
 
     check_horizontal(&grid, &mut tiles_to_clear);
@@ -37,7 +37,7 @@ where
         let y = ((transform.translation.y + half_map_size) / TILE_SIZE).floor() as isize;
 
         if x >= 0 && x < GRID_SIZE as isize && y >= 0 && y < GRID_SIZE as isize {
-            grid[y as usize][x as usize] = !tile.is_free;
+            grid[y as usize][x as usize] = tile.square.is_some();
         } else {
             error!("Tile position out of bounds: ({}, {})", x, y);
         }
@@ -109,26 +109,27 @@ fn update_score(score: &mut Score, tiles_to_clear: &[(usize, usize)]) {
 
 /// Clears marked tiles and sets them to free
 fn clear_tiles(
-    tiles: &mut Query<(&mut Tile, &Transform, &Children)>,
+    tiles: &mut Query<(&mut Tile, &Transform)>,
     commands: &mut Commands,
     tiles_to_clear: &[(usize, usize)],
 ) {
     let half_map_size = (MAP_SIZE as f32 * TILE_SIZE) / 2.0;
 
-    for (mut tile, transform, tile_entity) in tiles.iter_mut() {
-        let tile_x = ((transform.translation.x + half_map_size) / TILE_SIZE).floor() as isize;
-        let tile_y = ((transform.translation.y + half_map_size) / TILE_SIZE).floor() as isize;
+    for (mut tile, transform) in tiles.iter_mut() {
+        if let Some(square) = tile.square {
+            let tile_x = ((transform.translation.x + half_map_size) / TILE_SIZE).floor() as isize;
+            let tile_y = ((transform.translation.y + half_map_size) / TILE_SIZE).floor() as isize;
 
-        if tile_x >= 0
-            && tile_x < GRID_SIZE as isize
-            && tile_y >= 0
-            && tile_y < GRID_SIZE as isize
-            && tiles_to_clear.contains(&(tile_x as usize, tile_y as usize))
-        {
-            let entiry = tile_entity.iter().next().unwrap();
-            commands.entity(*entiry).despawn();
-            tile.is_free = true;
-            info!("Cleared tile at ({}, {})", tile_x, tile_y);
+            if tile_x >= 0
+                && tile_x < GRID_SIZE as isize
+                && tile_y >= 0
+                && tile_y < GRID_SIZE as isize
+                && tiles_to_clear.contains(&(tile_x as usize, tile_y as usize))
+            {
+                commands.entity(square).despawn();
+                tile.square = None;
+                info!("Cleared tile at ({}, {})", tile_x, tile_y);
+            }
         }
     }
 }
@@ -141,21 +142,16 @@ mod tests {
     fn build_grid_works() {
         let mut world = World::new();
 
+        let entity = world.spawn(()).id();
         world.spawn((
             Tile {
-                is_free: false,
+                square: Some(entity),
                 ..default()
             },
             Transform::from_xyz(0.0, 0.0, 0.0),
         ));
 
-        world.spawn((
-            Tile {
-                is_free: true,
-                ..default()
-            },
-            Transform::from_xyz(TILE_SIZE, 0.0, 0.0),
-        ));
+        world.spawn((Tile::default(), Transform::from_xyz(TILE_SIZE, 0.0, 0.0)));
 
         let mut tiles = world.query::<(&Tile, &Transform)>();
         let grid = build_grid(tiles.iter(&world));

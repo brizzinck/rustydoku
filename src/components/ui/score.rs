@@ -33,6 +33,6 @@ pub fn spawn_text_score(mut commands: Commands) {
 
 pub fn update_text_score(score: Res<Score>, mut query: Query<&mut Text, With<ScoreText>>) {
     for mut span in &mut query {
-        **span = format!("{}", score.value);
+        **span = (*score).value.to_string();
     }
 }

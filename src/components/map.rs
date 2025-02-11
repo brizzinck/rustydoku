@@ -14,7 +14,7 @@ const COLOR_DARK: Color = Color::srgb(0.5, 0.5, 0.5);
 #[cfg_attr(feature = "debug-inspector", reflect(Component, InspectorOptions))]
 pub struct Tile {
     pub(crate) default_color: Color,
-    pub(crate) is_free: bool,
+    pub(crate) square: Option<Entity>,
 }
 
 pub(crate) fn generate_map(mut commands: Commands) {
@@ -36,7 +36,7 @@ pub(crate) fn generate_map(mut commands: Commands) {
                 Transform::from_xyz(x as f32 * TILE_SIZE, y as f32 * TILE_SIZE, 0.),
                 Tile {
                     default_color: color,
-                    is_free: true,
+                    square: None,
                 },
             ));
         }

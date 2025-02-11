@@ -3,6 +3,7 @@ use bevy::prelude::*;
 #[cfg(feature = "debug-inspector")]
 use bevy_inspector_egui::quick::WorldInspectorPlugin;
 
+use rustydoku::events::figures::Placing;
 use rustydoku::plugins::default::RustydokuDefault;
 use rustydoku::plugins::game_zone::GameZonePlugin;
 use rustydoku::plugins::logic::RustydokuLogicPlugin;
@@ -10,6 +11,7 @@ use rustydoku::plugins::ui::RustydokuUIPlugin;
 use rustydoku::plugins::{camera::CameraPlugin, figure::FigurePlugin, map::MapPlugin};
 use rustydoku::resource::figure_spawner::FigureSpawner;
 use rustydoku::resource::score::Score;
+use rustydoku::resource::state_figure::StateFigure;
 
 fn main() {
     let mut game = App::new();
@@ -27,6 +29,9 @@ fn main() {
     game.insert_resource(ClearColor(Color::srgb(0.9, 0.9, 0.3)));
     game.insert_resource(Score::default());
     game.insert_resource(FigureSpawner::default());
+    game.insert_resource(StateFigure::default());
+
+    game.add_event::<Placing>();
 
     game.run();
 }

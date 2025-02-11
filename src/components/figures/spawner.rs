@@ -1,4 +1,4 @@
-use super::{big_t_shape, cube, square, start_dragging, t_shape, Figure, FigureBounds, FigureType};
+use super::{big_t_shape, cube, square, start_dragging, t_shape, Figure, FigureBounds};
 use bevy::prelude::*;
 use rand::Rng;
 
@@ -13,7 +13,7 @@ pub(crate) fn random_spawn_figure(commands: &mut Commands, position: Vec2) -> En
     }
 }
 
-pub(super) fn spawn_empty_figure(
+pub fn spawn_empty_figure(
     commands: &mut Commands,
     position: Vec2,
     squares_position: &[Vec2],
@@ -41,8 +41,6 @@ pub(super) fn spawn_empty_figure(
 
     commands
         .spawn((
-            FigureType::TShape,
-            Figure::default(),
             Transform {
                 translation: Vec3::new(position.x, position.y, 1.),
                 rotation,
@@ -57,4 +55,24 @@ pub(super) fn spawn_empty_figure(
         ))
         .observe(start_dragging)
         .id()
+}
+
+pub(super) fn spawn_figure(
+    commands: &mut Commands,
+    position: Vec2,
+    squares_position: &[Vec2],
+) -> Entity {
+    let parent = spawn_empty_figure(commands, position, squares_position);
+    let mut figure = Figure {
+        squares: Vec::with_capacity(squares_position.len()),
+    };
+
+    for &offset in squares_position.iter() {
+        let child = square::spawn_child(commands, parent, offset);
+        figure.squares.push(child);
+    }
+
+    commands.entity(parent).insert(figure);
+
+    parent
 }

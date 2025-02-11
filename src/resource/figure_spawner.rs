@@ -1,6 +1,9 @@
-use bevy::prelude::*;
+use bevy::{prelude::*, utils::HashSet};
 
-use crate::components::{figures::spawner::random_spawn_figure, map::TILE_SIZE};
+use crate::{
+    components::{figures::spawner::random_spawn_figure, map::TILE_SIZE},
+    events::figures::Placing,
+};
 
 const SIZE: usize = 3;
 
@@ -12,21 +15,29 @@ const FIGURE_POSITIONS: [(f32, f32); SIZE] = [
 
 #[derive(Resource, Default)]
 pub struct FigureSpawner {
-    pub figures: u32,
-}
-
-impl FigureSpawner {
-    pub fn remove(&mut self) {
-        self.figures -= 1;
-    }
+    pub figures: HashSet<Entity>,
 }
 
 pub fn spawn_figures(mut commands: Commands, mut figure_spawner: ResMut<FigureSpawner>) {
-    if figure_spawner.figures == 0 {
-        for &position in FIGURE_POSITIONS.iter() {
-            let _ = random_spawn_figure(&mut commands, Vec2::new(position.0, position.1));
-
-            figure_spawner.figures += 1;
+    if figure_spawner.figures.is_empty() {
+        for &_ in FIGURE_POSITIONS.iter() {
+            for &position in FIGURE_POSITIONS.iter() {
+                figure_spawner.figures.insert(random_spawn_figure(
+                    &mut commands,
+                    Vec2::new(position.0, position.1),
+                ));
+            }
         }
+    }
+}
+
+pub fn despawn_figures(
+    mut commands: Commands,
+    mut figure_spawner: ResMut<FigureSpawner>,
+    mut event: EventReader<Placing>,
+) {
+    if let Some(entity) = event.read().last() {
+        commands.entity(entity.0).despawn();
+        figure_spawner.figures.remove(&entity.0);
     }
 }
