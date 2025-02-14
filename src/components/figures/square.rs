@@ -12,24 +12,37 @@ pub struct Square {
     pub(super) parent: Option<Entity>,
 }
 
-pub(super) fn spawn(commands: &mut Commands, position: Vec2) -> Entity {
-    let parent = spawn_empty_figure(commands, position, &[Vec2::new(0., 0.)]);
-    let child = spawn_child(commands, parent, Vec2::new(0., 0.));
+pub(super) fn spawn(commands: &mut Commands, position: Vec2, assets: &Res<AssetServer>) -> Entity {
+    let (parent, rotation) = spawn_empty_figure(commands, position, &[Vec2::new(0., 0.)]);
+    let child = spawn_child(commands, parent, Vec2::new(0., 0.), rotation, &assets);
+
     commands.entity(parent).insert(Figure {
         squares: vec![child],
     });
     commands.entity(parent).insert(Name::new("square"));
+
     parent
 }
 
-pub(super) fn spawn_child(commands: &mut Commands, parent: Entity, position: Vec2) -> Entity {
+pub(super) fn spawn_child(
+    commands: &mut Commands,
+    parent: Entity,
+    position: Vec2,
+    rotation: Quat,
+    assets: &Res<AssetServer>,
+) -> Entity {
     let child = commands
         .spawn((
             Sprite {
+                image: assets.load("ferris.png"),
                 custom_size: Some(Vec2::new(SQUARE_SIZE, SQUARE_SIZE)),
                 ..Default::default()
             },
-            Transform::from_xyz(position.x * SQUARE_SIZE, position.y * SQUARE_SIZE, 1.0),
+            Transform {
+                translation: Vec3::new(position.x * SQUARE_SIZE, position.y * SQUARE_SIZE, 1.0),
+                rotation: rotation.inverse(),
+                ..Default::default()
+            },
             Square {
                 parent: Some(parent),
             },

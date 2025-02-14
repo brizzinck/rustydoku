@@ -1,7 +1,7 @@
 use super::spawner::spawn_figure;
 use bevy::prelude::*;
 
-pub fn spawn(commands: &mut Commands, position: Vec2) -> Entity {
+pub fn spawn(commands: &mut Commands, position: Vec2, assets: &Res<AssetServer>) -> Entity {
     spawn_figure(
         commands,
         position,
@@ -12,5 +12,6 @@ pub fn spawn(commands: &mut Commands, position: Vec2) -> Entity {
             Vec2::new(0.5, -0.5),
         ],
         "cube",
+        assets,
     )
 }

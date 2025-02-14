@@ -17,15 +17,18 @@ pub struct FigureSpawner {
     pub figures: HashSet<Entity>,
 }
 
-pub fn spawn_figures(mut commands: Commands, mut figure_spawner: ResMut<FigureSpawner>) {
+pub fn spawn_figures(
+    mut commands: Commands,
+    mut figure_spawner: ResMut<FigureSpawner>,
+    assets: Res<AssetServer>,
+) {
     if figure_spawner.figures.is_empty() {
-        for &_position in FIGURE_POSITIONS.iter() {
-            for &position in FIGURE_POSITIONS.iter() {
-                figure_spawner.figures.insert(random_spawn_figure(
-                    &mut commands,
-                    Vec2::new(position.0, position.1),
-                ));
-            }
+        for &position in FIGURE_POSITIONS.iter() {
+            figure_spawner.figures.insert(random_spawn_figure(
+                &mut commands,
+                Vec2::new(position.0, position.1),
+                &assets,
+            ));
         }
     }
 }
@@ -35,19 +38,25 @@ pub fn despawn_figures(
     mut figure_spawner: ResMut<FigureSpawner>,
     state: Res<State<StateGame>>,
     mut next_state: ResMut<NextState<StateGame>>,
+    assets: Res<AssetServer>,
 ) {
     if let StateGame::Placed(entity) = state.get() {
         commands.entity(*entity).despawn();
         figure_spawner.figures.remove(entity);
-        spawn_figures(commands, figure_spawner);
+        spawn_figures(commands, figure_spawner, assets);
         next_state.set(StateGame::CheckCombo);
     }
 }
 
-pub fn restart_figures(commands: &mut Commands, mut figure_spawner: ResMut<FigureSpawner>) {
+pub fn restart_figures(
+    commands: &mut Commands,
+    mut figure_spawner: ResMut<FigureSpawner>,
+    assets: Res<AssetServer>,
+) {
     for entity in figure_spawner.figures.iter() {
         commands.entity(*entity).despawn_recursive();
     }
     figure_spawner.figures.clear();
-    spawn_figures(commands.reborrow(), figure_spawner);
+
+    spawn_figures(commands.reborrow(), figure_spawner, assets);
 }
