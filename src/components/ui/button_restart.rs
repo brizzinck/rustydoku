@@ -1,31 +1,44 @@
 use crate::states::StateGame;
 use bevy::prelude::*;
 
-pub fn spawn_button_restart(mut commands: Commands) {
+pub fn spawn_button_restart_top(mut commands: Commands) {
     commands
         .spawn((
             Button,
             Node {
-                width: Val::Px(150.0),
-                height: Val::Px(65.0),
-                border: UiRect::all(Val::Px(5.0)),
+                width: Val::Px(50.0),
+                height: Val::Px(50.0),
+                border: UiRect::all(Val::Px(1.0)),
                 position_type: PositionType::Absolute,
-                top: Val::Px(100.),
+                top: Val::Px(10.),
                 right: Val::Px(10.),
                 ..default()
             },
             BorderColor(Color::BLACK),
-            BackgroundColor(Color::srgb(0.15, 0.15, 0.15)),
+            BackgroundColor(Color::srgb(0.85, 0.15, 0.15)),
             RestartButton,
         ))
-        .with_child((
-            Text::new("Button"),
-            TextFont {
-                font_size: 33.0,
+        .with_child(ImageNode::default());
+}
+
+pub fn spawn_button_restart(commands: &mut ChildBuilder) {
+    commands
+        .spawn((
+            Button,
+            Node {
+                width: Val::Px(50.0),
+                height: Val::Px(50.0),
+                border: UiRect::all(Val::Px(1.0)),
+                position_type: PositionType::Absolute,
+                top: Val::Px(10.),
+                right: Val::Px(10.),
                 ..default()
             },
-            TextColor(Color::srgb(0.9, 0.9, 0.9)),
-        ));
+            BorderColor(Color::BLACK),
+            BackgroundColor(Color::srgb(0.85, 0.15, 0.15)),
+            RestartButton,
+        ))
+        .with_child(ImageNode::default());
 }
 
 pub fn handle_restart_button(

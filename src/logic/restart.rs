@@ -1,5 +1,8 @@
 use crate::{
-    components::map::{restart_tiles, Tile},
+    components::{
+        map::{restart_tiles, Tile},
+        ui::game_over::{despawn_game_over_panel, GameOverPanel},
+    },
     resource::{
         figure_spawner::{restart_figures, FigureSpawner},
         score::{restart_score, Score},
@@ -14,10 +17,14 @@ pub fn restart(
     figure_spawner: ResMut<FigureSpawner>,
     score: ResMut<Score>,
     tiles: Query<&mut Tile>,
+    game_over_ui: Query<Entity, With<GameOverPanel>>,
 ) {
+    info!("Restarting game");
+
     restart_figures(&mut commands, figure_spawner);
     restart_score(score);
     restart_tiles(&mut commands, tiles);
+    despawn_game_over_panel(&mut commands, game_over_ui);
 
     next_state.set(StateGame::Idle);
 }

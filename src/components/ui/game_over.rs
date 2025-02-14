@@ -1,59 +1,44 @@
 use bevy::prelude::*;
 
+use super::button_restart::spawn_button_restart;
+
 pub struct GameOverPlugin;
 
-fn _spawn_game_over_ui(mut commands: Commands) {
+pub fn spawn_game_over_ui(mut commands: Commands) {
     commands
-        .spawn((Node {
-            position_type: PositionType::Absolute,
-            left: Val::Percent(25.),
-            right: Val::Percent(25.),
-            top: Val::Percent(30.),
-            bottom: Val::Percent(30.),
-            flex_direction: FlexDirection::Column,
-            justify_content: JustifyContent::Center,
-            align_items: AlignItems::Center,
-            ..default()
-        },))
+        .spawn((
+            Node {
+                position_type: PositionType::Absolute,
+                left: Val::Percent(25.),
+                right: Val::Percent(25.),
+                top: Val::Percent(30.),
+                bottom: Val::Percent(30.),
+                flex_direction: FlexDirection::Column,
+                justify_content: JustifyContent::Center,
+                align_items: AlignItems::Center,
+                ..default()
+            },
+            BackgroundColor(Srgba::new(0.0, 0.0, 0.0, 0.5).into()),
+            GameOverPanel,
+        ))
         .with_children(|parent| {
             parent.spawn((
-                Text::new("GAME OVER: "),
+                Text::new("YOU CAN'T PLACE NEW RUSTY :("),
                 TextFont {
-                    font_size: 57.0,
+                    font_size: 27.0,
                     ..default()
                 },
+                TextColor(Color::WHITE),
             ));
 
-            parent
-                .spawn((
-                    Button,
-                    Node {
-                        margin: UiRect::all(Val::Px(10.)),
-                        padding: UiRect::all(Val::Px(10.)),
-                        border: UiRect::all(Val::Px(2.)),
-                        justify_content: JustifyContent::Center,
-                        align_items: AlignItems::Center,
-                        ..default()
-                    },
-                    RestartButton,
-                ))
-                .with_children(|button| {
-                    button.spawn((
-                        Text::new("Restart: "),
-                        TextFont {
-                            font_size: 57.0,
-                            ..default()
-                        },
-                    ));
-                });
+            spawn_button_restart(parent);
         });
 }
 
 #[derive(Component)]
-#[allow(dead_code)]
-struct RestartButton;
+pub struct GameOverPanel;
 
-fn _cleanup_game_over_ui(mut commands: Commands, query: Query<Entity>) {
+pub fn despawn_game_over_panel(commands: &mut Commands, query: Query<Entity, With<GameOverPanel>>) {
     for entity in query.iter() {
         commands.entity(entity).despawn_recursive();
     }
