@@ -1,3 +1,4 @@
+use crate::states::StateGame;
 use bevy::prelude::*;
 
 pub fn spawn_button_restart(mut commands: Commands) {
@@ -29,10 +30,12 @@ pub fn spawn_button_restart(mut commands: Commands) {
 
 pub fn handle_restart_button(
     mut interaction_query: Query<&Interaction, (Changed<Interaction>, With<RestartButton>)>,
+    mut state: ResMut<NextState<StateGame>>,
 ) {
     for interaction in &mut interaction_query {
         if *interaction == Interaction::Pressed {
             info!("restart button pressed");
+            state.set(StateGame::Restart);
             break;
         }
     }

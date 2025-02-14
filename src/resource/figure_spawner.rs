@@ -43,3 +43,11 @@ pub fn despawn_figures(
         next_state.set(StateGame::CheckCombo);
     }
 }
+
+pub fn restart_figures(commands: &mut Commands, mut figure_spawner: ResMut<FigureSpawner>) {
+    for entity in figure_spawner.figures.iter() {
+        commands.entity(*entity).despawn_recursive();
+    }
+    figure_spawner.figures.clear();
+    spawn_figures(commands.reborrow(), figure_spawner);
+}

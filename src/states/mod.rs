@@ -11,4 +11,5 @@ pub enum StateGame {
     CheckCombo,
     CheckGameOver,
     GameOver,
+    Restart,
 }
