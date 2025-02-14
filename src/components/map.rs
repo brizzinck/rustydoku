@@ -1,11 +1,13 @@
-use bevy::prelude::*;
+use bevy::{prelude::*, utils::HashMap};
 #[cfg(feature = "debug-inspector")]
 use bevy_inspector_egui::prelude::*;
 use std::ops::RangeInclusive;
 
+use crate::{resource::map::Map, states::StateGame};
+
 pub const MAP_SIZE: i8 = 9;
 pub const TILE_SIZE: f32 = 40.0;
-const MAP_SPAWN_POS: RangeInclusive<i8> = (-MAP_SIZE / 2)..=(MAP_SIZE / 2);
+pub const MAP_SPAWN_POS: RangeInclusive<i8> = (-MAP_SIZE / 2)..=(MAP_SIZE / 2);
 const COLOR_LIGHT: Color = Color::srgb(0.9, 0.9, 0.9);
 const COLOR_DARK: Color = Color::srgb(0.5, 0.5, 0.5);
 
@@ -17,7 +19,20 @@ pub struct Tile {
     pub(crate) square: Option<Entity>,
 }
 
-pub(crate) fn generate_map(mut commands: Commands) {
+pub(crate) fn generate_map(
+    mut commands: Commands,
+    mut map: ResMut<Map>,
+    mut next_state: ResMut<NextState<StateGame>>,
+) {
+    let parent = commands
+        .spawn((
+            Name::new("Map"),
+            Transform::from_translation(Vec3::ZERO),
+            Sprite::default(),
+        ))
+        .id();
+
+    let mut hash_titles = HashMap::with_capacity(MAP_SIZE as usize * MAP_SIZE as usize);
     for x in MAP_SPAWN_POS {
         for y in MAP_SPAWN_POS {
             let color = if (x + y) % 2 == 0 {
@@ -26,19 +41,31 @@ pub(crate) fn generate_map(mut commands: Commands) {
                 COLOR_LIGHT
             };
 
-            commands.spawn((
-                Name::new(format!("Tile ({}, {})", x, y)),
-                Sprite {
-                    color,
-                    custom_size: Some(Vec2::new(TILE_SIZE, TILE_SIZE)),
-                    ..default()
-                },
-                Transform::from_xyz(x as f32 * TILE_SIZE, y as f32 * TILE_SIZE, 0.),
-                Tile {
-                    default_color: color,
-                    square: None,
-                },
-            ));
+            let transform = Vec3::new(x as f32 * TILE_SIZE, y as f32 * TILE_SIZE, 0.);
+            let tile = commands
+                .spawn((
+                    Name::new(format!("Tile ({}, {})", x, y)),
+                    Sprite {
+                        color,
+                        custom_size: Some(Vec2::new(TILE_SIZE, TILE_SIZE)),
+                        ..default()
+                    },
+                    Transform::from_translation(transform),
+                    GlobalTransform::default(),
+                    InheritedVisibility::default(),
+                    Tile {
+                        default_color: color,
+                        square: None,
+                    },
+                ))
+                .set_parent(parent)
+                .id();
+
+            hash_titles.insert((transform.x as i32, transform.y as i32), tile);
         }
     }
+
+    map.0 = hash_titles;
+
+    next_state.set(StateGame::Idle);
 }

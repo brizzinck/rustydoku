@@ -1,9 +1,8 @@
-use bevy::{prelude::*, utils::HashSet};
-
 use crate::{
     components::{figures::spawner::random_spawn_figure, map::TILE_SIZE},
-    events::figures::Placing,
+    states::StateGame,
 };
+use bevy::{prelude::*, utils::HashSet};
 
 const SIZE: usize = 3;
 
@@ -20,7 +19,7 @@ pub struct FigureSpawner {
 
 pub fn spawn_figures(mut commands: Commands, mut figure_spawner: ResMut<FigureSpawner>) {
     if figure_spawner.figures.is_empty() {
-        for &_ in FIGURE_POSITIONS.iter() {
+        for &_position in FIGURE_POSITIONS.iter() {
             for &position in FIGURE_POSITIONS.iter() {
                 figure_spawner.figures.insert(random_spawn_figure(
                     &mut commands,
@@ -34,10 +33,13 @@ pub fn spawn_figures(mut commands: Commands, mut figure_spawner: ResMut<FigureSp
 pub fn despawn_figures(
     mut commands: Commands,
     mut figure_spawner: ResMut<FigureSpawner>,
-    mut event: EventReader<Placing>,
+    state: Res<State<StateGame>>,
+    mut next_state: ResMut<NextState<StateGame>>,
 ) {
-    if let Some(entity) = event.read().last() {
-        commands.entity(entity.0).despawn();
-        figure_spawner.figures.remove(&entity.0);
+    if let StateGame::Placed(entity) = state.get() {
+        commands.entity(*entity).despawn();
+        figure_spawner.figures.remove(entity);
+        spawn_figures(commands, figure_spawner);
+        next_state.set(StateGame::CheckCombo);
     }
 }

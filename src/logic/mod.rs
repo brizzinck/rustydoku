@@ -1,2 +1,2 @@
 pub mod check_combo;
-pub mod check_gameover;
+pub mod check_game_over;

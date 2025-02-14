@@ -8,7 +8,7 @@ pub struct RustydokuUIPlugin;
 
 impl Plugin for RustydokuUIPlugin {
     fn build(&self, app: &mut App) {
-        app.add_systems(Startup, (spawn_text_score, spawn_button_restart)); // Create UI
-        app.add_systems(Update, (update_text_score, handle_restart_button)); // Update score text when score changes
+        app.add_systems(Startup, (spawn_text_score, spawn_button_restart));
+        app.add_systems(Update, (update_text_score, handle_restart_button));
     }
 }

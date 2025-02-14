@@ -1,6 +1,7 @@
 use crate::{
     components::map::{Tile, MAP_SIZE, TILE_SIZE},
     resource::score::Score,
+    states::StateGame,
 };
 use bevy::prelude::*;
 
@@ -11,16 +12,22 @@ pub fn check_combination(
     mut commands: Commands,
     mut tiles: Query<(&mut Tile, &Transform)>,
     mut score: ResMut<Score>,
+    state: Res<State<StateGame>>,
+    mut next_state: ResMut<NextState<StateGame>>,
 ) {
-    let grid = build_grid(tiles.iter());
-    let mut tiles_to_clear = Vec::new();
+    if StateGame::CheckCombo == *state.get() {
+        let grid = build_grid(tiles.iter());
+        let mut tiles_to_clear = Vec::new();
 
-    check_horizontal(&grid, &mut tiles_to_clear);
-    check_vertical(&grid, &mut tiles_to_clear);
-    check_blocks(&grid, &mut tiles_to_clear);
+        check_horizontal(&grid, &mut tiles_to_clear);
+        check_vertical(&grid, &mut tiles_to_clear);
+        check_blocks(&grid, &mut tiles_to_clear);
 
-    update_score(score.as_mut(), &tiles_to_clear);
-    clear_tiles(&mut tiles, &mut commands, &tiles_to_clear);
+        update_score(score.as_mut(), &tiles_to_clear);
+        clear_tiles(&mut tiles, &mut commands, &tiles_to_clear);
+
+        next_state.set(StateGame::CheckGameOver);
+    }
 }
 
 /// Builds a 9x9 grid representation from the tile states

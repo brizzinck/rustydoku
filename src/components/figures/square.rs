@@ -1,7 +1,7 @@
-use super::{spawner::spawn_empty_figure, Figure, FigureType};
+use super::{spawner::spawn_empty_figure, Figure};
 use crate::{
     components::map::{Tile, TILE_SIZE},
-    resource::state_figure::StateFigure,
+    states::StateGame,
 };
 use bevy::prelude::*;
 
@@ -18,8 +18,8 @@ pub(super) fn spawn(commands: &mut Commands, position: Vec2) -> Entity {
     commands.entity(parent).insert(Figure {
         squares: vec![child],
     });
-    commands.entity(parent).insert(FigureType::Square);
-    child
+    commands.entity(parent).insert(Name::new("square"));
+    parent
 }
 
 pub(super) fn spawn_child(commands: &mut Commands, parent: Entity, position: Vec2) -> Entity {
@@ -44,20 +44,20 @@ pub(crate) fn highlight(
     mut tile_query: Query<(&Tile, &mut Sprite, &GlobalTransform, Entity)>,
     figure_query: Query<&Figure>,
     mut square_query: Query<(Entity, &GlobalTransform, &mut Square)>,
-    state_figure: ResMut<StateFigure>,
+    current_state: Res<State<StateGame>>,
 ) {
     for (tile, mut sprite, _, _) in tile_query.iter_mut() {
         sprite.color = tile.default_color;
     }
 
-    if let StateFigure::Dragging(figure) = *state_figure {
+    if let StateGame::Dragging(figure) = current_state.get() {
         let all_tiles = tile_query
             .iter()
             .map(|(tile, _, transform, entity)| (tile, transform, entity))
             .collect::<Vec<_>>();
 
         let mut highlight_tiles = vec![];
-        if let Ok(figure) = figure_query.get(figure) {
+        if let Ok(figure) = figure_query.get(*figure) {
             for &square_entity in figure.squares.iter() {
                 if let Ok((_, square_transform, _)) = square_query.get_mut(square_entity) {
                     if let Some(tile_entity) = check_for_place(square_transform, &all_tiles) {

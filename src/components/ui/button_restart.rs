@@ -33,6 +33,7 @@ pub fn handle_restart_button(
     for interaction in &mut interaction_query {
         if *interaction == Interaction::Pressed {
             info!("restart button pressed");
+            break;
         }
     }
 }

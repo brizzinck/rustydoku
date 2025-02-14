@@ -1,14 +1,15 @@
-use super::{big_t_shape, cube, square, start_dragging, t_shape, Figure, FigureBounds};
+use super::{big_t_shape, cube, line, square, start_dragging, t_shape, Figure, FigureBounds};
 use bevy::prelude::*;
 use rand::Rng;
 
 pub(crate) fn random_spawn_figure(commands: &mut Commands, position: Vec2) -> Entity {
     let mut rng = rand::thread_rng();
-    match rng.gen_range(0..4) {
+    match rng.gen_range(0..5) {
         0 => cube::spawn(commands, position),
         1 => square::spawn(commands, position),
         2 => t_shape::spawn(commands, position),
         3 => big_t_shape::spawn(commands, position),
+        4 => line::spawn(commands, position),
         _ => cube::spawn(commands, position),
     }
 }
@@ -61,6 +62,7 @@ pub(super) fn spawn_figure(
     commands: &mut Commands,
     position: Vec2,
     squares_position: &[Vec2],
+    name: &'static str,
 ) -> Entity {
     let parent = spawn_empty_figure(commands, position, squares_position);
     let mut figure = Figure {
@@ -73,6 +75,7 @@ pub(super) fn spawn_figure(
     }
 
     commands.entity(parent).insert(figure);
+    commands.entity(parent).insert(Name::new(name));
 
     parent
 }
