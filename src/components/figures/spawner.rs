@@ -50,7 +50,7 @@ pub fn spawn_empty_figure(
                 Transform {
                     translation: Vec3::new(position.x, position.y, 1.),
                     rotation,
-                    ..Default::default()
+                    scale: Vec3::ONE,
                 },
                 FigureBounds {
                     min: bounds_min,
@@ -78,7 +78,7 @@ pub(super) fn spawn_figure(
     };
 
     for &offset in squares_position.iter() {
-        let child = square::spawn_child(commands, parent, offset, rotation, &assets);
+        let child = square::spawn_child(commands, parent, offset, rotation, assets);
         figure.squares.push(child);
     }
 

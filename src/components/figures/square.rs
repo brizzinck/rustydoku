@@ -14,7 +14,7 @@ pub struct Square {
 
 pub(super) fn spawn(commands: &mut Commands, position: Vec2, assets: &Res<AssetServer>) -> Entity {
     let (parent, rotation) = spawn_empty_figure(commands, position, &[Vec2::new(0., 0.)]);
-    let child = spawn_child(commands, parent, Vec2::new(0., 0.), rotation, &assets);
+    let child = spawn_child(commands, parent, Vec2::new(0., 0.), rotation, assets);
 
     commands.entity(parent).insert(Figure {
         squares: vec![child],
@@ -55,7 +55,7 @@ pub(super) fn spawn_child(
 
 pub(crate) fn highlight(
     mut tile_query: Query<(&Tile, &mut Sprite, &GlobalTransform, Entity)>,
-    figure_query: Query<&Figure>,
+    figure_query: Query<(&Figure, &Transform)>,
     mut square_query: Query<(Entity, &GlobalTransform, &mut Square)>,
     current_state: Res<State<StateGame>>,
 ) {
@@ -70,7 +70,10 @@ pub(crate) fn highlight(
             .collect::<Vec<_>>();
 
         let mut highlight_tiles = vec![];
-        if let Ok(figure) = figure_query.get(*figure) {
+        if let Ok((figure, transform)) = figure_query.get(*figure) {
+            if transform.scale.x < 1. {
+                return;
+            }
             for &square_entity in figure.squares.iter() {
                 if let Ok((_, square_transform, _)) = square_query.get_mut(square_entity) {
                     if let Some(tile_entity) = check_for_place(square_transform, &all_tiles) {

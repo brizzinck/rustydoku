@@ -45,7 +45,7 @@ pub(crate) fn generate_map(
             let transform = Vec3::new(x as f32 * TILE_SIZE, y as f32 * TILE_SIZE, 0.);
             let tile = commands
                 .spawn((
-                    Name::new(format!("Tile ({}, {})", x, y)),
+                    Name::new(format!("Tile ({}, {})", transform.x, transform.y)),
                     Sprite {
                         color,
                         custom_size: Some(Vec2::new(TILE_SIZE, TILE_SIZE)),

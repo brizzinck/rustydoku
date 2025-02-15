@@ -1,11 +1,16 @@
 use crate::{
-    components::{figures::spawner::random_spawn_figure, map::TILE_SIZE},
+    components::{
+        figures::{spawner::random_spawn_figure, Figure},
+        map::TILE_SIZE,
+    },
     states::StateGame,
 };
-use bevy::{prelude::*, utils::HashSet};
+use bevy::{
+    prelude::*,
+    utils::{HashMap, HashSet},
+};
 
 const SIZE: usize = 3;
-
 const FIGURE_POSITIONS: [(f32, f32); SIZE] = [
     (TILE_SIZE * 3.45, TILE_SIZE * -7.),
     (0., TILE_SIZE * -7.),
@@ -14,7 +19,85 @@ const FIGURE_POSITIONS: [(f32, f32); SIZE] = [
 
 #[derive(Resource, Default)]
 pub struct FigureSpawner {
-    pub figures: HashSet<Entity>,
+    pub figures: HashMap<Entity, Vec3>,
+    pub lerp_figures: HashSet<Entity>,
+}
+
+impl FigureSpawner {
+    pub fn add_lerp_figure(&mut self, entity: Entity) {
+        self.lerp_figures.insert(entity);
+    }
+
+    pub fn remove_lerp_figure(&mut self, entity: Entity) {
+        self.lerp_figures.remove(&entity);
+    }
+}
+
+pub fn lerping_figures(
+    mut figure_spawner: ResMut<FigureSpawner>,
+    mut figures: Query<(&Figure, &mut Transform)>,
+    time: Res<Time>,
+) {
+    let mut to_remove = Vec::new();
+    for entity in figure_spawner.lerp_figures.iter() {
+        if let Ok((_figure, mut transform)) = figures.get_mut(*entity) {
+            let mut remove = true;
+            if let Some(position) = figure_spawner.figures.get(entity) {
+                transform.translation = transform
+                    .translation
+                    .lerp(*position, time.delta_secs() * 8.0);
+
+                if transform.translation.distance(*position) < 0.01 {
+                    transform.translation = *position;
+                } else {
+                    remove = false;
+                }
+            }
+            transform.scale = transform
+                .scale
+                .lerp(Vec3::splat(0.6), time.delta_secs() * 8.0);
+
+            if transform.scale.distance(Vec3::splat(0.6)) < 0.01 {
+                transform.scale = Vec3::splat(0.6);
+            } else {
+                remove = false;
+            }
+
+            if remove {
+                to_remove.push(*entity);
+            }
+        }
+    }
+
+    figure_spawner
+        .lerp_figures
+        .retain(|entity| !to_remove.contains(entity));
+}
+
+pub fn spawn_zone_figures(mut commands: Commands) {
+    let parent = commands
+        .spawn((
+            Name::new("Figure Zone"),
+            Transform::from_translation(Vec3::new(0., 0., 0.)),
+            InheritedVisibility::default(),
+        ))
+        .id();
+
+    for &position in FIGURE_POSITIONS.iter() {
+        commands.entity(parent).with_children(|parent| {
+            parent.spawn((
+                Sprite {
+                    custom_size: Some(Vec2::new(
+                        (TILE_SIZE * 3. + 10.) * 0.6,
+                        (TILE_SIZE * 3. + 10.) * 0.6,
+                    )),
+                    color: Color::srgb(0.0, 0.0, 0.0),
+                    ..Default::default()
+                },
+                Transform::from_translation(Vec3::new(position.0, position.1, 0.)),
+            ));
+        });
+    }
 }
 
 pub fn spawn_figures(
@@ -23,12 +106,11 @@ pub fn spawn_figures(
     assets: Res<AssetServer>,
 ) {
     if figure_spawner.figures.is_empty() {
-        for &position in FIGURE_POSITIONS.iter() {
-            figure_spawner.figures.insert(random_spawn_figure(
-                &mut commands,
-                Vec2::new(position.0, position.1),
-                &assets,
-            ));
+        for &position in FIGURE_POSITIONS.iter().take(1) {
+            figure_spawner.figures.insert(
+                random_spawn_figure(&mut commands, Vec2::new(position.0, position.1), &assets),
+                Vec3::new(position.0, position.1, 0.),
+            );
         }
     }
 }
@@ -53,7 +135,7 @@ pub fn restart_figures(
     mut figure_spawner: ResMut<FigureSpawner>,
     assets: Res<AssetServer>,
 ) {
-    for entity in figure_spawner.figures.iter() {
+    for (entity, _) in figure_spawner.figures.iter() {
         commands.entity(*entity).despawn_recursive();
     }
     figure_spawner.figures.clear();

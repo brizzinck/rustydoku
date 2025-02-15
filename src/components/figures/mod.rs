@@ -1,5 +1,8 @@
 use super::map::{Tile, TILE_SIZE};
-use crate::{resource::game_zone::GameZone, states::StateGame};
+use crate::{
+    resource::{figure_spawner::FigureSpawner, game_zone::GameZone},
+    states::StateGame,
+};
 use bevy::{prelude::*, window::PrimaryWindow};
 use square::{check_for_place, Square};
 
@@ -49,6 +52,7 @@ pub(crate) fn start_dragging(
     }
 }
 
+#[allow(clippy::too_many_arguments)]
 pub(crate) fn dragging(
     mut figure_query: Query<(&mut Transform, &Figure, &FigureBounds)>,
     mouse_button_input: Res<ButtonInput<MouseButton>>,
@@ -57,8 +61,11 @@ pub(crate) fn dragging(
     cameras: Query<(&Camera, &GlobalTransform)>,
     game_zone: Res<GameZone>,
     state_figure: Res<State<StateGame>>,
+    time: Res<Time>,
+    mut figure_spawner: ResMut<FigureSpawner>,
 ) {
     if let StateGame::Dragging(figure) = state_figure.get() {
+        figure_spawner.remove_lerp_figure(*figure);
         let (camera, camera_transform) = cameras.single();
 
         if mouse_button_input.pressed(MouseButton::Left) || touch_input.any_just_pressed() {
@@ -77,10 +84,19 @@ pub(crate) fn dragging(
                         let max_y = game_zone.left_up.y - max_offset.y;
 
                         desired.x = desired.x.clamp(min_x, max_x);
-                        desired.y = desired.y.clamp(min_y, max_y);
+                        desired.y = (desired.y + (55. - bounds.min.y * 10.)).clamp(min_y, max_y);
 
                         transform.translation.x = desired.x;
                         transform.translation.y = desired.y;
+
+                        let target_scale = 1.0;
+                        transform.scale = transform
+                            .scale
+                            .lerp(Vec3::splat(target_scale), time.delta_secs() * 8.0);
+
+                        if transform.scale.x >= 0.99 {
+                            transform.scale = Vec3::splat(target_scale);
+                        }
                     }
                 }
             }
@@ -109,6 +125,7 @@ pub(crate) fn placing(
     mut square_query: Query<(Entity, &GlobalTransform, &mut Transform)>,
     mut tile_query: Query<(&mut Tile, &GlobalTransform, Entity, &mut Sprite)>,
     figure_query: Query<&mut Figure>,
+    mut figure_spawner: ResMut<FigureSpawner>,
 ) {
     if let StateGame::Placing(figure) = current_state.get() {
         let placed = figure;
@@ -130,6 +147,8 @@ pub(crate) fn placing(
 
             if tiles.len() != figure.squares.len() {
                 next_state.set(StateGame::Idle);
+                figure_spawner.add_lerp_figure(*placed);
+                info!("Invalid placement, returning to idle state.");
                 return;
             }
 
