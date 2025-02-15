@@ -119,9 +119,8 @@ pub(crate) fn stop_dragging(
     mut next_state: ResMut<NextState<StateGame>>,
 ) {
     if mouse_input.just_released(MouseButton::Left) || touch_input.any_just_released() {
-        match current_state.get() {
-            StateGame::Dragging(figure) => next_state.set(StateGame::Placing(*figure)),
-            _ => next_state.set(StateGame::Idle),
+        if let StateGame::Dragging(figure) = current_state.get() {
+            next_state.set(StateGame::Placing(*figure));
         }
     }
 }

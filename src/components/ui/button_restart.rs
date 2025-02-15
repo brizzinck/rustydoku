@@ -1,24 +1,37 @@
 use crate::states::StateGame;
 use bevy::prelude::*;
 
-pub fn spawn_button_restart_top(mut commands: Commands) {
+pub fn spawn_button_restart_top(
+    commands: &mut Commands,
+    parent: Entity,
+    assets: &Res<AssetServer>,
+) {
     commands
         .spawn((
             Button,
             Node {
                 width: Val::Px(50.0),
                 height: Val::Px(50.0),
-                border: UiRect::all(Val::Px(1.0)),
-                position_type: PositionType::Absolute,
-                top: Val::Px(10.),
-                right: Val::Px(10.),
+                position_type: PositionType::Relative,
+                margin: UiRect {
+                    right: Val::Px(10.0),
+                    top: Val::Px(20.0),
+                    left: Val::Auto,
+                    bottom: Val::Auto,
+                },
                 ..default()
             },
-            BorderColor(Color::BLACK),
-            BackgroundColor(Color::srgb(0.85, 0.15, 0.15)),
+            ImageNode {
+                image: assets.load("restart_button_back.png"),
+                ..default()
+            },
             RestartButton,
         ))
-        .with_child(ImageNode::default());
+        .with_child(ImageNode {
+            image: assets.load("restart_button.png"),
+            ..default()
+        })
+        .set_parent(parent);
 }
 
 pub fn spawn_button_restart(commands: &mut ChildBuilder, assets: &Res<AssetServer>) {

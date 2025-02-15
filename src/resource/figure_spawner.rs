@@ -2,6 +2,7 @@ use crate::{
     components::{
         figures::{spawner::random_spawn_figure, Figure},
         map::TILE_SIZE,
+        ui::header::HeaderUI,
     },
     states::StateGame,
 };
@@ -21,7 +22,11 @@ const FIGURE_POSITIONS: [(f32, f32); SIZE] = [
 pub struct FigureSpawner {
     pub figures: HashMap<Entity, Vec3>,
     pub lerp_figures: HashSet<Entity>,
+    pub zone: Option<Entity>,
 }
+
+#[derive(Component)]
+pub struct FigureZone;
 
 impl FigureSpawner {
     pub fn add_lerp_figure(&mut self, entity: Entity) {
@@ -79,7 +84,8 @@ pub fn spawn_zone_figures(mut commands: Commands, assets: Res<AssetServer>) {
         .spawn((
             Name::new("Figure Zone"),
             Transform::from_translation(Vec3::new(0., 0., 0.)),
-            InheritedVisibility::default(),
+            Visibility::Inherited,
+            FigureZone,
         ))
         .id();
 
@@ -140,6 +146,28 @@ pub fn restart_figures(
         commands.entity(*entity).despawn_recursive();
     }
     figure_spawner.figures.clear();
-
     spawn_figures(commands.reborrow(), figure_spawner, assets);
+}
+
+pub fn clear_figures(mut commands: Commands, mut figure_spawner: ResMut<FigureSpawner>) {
+    for (entity, _) in figure_spawner.figures.iter() {
+        commands.entity(*entity).despawn_recursive();
+    }
+    figure_spawner.figures.clear();
+}
+
+pub fn hidden_figures(
+    mut visibility: Query<&mut Visibility, (With<FigureZone>, Without<HeaderUI>)>,
+) {
+    for mut vis in visibility.iter_mut() {
+        *vis = Visibility::Hidden;
+    }
+}
+
+pub fn show_figures(
+    visibility: &mut Query<&mut Visibility, (With<FigureZone>, Without<HeaderUI>)>,
+) {
+    for mut vis in visibility.iter_mut() {
+        *vis = Visibility::Visible;
+    }
 }

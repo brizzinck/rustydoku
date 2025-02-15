@@ -12,24 +12,30 @@ pub fn spawn_game_over_ui(
     score.max_value = score.value.max(score.max_value);
 
     commands
-        .spawn(Node {
-            left: Val::Auto,
-            right: Val::Auto,
-            bottom: Val::Auto,
-            position_type: PositionType::Absolute,
-            top: Val::Percent(66.0),
-            width: Val::Percent(132.0),
-            height: Val::Percent(26.0),
-            margin: UiRect {
-                left: Val::Percent(0.0),
-                right: Val::Percent(0.0),
+        .spawn((
+            Node {
+                left: Val::Auto,
+                right: Val::Auto,
+                bottom: Val::Auto,
+                position_type: PositionType::Absolute,
+                top: Val::Percent(120.0),
+                width: Val::Percent(132.0),
+                height: Val::Percent(26.0),
+                margin: UiRect {
+                    left: Val::Percent(0.0),
+                    right: Val::Percent(0.0),
+                    ..default()
+                },
+                max_width: Val::Px(500.0),
+                max_height: Val::Px(255.0),
+                justify_self: JustifySelf::Center,
                 ..default()
             },
-            max_width: Val::Px(500.0),
-            max_height: Val::Px(255.0),
-            justify_self: JustifySelf::Center,
-            ..default()
-        })
+            GameOverPanel {
+                timer: Timer::from_seconds(1.5, TimerMode::Once),
+                speed: 1.0,
+            },
+        ))
         .with_children(|parent| {
             parent
                 .spawn((
@@ -49,7 +55,6 @@ pub fn spawn_game_over_ui(
                         color: (Srgba::new(1.0, 1.0, 1.0, 0.86).into()),
                         ..default()
                     },
-                    GameOverPanel,
                 ))
                 .with_children(|panel| {
                     panel.spawn((
@@ -88,7 +93,10 @@ pub fn spawn_game_over_ui(
 }
 
 #[derive(Component)]
-pub struct GameOverPanel;
+pub struct GameOverPanel {
+    pub timer: Timer,
+    pub speed: f32,
+}
 
 pub fn despawn_game_over_panel(commands: &mut Commands, query: Query<Entity, With<GameOverPanel>>) {
     for entity in query.iter() {
