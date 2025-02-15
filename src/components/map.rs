@@ -29,7 +29,7 @@ pub(crate) fn generate_map(
         .spawn((
             Name::new("Map"),
             Transform::from_translation(Vec3::ZERO),
-            Sprite::default(),
+            InheritedVisibility::default(),
         ))
         .id();
 

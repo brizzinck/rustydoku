@@ -42,8 +42,13 @@ pub(crate) fn start_dragging(
     trigger: Trigger<Pointer<Down>>,
     figures: Query<Entity, With<Figure>>,
     square_query: Query<&Square>,
+    current_state: Res<State<StateGame>>,
     mut state_figure: ResMut<NextState<StateGame>>,
 ) {
+    if *current_state.get() != StateGame::Idle {
+        return;
+    }
+
     if let Ok(square) = square_query.get(trigger.target) {
         if let Some(parent) = square.parent {
             if let Ok(entity) = figures.get(parent) {

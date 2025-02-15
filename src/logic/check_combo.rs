@@ -215,7 +215,10 @@ mod tests {
     #[test]
     fn update_score_works() {
         let mut world = World::new();
-        world.insert_resource(Score { value: 0 });
+        world.insert_resource(Score {
+            value: 0,
+            max_value: 0,
+        });
 
         let mut score = world.resource_mut::<Score>();
 

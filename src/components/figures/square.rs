@@ -86,7 +86,7 @@ pub(crate) fn highlight(
             if highlight_tiles.len() == figure.squares.len() {
                 for tile_entity in highlight_tiles.into_iter() {
                     if let Ok((_, mut sprite, _, _)) = tile_query.get_mut(tile_entity) {
-                        sprite.color = Color::srgb(0., 1., 0.);
+                        sprite.color = Color::srgb(100., 100., 100.);
                     }
                 }
             }

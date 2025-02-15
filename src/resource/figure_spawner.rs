@@ -74,7 +74,7 @@ pub fn lerping_figures(
         .retain(|entity| !to_remove.contains(entity));
 }
 
-pub fn spawn_zone_figures(mut commands: Commands) {
+pub fn spawn_zone_figures(mut commands: Commands, assets: Res<AssetServer>) {
     let parent = commands
         .spawn((
             Name::new("Figure Zone"),
@@ -87,12 +87,13 @@ pub fn spawn_zone_figures(mut commands: Commands) {
         commands.entity(parent).with_children(|parent| {
             parent.spawn((
                 Sprite {
+                    image: assets.load("figure_place.png"),
                     custom_size: Some(Vec2::new(
                         (TILE_SIZE * 3. + 10.) * 0.6,
                         (TILE_SIZE * 3. + 10.) * 0.6,
                     )),
-                    color: Color::srgb(0.0, 0.0, 0.0),
-                    ..Default::default()
+                    color: Srgba::new(1., 1., 1., 0.45).into(),
+                    ..default()
                 },
                 Transform::from_translation(Vec3::new(position.0, position.1, 0.)),
             ));
