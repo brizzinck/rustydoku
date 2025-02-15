@@ -109,7 +109,7 @@ pub fn spawn_figures(
         for &position in FIGURE_POSITIONS.iter() {
             figure_spawner.figures.insert(
                 random_spawn_figure(&mut commands, Vec2::new(position.0, position.1), &assets),
-                Vec3::new(position.0, position.1, 0.),
+                Vec3::new(position.0, position.1, 1.),
             );
         }
     }

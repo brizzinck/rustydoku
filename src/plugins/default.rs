@@ -1,5 +1,5 @@
 use bevy::prelude::*;
-use bevy::window::{WindowPlugin, WindowResized, WindowResolution};
+use bevy::window::{WindowPlugin, WindowResized};
 
 pub struct RustydokuDefault;
 
@@ -7,8 +7,6 @@ impl Plugin for RustydokuDefault {
     fn build(&self, app: &mut App) {
         app.add_plugins(DefaultPlugins.set(WindowPlugin {
             primary_window: Some(bevy::window::Window {
-                resolution: WindowResolution::new(480., 800.),
-                resizable: false,
                 title: "Rustydoku".to_string(),
                 ..default()
             }),
@@ -22,6 +20,7 @@ impl Plugin for RustydokuDefault {
 fn enforce_portrait_mode(
     mut resize_events: EventReader<WindowResized>,
     mut windows: Query<&mut bevy::window::Window>,
+    mut cameras: Query<&mut OrthographicProjection, With<Camera2d>>,
 ) {
     for event in resize_events.read() {
         if let Ok(mut window) = windows.get_single_mut() {
@@ -31,6 +30,14 @@ fn enforce_portrait_mode(
                 window.resolution.set(height, width);
             } else {
                 window.resolution.set(width, height);
+            }
+
+            if let Ok(mut projection) = cameras.get_single_mut() {
+                let map_half_size = 160.0;
+
+                projection.scale = (map_half_size * 2.0) / height * 2.2;
+
+                info!("Updated camera scale: {}", projection.scale);
             }
         }
     }

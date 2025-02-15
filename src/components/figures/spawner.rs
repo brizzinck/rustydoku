@@ -1,4 +1,8 @@
-use super::{big_t_shape, cube, line, square, start_dragging, t_shape, Figure, FigureBounds};
+use super::{
+    big_t_shape, cube, line,
+    square::{self, SQUARE_SIZE},
+    start_dragging, t_shape, Figure, FigureBounds,
+};
 use bevy::prelude::*;
 use rand::Rng;
 
@@ -58,6 +62,11 @@ pub fn spawn_empty_figure(
                 },
                 PickingBehavior::default(),
                 InheritedVisibility::default(),
+                Sprite {
+                    custom_size: Some(Vec2::new(SQUARE_SIZE * 3., SQUARE_SIZE * 3.)),
+                    color: Srgba::new(0.0, 0.0, 0.0, 0.0).into(),
+                    ..default()
+                },
             ))
             .observe(start_dragging)
             .id(),

@@ -40,16 +40,18 @@ pub struct Figure {
 
 pub(crate) fn start_dragging(
     trigger: Trigger<Pointer<Down>>,
-    mut cubes: Query<(&mut Figure, Entity)>,
-    square_query: Query<&mut Square>,
+    figures: Query<Entity, With<Figure>>,
+    square_query: Query<&Square>,
     mut state_figure: ResMut<NextState<StateGame>>,
 ) {
     if let Ok(square) = square_query.get(trigger.target) {
         if let Some(parent) = square.parent {
-            if let Ok((_, entity)) = cubes.get_mut(parent) {
+            if let Ok(entity) = figures.get(parent) {
                 state_figure.set(StateGame::Dragging(entity));
             }
         }
+    } else if let Ok(entity) = figures.get(trigger.target) {
+        state_figure.set(StateGame::Dragging(entity));
     }
 }
 
