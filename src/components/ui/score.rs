@@ -9,8 +9,8 @@ pub fn spawn_text_score(commands: &mut Commands, parent: Entity, assets: &Res<As
     commands
         .spawn(Node {
             margin: UiRect {
-                left: Val::Px(50.0),
-                top: Val::Px(15.0),
+                left: Val::Px(10.0),
+                top: Val::Px(17.),
                 ..default()
             },
             ..default()
@@ -22,11 +22,12 @@ pub fn spawn_text_score(commands: &mut Commands, parent: Entity, assets: &Res<As
                     ..default()
                 },
                 TextFont {
-                    font_size: 37.0,
+                    font_size: 47.0,
                     font: assets.load("rusty.otf"),
                     ..default()
                 },
                 Text::new("SCORE: 0"),
+                TextColor(Srgba::rgb_u8(168, 67, 67).into()),
                 ScoreText,
             ));
         })

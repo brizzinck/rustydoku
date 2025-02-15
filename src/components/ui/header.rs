@@ -12,13 +12,12 @@ pub fn spawn_header(mut commands: Commands, assets: Res<AssetServer>) {
                 left: Val::Percent(2.5),
                 top: Val::Px(10.),
                 width: Val::Vw(95.),
-                height: Val::Vh(10.),
-                ..Default::default()
+                ..default()
             },
             ImageNode {
                 image: assets.load("figure_place.png".to_string()),
                 color: Srgba::new(1.0, 1.0, 1.0, 0.0).into(),
-                ..Default::default()
+                ..default()
             },
             Name::new("Header UI"),
             HeaderUI,
