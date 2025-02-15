@@ -106,7 +106,7 @@ pub fn spawn_figures(
     assets: Res<AssetServer>,
 ) {
     if figure_spawner.figures.is_empty() {
-        for &position in FIGURE_POSITIONS.iter().take(1) {
+        for &position in FIGURE_POSITIONS.iter() {
             figure_spawner.figures.insert(
                 random_spawn_figure(&mut commands, Vec2::new(position.0, position.1), &assets),
                 Vec3::new(position.0, position.1, 0.),

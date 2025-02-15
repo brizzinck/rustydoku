@@ -18,6 +18,7 @@ pub(super) fn spawn(commands: &mut Commands, position: Vec2, assets: &Res<AssetS
 
     commands.entity(parent).insert(Figure {
         squares: vec![child],
+        squares_offset: vec![Vec2::new(0., 0.)],
     });
     commands.entity(parent).insert(Name::new("square"));
 

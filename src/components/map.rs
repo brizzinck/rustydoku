@@ -63,7 +63,7 @@ pub(crate) fn generate_map(
                 .set_parent(parent)
                 .id();
 
-            hash_titles.insert((transform.x as i32, transform.y as i32), tile);
+            hash_titles.insert((x as i32, y as i32), tile);
         }
     }
 

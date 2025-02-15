@@ -35,6 +35,7 @@ pub struct FigureBounds {
 #[derive(Clone, Component, Default, Debug)]
 pub struct Figure {
     pub squares: Vec<Entity>,
+    pub squares_offset: Vec<Vec2>,
 }
 
 pub(crate) fn start_dragging(
