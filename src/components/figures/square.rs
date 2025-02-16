@@ -32,28 +32,9 @@ pub(super) fn spawn_child(
     assets: &Res<AssetServer>,
 ) -> Entity {
     let child = commands
-        .spawn((
-            Sprite {
-                image: assets.load(SQAURE_IMAGE_PATH),
-                custom_size: Some(Vec2::new(SQUARE_SIZE, SQUARE_SIZE)),
-                ..default()
-            },
-            Transform {
-                translation: Vec3::new(
-                    position.x * SQUARE_SIZE,
-                    position.y * SQUARE_SIZE,
-                    FIGURE_POSITION_Z,
-                ),
-                rotation: rotation.inverse(),
-                ..Default::default()
-            },
-            Square {
-                parent: Some(parent),
-            },
-        ))
+        .spawn(create_child(parent, position, rotation, assets))
         .set_parent(parent)
         .id();
-
     child
 }
 
@@ -117,4 +98,31 @@ pub fn check_for_place(
     }
 
     None
+}
+
+fn create_child(
+    parent: Entity,
+    position: Vec2,
+    rotation: Quat,
+    assets: &Res<AssetServer>,
+) -> impl Bundle {
+    (
+        Sprite {
+            image: assets.load(SQAURE_IMAGE_PATH),
+            custom_size: Some(Vec2::new(SQUARE_SIZE, SQUARE_SIZE)),
+            ..default()
+        },
+        Transform {
+            translation: Vec3::new(
+                position.x * SQUARE_SIZE,
+                position.y * SQUARE_SIZE,
+                FIGURE_POSITION_Z,
+            ),
+            rotation: rotation.inverse(),
+            ..Default::default()
+        },
+        Square {
+            parent: Some(parent),
+        },
+    )
 }

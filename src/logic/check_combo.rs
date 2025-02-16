@@ -1,6 +1,6 @@
 use crate::{
     components::map::Tile,
-    constants::map::{MAP_SIZE, MAP_USIZE, TILE_SIZE},
+    constants::{figure::MAX_FIGURE_USIZE, map::*},
     resource::score::Score,
     states::StateGame,
 };
@@ -36,11 +36,9 @@ where
 {
     let mut grid = [[false; MAP_USIZE]; MAP_USIZE];
 
-    let half_map_size = (MAP_SIZE as f32 * TILE_SIZE) / 2.0;
-
     for (tile, transform) in tiles {
-        let x = ((transform.translation.x + half_map_size) / TILE_SIZE).floor() as isize;
-        let y = ((transform.translation.y + half_map_size) / TILE_SIZE).floor() as isize;
+        let x = ((transform.translation.x + HALF_MAP_SIZE) / TILE_SIZE).floor() as isize;
+        let y = ((transform.translation.y + HALF_MAP_SIZE) / TILE_SIZE).floor() as isize;
 
         if x >= 0 && x < MAP_USIZE as isize && y >= 0 && y < MAP_USIZE as isize {
             grid[y as usize][x as usize] = tile.square.is_some();
@@ -79,7 +77,7 @@ fn check_vertical(grid: &[[bool; MAP_USIZE]; MAP_USIZE], tiles_to_clear: &mut Ve
 
 /// Checks for full 3x3 blocks and marks them for clearing
 fn check_blocks(grid: &[[bool; MAP_USIZE]; MAP_USIZE], tiles_to_clear: &mut Vec<(usize, usize)>) {
-    let local_size = MAP_USIZE / 3;
+    let local_size = MAP_USIZE / MAX_FIGURE_USIZE;
     for i in 0..local_size {
         for j in 0..local_size {
             let mut is_full = true;
@@ -119,12 +117,10 @@ fn clear_tiles(
     commands: &mut Commands,
     tiles_to_clear: &[(usize, usize)],
 ) {
-    let half_map_size = (MAP_SIZE as f32 * TILE_SIZE) / 2.0;
-
     for (mut tile, transform) in tiles.iter_mut() {
         if let Some(square) = tile.square {
-            let tile_x = ((transform.translation.x + half_map_size) / TILE_SIZE).floor() as isize;
-            let tile_y = ((transform.translation.y + half_map_size) / TILE_SIZE).floor() as isize;
+            let tile_x = ((transform.translation.x + HALF_MAP_SIZE) / TILE_SIZE).floor() as isize;
+            let tile_y = ((transform.translation.y + HALF_MAP_SIZE) / TILE_SIZE).floor() as isize;
 
             if tile_x >= 0
                 && tile_x < MAP_USIZE as isize

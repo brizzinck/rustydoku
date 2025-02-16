@@ -168,7 +168,7 @@ pub(crate) fn placing(
                             commands.entity(square_entity).set_parent(tile_entity);
 
                             *square_local_transform =
-                                Transform::from_translation(Vec3::new(0., 0., 0.5));
+                                Transform::from_translation(SQUARE_PLACED_POSITION);
                         }
                     }
                 }
