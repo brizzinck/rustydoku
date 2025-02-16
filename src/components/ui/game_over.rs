@@ -1,96 +1,6 @@
-use super::button_restart::spawn_button_restart;
-use crate::resource::score::Score;
+use super::button_restart::spawn_restart_button_game_over;
+use crate::{constants::ui::game_over_panel::*, resource::score::Score};
 use bevy::prelude::*;
-
-pub struct GameOverPlugin;
-
-pub fn spawn_game_over_ui(
-    mut commands: Commands,
-    assets: Res<AssetServer>,
-    mut score: ResMut<Score>,
-) {
-    score.max_value = score.value.max(score.max_value);
-
-    commands
-        .spawn((
-            Node {
-                left: Val::Auto,
-                right: Val::Auto,
-                bottom: Val::Auto,
-                position_type: PositionType::Absolute,
-                top: Val::Percent(120.0),
-                width: Val::Percent(132.0),
-                height: Val::Percent(26.0),
-                margin: UiRect {
-                    left: Val::Percent(0.0),
-                    right: Val::Percent(0.0),
-                    ..default()
-                },
-                max_width: Val::Px(500.0),
-                max_height: Val::Px(255.0),
-                justify_self: JustifySelf::Center,
-                ..default()
-            },
-            GameOverPanel {
-                timer: Timer::from_seconds(1.5, TimerMode::Once),
-                speed: 1.0,
-            },
-        ))
-        .with_children(|parent| {
-            parent
-                .spawn((
-                    Node {
-                        position_type: PositionType::Relative,
-                        width: Val::Percent(60.0),
-                        height: Val::Percent(125.0),
-                        flex_direction: FlexDirection::Column,
-                        justify_content: JustifyContent::Center,
-                        align_items: AlignItems::Center,
-                        margin: UiRect::all(Val::Auto),
-                        row_gap: Val::Percent(5.),
-                        ..default()
-                    },
-                    ImageNode {
-                        image: assets.load("restart_panel_background.png"),
-                        color: (Srgba::new(1.0, 1.0, 1.0, 0.86).into()),
-                        ..default()
-                    },
-                ))
-                .with_children(|panel| {
-                    panel.spawn((
-                        Text::new("LOSSES"),
-                        TextFont {
-                            font_size: 37.0,
-                            font: assets.load("rusty.otf"),
-                            ..default()
-                        },
-                        TextColor(Color::srgb(0.9, 0.1, 0.1)),
-                    ));
-
-                    panel.spawn((
-                        Text::new(format!("MAX SCORE: {}", score.max_value)),
-                        TextFont {
-                            font_size: 27.0,
-                            font: assets.load("rusty.otf"),
-                            ..default()
-                        },
-                        TextColor(Color::WHITE),
-                    ));
-
-                    panel.spawn((
-                        Text::new(format!("SCORE: {}", score.value)),
-                        TextFont {
-                            font_size: 27.0,
-                            font: assets.load("rusty.otf"),
-                            ..default()
-                        },
-                        TextColor(Color::WHITE),
-                    ));
-
-                    spawn_button_restart(panel, &assets);
-                });
-        });
-}
 
 #[derive(Component)]
 pub struct GameOverPanel {
@@ -98,8 +8,103 @@ pub struct GameOverPanel {
     pub speed: f32,
 }
 
+pub fn spawn_game_over_panel(mut commands: Commands, assets: Res<AssetServer>, score: Res<Score>) {
+    commands.spawn(create_panel()).with_children(|parent| {
+        parent
+            .spawn(create_background(&assets))
+            .with_children(|panel| {
+                panel.spawn(create_header_title(&assets));
+
+                panel.spawn(create_max_score(score.max_value, &assets));
+
+                panel.spawn(create_current_score(score.current_value, &assets));
+
+                spawn_restart_button_game_over(panel, &assets);
+            });
+    });
+}
+
 pub fn despawn_game_over_panel(commands: &mut Commands, query: Query<Entity, With<GameOverPanel>>) {
     for entity in query.iter() {
         commands.entity(entity).despawn_recursive();
     }
+}
+
+fn create_panel() -> (Node, GameOverPanel) {
+    (
+        Node {
+            left: GAME_OVER_PANEL_LEFT,
+            right: GAME_OVER_PANEL_RIGHT,
+            bottom: GAME_OVER_PANEL_BOTTOM,
+            position_type: GAME_OVER_PANEL_POSITION_TYPE,
+            top: GAME_OVER_PANEL_TOP,
+            width: GAME_OVER_PANEL_WIDTH,
+            height: GAME_OVER_PANEL_HEIGHT,
+            margin: GAME_OVER_PANEL_MARGIN,
+            max_width: GAME_OVER_PANEL_MAX_WIDTH,
+            max_height: GAME_OVER_PANEL_MAX_HEIGHT,
+            justify_self: GAME_OVER_PANEL_JUSTIFY_SELF,
+            ..default()
+        },
+        GameOverPanel {
+            timer: Timer::from_seconds(GAME_OVER_PANEL_TIMER_ANIMATION, TimerMode::Once),
+            speed: GAME_OVER_PANEL_SPEED_ANIMATION,
+        },
+    )
+}
+
+fn create_background(assets: &Res<AssetServer>) -> (Node, ImageNode) {
+    (
+        Node {
+            width: GAME_OVER_BACKGROUND_WIDTH,
+            height: GAME_OVER_BACKGROUND_HEIGHT,
+            flex_direction: GAME_OVER_BACKGROUND_FLEX_DIRECTION,
+            justify_content: GAME_OVER_BACKGROUND_JUSTIFY_CONTENT,
+            align_items: GAME_OVER_BACKGROUND_ALIGN_ITEMS,
+            margin: GAME_OVER_BACKGROUND_MARGIN,
+            row_gap: GAME_OVER_BACKGROUND_ROW_GAP,
+            ..default()
+        },
+        ImageNode {
+            image: assets.load(GAME_OVER_BACKGROUND_IMAGE_PATH),
+            color: GAME_OVER_BACKGROUND_COLOR.into(),
+            ..default()
+        },
+    )
+}
+
+fn create_header_title(assets: &Res<AssetServer>) -> (Text, TextFont, TextColor) {
+    (
+        Text::new(HEADER_TITLE_CONTENT),
+        TextFont {
+            font_size: HEADER_TITLE_FONT_SIZE,
+            font: assets.load(HEADER_TITLE_FONT_PATH),
+            ..default()
+        },
+        TextColor(HEADER_TITLE_COLOR),
+    )
+}
+
+fn create_current_score(score: i32, assets: &Res<AssetServer>) -> (Text, TextFont, TextColor) {
+    (
+        Text::new(format!("{SCORE_TEXT_CONTENT}: {score}")),
+        TextFont {
+            font_size: SCORE_TEXT_FONT_SIZE,
+            font: assets.load(SCORE_TEXT_FONT_PATH),
+            ..default()
+        },
+        TextColor(SCORE_TEXT_COLOR),
+    )
+}
+
+fn create_max_score(max_score: i32, assets: &Res<AssetServer>) -> (Text, TextFont, TextColor) {
+    (
+        Text::new(format!("{MAX_SCORE_TEXT_CONTENT}: {max_score}")),
+        TextFont {
+            font_size: MAX_SCORE_TEXT_FONT_SIZE,
+            font: assets.load(MAX_SCORE_TEXT_FONT_PATH),
+            ..default()
+        },
+        TextColor(MAX_SCORE_TEXT_COLOR),
+    )
 }

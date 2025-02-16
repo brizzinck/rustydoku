@@ -1,7 +1,7 @@
 use bevy::prelude::*;
 
 use crate::{
-    components::map::{MAP_SIZE, TILE_SIZE},
+    constants::map::{MAP_FSIZE, TILE_SIZE},
     resource::game_zone::GameZone,
 };
 
@@ -14,7 +14,7 @@ impl Plugin for GameZonePlugin {
 }
 
 pub fn setup_game_zone(mut commands: Commands) {
-    let half_map_size = (MAP_SIZE as f32 * TILE_SIZE) / 2.0;
+    let half_map_size = (MAP_FSIZE * TILE_SIZE) / 2.0;
     let left_up = Vec2::new(
         -half_map_size + TILE_SIZE / 2.0,
         half_map_size - TILE_SIZE / 2.0,

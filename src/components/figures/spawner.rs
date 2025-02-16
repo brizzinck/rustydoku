@@ -1,28 +1,24 @@
-use super::{
-    big_t_shape, cube, line,
-    square::{self, SQUARE_SIZE},
-    start_dragging, t_shape, Figure, FigureBounds,
-};
+use super::{big_t_shape, cube, line, square, start_dragging, t_shape, Figure, FigureBounds};
+use crate::constants::figure::*;
 use bevy::prelude::*;
 use rand::Rng;
 
 pub(crate) fn random_spawn_figure(
     commands: &mut Commands,
-    position: Vec2,
+    absolute_position: Vec2,
     assets: &Res<AssetServer>,
 ) -> Entity {
     let mut rng = rand::thread_rng();
     match rng.gen_range(0..5) {
-        0 => cube::spawn(commands, position, assets),
-        1 => square::spawn(commands, position, assets),
-        2 => t_shape::spawn(commands, position, assets),
-        3 => big_t_shape::spawn(commands, position, assets),
-        4 => line::spawn(commands, position, assets),
-        _ => cube::spawn(commands, position, assets),
+        1 => square::spawn(commands, absolute_position, assets),
+        2 => t_shape::spawn(commands, absolute_position, assets),
+        3 => big_t_shape::spawn(commands, absolute_position, assets),
+        4 => line::spawn(commands, absolute_position, assets),
+        _ => cube::spawn(commands, absolute_position, assets),
     }
 }
 
-pub fn spawn_empty_figure(
+pub(super) fn spawn_empty_figure(
     commands: &mut Commands,
     position: Vec2,
     squares_position: &[Vec2],
@@ -52,9 +48,9 @@ pub fn spawn_empty_figure(
         commands
             .spawn((
                 Transform {
-                    translation: Vec3::new(position.x, position.y, 1.),
+                    translation: Vec3::new(position.x, position.y, FIGURE_POSITION_Z),
                     rotation,
-                    scale: Vec3::ONE * 0.6,
+                    scale: Vec3::ONE * FIGURE_IDEL_SCALE,
                 },
                 FigureBounds {
                     min: bounds_min,
@@ -63,8 +59,8 @@ pub fn spawn_empty_figure(
                 PickingBehavior::default(),
                 InheritedVisibility::default(),
                 Sprite {
-                    custom_size: Some(Vec2::new(SQUARE_SIZE * 3., SQUARE_SIZE * 3.)),
-                    color: Srgba::new(0.0, 0.0, 0.0, 0.0).into(),
+                    custom_size: Some(Vec2::new(MAX_FIGURE_SIZE, MAX_FIGURE_SIZE)),
+                    color: INTERACTIVE_ZONE_COLOR.into(),
                     ..default()
                 },
             ))
@@ -76,20 +72,20 @@ pub fn spawn_empty_figure(
 
 pub(super) fn spawn_figure(
     commands: &mut Commands,
-    position: Vec2,
+    absolute_position: Vec2,
     squares_position: &[Vec2],
     name: &'static str,
     assets: &Res<AssetServer>,
 ) -> Entity {
-    let (parent, rotation) = spawn_empty_figure(commands, position, squares_position);
+    let (parent, rotation) = spawn_empty_figure(commands, absolute_position, squares_position);
     let mut figure = Figure {
-        squares: Vec::with_capacity(squares_position.len()),
-        squares_offset: squares_position.to_vec(),
+        squares_entity: Vec::with_capacity(squares_position.len()),
+        squares_position: squares_position.to_vec(),
     };
 
     for &offset in squares_position.iter() {
         let child = square::spawn_child(commands, parent, offset, rotation, assets);
-        figure.squares.push(child);
+        figure.squares_entity.push(child);
     }
 
     commands.entity(parent).insert(figure);

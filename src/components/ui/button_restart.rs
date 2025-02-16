@@ -1,59 +1,26 @@
+use crate::constants::ui::assets::*;
+use crate::constants::ui::restart_button::*;
 use crate::states::StateGame;
 use bevy::prelude::*;
 
-pub fn spawn_button_restart_top(
+#[derive(Component)]
+pub struct RestartButton;
+
+pub fn spawn_restart_button_header(
     commands: &mut Commands,
     parent: Entity,
     assets: &Res<AssetServer>,
 ) {
     commands
-        .spawn((
-            Button,
-            Node {
-                width: Val::Px(50.0),
-                height: Val::Px(50.0),
-                position_type: PositionType::Relative,
-                margin: UiRect {
-                    right: Val::Px(10.0),
-                    top: Val::Px(20.0),
-                    left: Val::Auto,
-                    bottom: Val::Auto,
-                },
-                ..default()
-            },
-            ImageNode {
-                image: assets.load("restart_button_back.png"),
-                ..default()
-            },
-            RestartButton,
-        ))
-        .with_child(ImageNode {
-            image: assets.load("restart_button.png"),
-            ..default()
-        })
+        .spawn(create_restart_button(create_node_header(), assets))
+        .with_child(create_image(assets))
         .set_parent(parent);
 }
 
-pub fn spawn_button_restart(commands: &mut ChildBuilder, assets: &Res<AssetServer>) {
+pub fn spawn_restart_button_game_over(commands: &mut ChildBuilder, assets: &Res<AssetServer>) {
     commands
-        .spawn((
-            Button,
-            Node {
-                max_width: Val::Px(66.0),
-                max_height: Val::Px(66.0),
-                justify_content: JustifyContent::Center,
-                ..default()
-            },
-            RestartButton,
-            ImageNode {
-                image: assets.load("restart_button_back.png"),
-                ..default()
-            },
-        ))
-        .with_child(ImageNode {
-            image: assets.load("restart_button.png"),
-            ..default()
-        });
+        .spawn(create_restart_button(create_node_game_over(), assets))
+        .with_child(create_image(assets));
 }
 
 pub fn handle_restart_button(
@@ -69,5 +36,42 @@ pub fn handle_restart_button(
     }
 }
 
-#[derive(Component)]
-pub struct RestartButton;
+fn create_node_header() -> Node {
+    Node {
+        width: HEADER_RESTART_BUTTON_WIDTH,
+        height: HEADER_RESTART_BUTTON_HEIGHT,
+        margin: HEADER_RESTART_BUTTON_MARGIN,
+        ..default()
+    }
+}
+
+fn create_node_game_over() -> Node {
+    Node {
+        max_width: GAME_OVER_RESTART_BUTTON_WIDTH,
+        max_height: GAME_OVER_RESTART_BUTTON_HEIGHT,
+        justify_content: GAME_OVER_RESTART_BUTTON_JUSTIFY_CONTENT,
+        ..default()
+    }
+}
+
+fn create_restart_button(
+    node: Node,
+    assets: &Res<AssetServer>,
+) -> (Node, Button, ImageNode, RestartButton) {
+    (
+        node,
+        Button,
+        ImageNode {
+            image: assets.load(RESTART_BUTTON_BACK_IMAGE_PATH),
+            ..default()
+        },
+        RestartButton,
+    )
+}
+
+fn create_image(assets: &Res<AssetServer>) -> ImageNode {
+    ImageNode {
+        image: assets.load(RESTART_BUTTON_IMAGE_PATH),
+        ..default()
+    }
+}

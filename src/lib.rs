@@ -14,6 +14,7 @@ use resource::score::Score;
 use states::StateGame;
 
 pub mod components;
+pub mod constants;
 pub mod logic;
 pub mod plugins;
 pub mod resource;

@@ -1,3 +1,4 @@
+use crate::constants::window::assets::BACKGROUND_IMAGE_PATH;
 use bevy::prelude::*;
 use bevy::window::{WindowPlugin, WindowResized};
 
@@ -21,7 +22,7 @@ impl Plugin for RustydokuDefault {
 fn spawn_background(mut commands: Commands, asset_server: Res<AssetServer>) {
     commands.spawn((
         Sprite {
-            image: asset_server.load("background.png"),
+            image: asset_server.load(BACKGROUND_IMAGE_PATH),
             ..default()
         },
         Transform {

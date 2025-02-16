@@ -1,11 +1,10 @@
 use crate::{
-    components::map::{Tile, MAP_SIZE, TILE_SIZE},
+    components::map::Tile,
+    constants::map::{MAP_SIZE, MAP_USIZE, TILE_SIZE},
     resource::score::Score,
     states::StateGame,
 };
 use bevy::prelude::*;
-
-const GRID_SIZE: usize = MAP_SIZE as usize;
 
 /// Runs all checks combination and updates the score
 pub fn check_combination(
@@ -31,11 +30,11 @@ pub fn check_combination(
 }
 
 /// Builds a 9x9 grid representation from the tile states
-fn build_grid<'a, I>(tiles: I) -> [[bool; GRID_SIZE]; GRID_SIZE]
+fn build_grid<'a, I>(tiles: I) -> [[bool; MAP_USIZE]; MAP_USIZE]
 where
     I: Iterator<Item = (&'a Tile, &'a Transform)>,
 {
-    let mut grid = [[false; GRID_SIZE]; GRID_SIZE];
+    let mut grid = [[false; MAP_USIZE]; MAP_USIZE];
 
     let half_map_size = (MAP_SIZE as f32 * TILE_SIZE) / 2.0;
 
@@ -43,7 +42,7 @@ where
         let x = ((transform.translation.x + half_map_size) / TILE_SIZE).floor() as isize;
         let y = ((transform.translation.y + half_map_size) / TILE_SIZE).floor() as isize;
 
-        if x >= 0 && x < GRID_SIZE as isize && y >= 0 && y < GRID_SIZE as isize {
+        if x >= 0 && x < MAP_USIZE as isize && y >= 0 && y < MAP_USIZE as isize {
             grid[y as usize][x as usize] = tile.square.is_some();
         } else {
             error!("Tile position out of bounds: ({}, {})", x, y);
@@ -55,12 +54,12 @@ where
 
 /// Checks for full horizontal rows and marks them for clearing
 fn check_horizontal(
-    grid: &[[bool; GRID_SIZE]; GRID_SIZE],
+    grid: &[[bool; MAP_USIZE]; MAP_USIZE],
     tiles_to_clear: &mut Vec<(usize, usize)>,
 ) {
-    for (y, data) in grid.iter().enumerate().take(GRID_SIZE) {
+    for (y, data) in grid.iter().enumerate().take(MAP_USIZE) {
         if data.iter().all(|&occupied| occupied) {
-            for x in 0..GRID_SIZE {
+            for x in 0..MAP_USIZE {
                 tiles_to_clear.push((x, y));
             }
         }
@@ -68,10 +67,10 @@ fn check_horizontal(
 }
 
 /// Checks for full vertical columns and marks them for clearing
-fn check_vertical(grid: &[[bool; GRID_SIZE]; GRID_SIZE], tiles_to_clear: &mut Vec<(usize, usize)>) {
-    for x in 0..GRID_SIZE {
-        if (0..GRID_SIZE).all(|y| grid[y][x]) {
-            for y in 0..GRID_SIZE {
+fn check_vertical(grid: &[[bool; MAP_USIZE]; MAP_USIZE], tiles_to_clear: &mut Vec<(usize, usize)>) {
+    for x in 0..MAP_USIZE {
+        if (0..MAP_USIZE).all(|y| grid[y][x]) {
+            for y in 0..MAP_USIZE {
                 tiles_to_clear.push((x, y));
             }
         }
@@ -79,8 +78,8 @@ fn check_vertical(grid: &[[bool; GRID_SIZE]; GRID_SIZE], tiles_to_clear: &mut Ve
 }
 
 /// Checks for full 3x3 blocks and marks them for clearing
-fn check_blocks(grid: &[[bool; GRID_SIZE]; GRID_SIZE], tiles_to_clear: &mut Vec<(usize, usize)>) {
-    let local_size = GRID_SIZE / 3;
+fn check_blocks(grid: &[[bool; MAP_USIZE]; MAP_USIZE], tiles_to_clear: &mut Vec<(usize, usize)>) {
+    let local_size = MAP_USIZE / 3;
     for i in 0..local_size {
         for j in 0..local_size {
             let mut is_full = true;
@@ -109,8 +108,8 @@ fn check_blocks(grid: &[[bool; GRID_SIZE]; GRID_SIZE], tiles_to_clear: &mut Vec<
 fn update_score(score: &mut Score, tiles_to_clear: &[(usize, usize)]) {
     if !tiles_to_clear.is_empty() {
         let combinations = tiles_to_clear.len();
-        score.value += combinations as i32;
-        info!("Updated Score: {}", score.value);
+        score.current_value += combinations as i32;
+        info!("Updated Score: {}", score.current_value);
     }
 }
 
@@ -128,9 +127,9 @@ fn clear_tiles(
             let tile_y = ((transform.translation.y + half_map_size) / TILE_SIZE).floor() as isize;
 
             if tile_x >= 0
-                && tile_x < GRID_SIZE as isize
+                && tile_x < MAP_USIZE as isize
                 && tile_y >= 0
-                && tile_y < GRID_SIZE as isize
+                && tile_y < MAP_USIZE as isize
                 && tiles_to_clear.contains(&(tile_x as usize, tile_y as usize))
             {
                 commands.entity(square).despawn();
@@ -170,35 +169,35 @@ mod tests {
 
     #[test]
     fn combo_vertical_works() {
-        let mut grid = [[false; GRID_SIZE]; GRID_SIZE];
+        let mut grid = [[false; MAP_USIZE]; MAP_USIZE];
 
-        for data in grid.iter_mut().take(GRID_SIZE) {
+        for data in grid.iter_mut().take(MAP_USIZE) {
             data[2] = true;
         }
 
         let mut tiles_to_clear = Vec::new();
         check_vertical(&grid, &mut tiles_to_clear);
 
-        assert_eq!(tiles_to_clear.len(), GRID_SIZE);
+        assert_eq!(tiles_to_clear.len(), MAP_USIZE);
     }
 
     #[test]
     fn combo_horizontal_works() {
-        let mut grid = [[false; GRID_SIZE]; GRID_SIZE];
+        let mut grid = [[false; MAP_USIZE]; MAP_USIZE];
 
-        for x in 0..GRID_SIZE {
+        for x in 0..MAP_USIZE {
             grid[3][x] = true;
         }
 
         let mut tiles_to_clear = Vec::new();
         check_horizontal(&grid, &mut tiles_to_clear);
 
-        assert_eq!(tiles_to_clear.len(), GRID_SIZE);
+        assert_eq!(tiles_to_clear.len(), MAP_USIZE);
     }
 
     #[test]
     fn combo_blocks_works() {
-        let mut grid = [[false; GRID_SIZE]; GRID_SIZE];
+        let mut grid = [[false; MAP_USIZE]; MAP_USIZE];
 
         for x in 0..3 {
             for data in grid.iter_mut().take(3) {
@@ -216,7 +215,7 @@ mod tests {
     fn update_score_works() {
         let mut world = World::new();
         world.insert_resource(Score {
-            value: 0,
+            current_value: 0,
             max_value: 0,
         });
 
@@ -227,9 +226,9 @@ mod tests {
         update_score(&mut score, &tiles_to_clear);
 
         assert!(
-            score.value > 0,
+            score.current_value > 0,
             "Expected score to increase, but got {}",
-            score.value
+            score.current_value
         );
     }
 }

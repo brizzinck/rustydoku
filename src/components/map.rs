@@ -1,15 +1,9 @@
+use assets::TILE_IMAGE_PATH;
 use bevy::{prelude::*, utils::HashMap};
 #[cfg(feature = "debug-inspector")]
 use bevy_inspector_egui::prelude::*;
-use std::ops::RangeInclusive;
 
-use crate::{resource::map::Map, states::StateGame};
-
-pub const MAP_SIZE: i8 = 9;
-pub const TILE_SIZE: f32 = 40.0;
-pub const MAP_SPAWN_POS: RangeInclusive<i8> = (-MAP_SIZE / 2)..=(MAP_SIZE / 2);
-const COLOR_LIGHT: Color = Color::srgb(0.67, 0.67, 0.67);
-const COLOR_DARK: Color = Color::srgb(0.53, 0.53, 0.53);
+use crate::{constants::map::*, resource::map::Map, states::StateGame};
 
 #[derive(Component, Default)]
 #[cfg_attr(feature = "debug-inspector", derive(Reflect, InspectorOptions))]
@@ -49,7 +43,7 @@ pub(crate) fn generate_map(
                     Sprite {
                         color,
                         custom_size: Some(Vec2::new(TILE_SIZE, TILE_SIZE)),
-                        image: assets.load("ferris.png"),
+                        image: assets.load(TILE_IMAGE_PATH),
                         ..default()
                     },
                     Transform::from_translation(transform),

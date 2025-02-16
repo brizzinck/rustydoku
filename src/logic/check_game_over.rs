@@ -1,8 +1,9 @@
 use crate::{
     components::{
         figures::{Figure, FigureBounds},
-        map::{Tile, MAP_SPAWN_POS, TILE_SIZE},
+        map::Tile,
     },
+    constants::map::{MAP_SPAWN_POS, TILE_SIZE},
     resource::map::Map,
     states::StateGame,
 };
@@ -75,7 +76,7 @@ pub fn check_game_over(
     'outer: for (transform, bounds, figure) in figures.iter() {
         info!(
             "Checking figure {:?} with bounds.min={:?}, squares_offset={:?}",
-            transform.translation, bounds.min, figure.squares_offset
+            transform.translation, bounds.min, figure.squares_position
         );
 
         for grid_x in MAP_SPAWN_POS {
@@ -85,7 +86,7 @@ pub fn check_game_over(
                 if can_place_figure_at_grid(
                     grid,
                     bounds.min,
-                    &figure.squares_offset,
+                    &figure.squares_position,
                     transform,
                     &map,
                     &tiles,

@@ -1,11 +1,10 @@
 use super::{spawner::spawn_empty_figure, Figure};
 use crate::{
-    components::map::{Tile, TILE_SIZE},
+    components::map::Tile,
+    constants::{figure::assets::*, figure::*, map::TILE_SIZE},
     states::StateGame,
 };
 use bevy::prelude::*;
-
-pub const SQUARE_SIZE: f32 = TILE_SIZE;
 
 #[derive(Component, Default)]
 pub struct Square {
@@ -17,8 +16,8 @@ pub(super) fn spawn(commands: &mut Commands, position: Vec2, assets: &Res<AssetS
     let child = spawn_child(commands, parent, Vec2::new(0., 0.), rotation, assets);
 
     commands.entity(parent).insert(Figure {
-        squares: vec![child],
-        squares_offset: vec![Vec2::new(0., 0.)],
+        squares_entity: vec![child],
+        squares_position: vec![Vec2::new(0., 0.)],
     });
     commands.entity(parent).insert(Name::new("square"));
 
@@ -35,12 +34,16 @@ pub(super) fn spawn_child(
     let child = commands
         .spawn((
             Sprite {
-                image: assets.load("ferris.png"),
+                image: assets.load(SQAURE_IMAGE_PATH),
                 custom_size: Some(Vec2::new(SQUARE_SIZE, SQUARE_SIZE)),
-                ..Default::default()
+                ..default()
             },
             Transform {
-                translation: Vec3::new(position.x * SQUARE_SIZE, position.y * SQUARE_SIZE, 1.0),
+                translation: Vec3::new(
+                    position.x * SQUARE_SIZE,
+                    position.y * SQUARE_SIZE,
+                    FIGURE_POSITION_Z,
+                ),
                 rotation: rotation.inverse(),
                 ..Default::default()
             },
@@ -72,10 +75,10 @@ pub(crate) fn highlight(
 
         let mut highlight_tiles = vec![];
         if let Ok((figure, transform)) = figure_query.get(*figure) {
-            if transform.scale.x < 1. {
+            if transform.scale.x < FIGURE_DRAGGING_SCALE {
                 return;
             }
-            for &square_entity in figure.squares.iter() {
+            for &square_entity in figure.squares_entity.iter() {
                 if let Ok((_, square_transform, _)) = square_query.get_mut(square_entity) {
                     if let Some(tile_entity) = check_for_place(square_transform, &all_tiles) {
                         highlight_tiles.push(tile_entity);
@@ -83,10 +86,11 @@ pub(crate) fn highlight(
                 }
             }
 
-            if highlight_tiles.len() == figure.squares.len() {
+            if highlight_tiles.len() == figure.squares_entity.len() {
                 for tile_entity in highlight_tiles.into_iter() {
                     if let Ok((_, mut sprite, _, _)) = tile_query.get_mut(tile_entity) {
-                        sprite.color = Color::srgb(100., 100., 100.);
+                        sprite.color = Color::srgb(100., 100., 100.); // TODO: Change to image
+                                                                      // maybe
                     }
                 }
             }

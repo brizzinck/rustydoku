@@ -1,22 +1,17 @@
 use crate::{
     components::{
         figures::{spawner::random_spawn_figure, Figure},
-        map::TILE_SIZE,
         ui::header::HeaderUI,
     },
+    constants::figure::placeholder::*,
+    constants::figure::*,
     states::StateGame,
 };
+use assets::FIGURE_PLACEHOLDER_IMAGE_PATH;
 use bevy::{
     prelude::*,
     utils::{HashMap, HashSet},
 };
-
-const SIZE: usize = 3;
-const FIGURE_POSITIONS: [(f32, f32); SIZE] = [
-    (TILE_SIZE * 3.45, TILE_SIZE * -7.),
-    (0., TILE_SIZE * -7.),
-    (TILE_SIZE * -3.45, TILE_SIZE * -7.),
-];
 
 #[derive(Resource, Default)]
 pub struct FigureSpawner {
@@ -48,9 +43,10 @@ pub fn lerping_figures(
         if let Ok((_figure, mut transform)) = figures.get_mut(*entity) {
             let mut remove = true;
             if let Some(position) = figure_spawner.figures.get(entity) {
-                transform.translation = transform
-                    .translation
-                    .lerp(*position, time.delta_secs() * 8.0);
+                transform.translation = transform.translation.lerp(
+                    *position,
+                    time.delta_secs() * FIGURE_SPEED_RETURN_TO_PLACEHOLDER,
+                );
 
                 if transform.translation.distance(*position) < 0.01 {
                     transform.translation = *position;
@@ -58,12 +54,13 @@ pub fn lerping_figures(
                     remove = false;
                 }
             }
-            transform.scale = transform
-                .scale
-                .lerp(Vec3::splat(0.6), time.delta_secs() * 8.0);
+            transform.scale = transform.scale.lerp(
+                Vec3::splat(PLACEHOLDER_SCALE),
+                time.delta_secs() * FIGURE_SPEED_RETURN_TO_PLACEHOLDER,
+            );
 
-            if transform.scale.distance(Vec3::splat(0.6)) < 0.01 {
-                transform.scale = Vec3::splat(0.6);
+            if transform.scale.distance(Vec3::splat(PLACEHOLDER_SCALE)) < 0.01 {
+                transform.scale = Vec3::splat(PLACEHOLDER_SCALE);
             } else {
                 remove = false;
             }
@@ -83,25 +80,26 @@ pub fn spawn_zone_figures(mut commands: Commands, assets: Res<AssetServer>) {
     let parent = commands
         .spawn((
             Name::new("Figure Zone"),
-            Transform::from_translation(Vec3::new(0., 0., 0.)),
+            Transform::from_translation(Vec3::ZERO),
             Visibility::Inherited,
             FigureZone,
         ))
         .id();
 
-    for &position in FIGURE_POSITIONS.iter() {
+    for &position in PLACEHOLDER_POSITION.iter() {
         commands.entity(parent).with_children(|parent| {
             parent.spawn((
                 Sprite {
-                    image: assets.load("figure_place.png"),
-                    custom_size: Some(Vec2::new(
-                        (TILE_SIZE * 3. + 10.) * 0.6,
-                        (TILE_SIZE * 3. + 10.) * 0.6,
-                    )),
-                    color: Srgba::new(1., 1., 1., 0.45).into(),
+                    image: assets.load(FIGURE_PLACEHOLDER_IMAGE_PATH),
+                    custom_size: Some(Vec2::new(PLACEHOLDER_SIZE, PLACEHOLDER_SIZE)),
+                    color: PLACEHOLDER_COLOR.into(),
                     ..default()
                 },
-                Transform::from_translation(Vec3::new(position.0, position.1, 0.)),
+                Transform::from_translation(Vec3::new(
+                    position.0,
+                    position.1,
+                    PLACEHOLDER_POSITION_Z,
+                )),
             ));
         });
     }
@@ -113,10 +111,10 @@ pub fn spawn_figures(
     assets: Res<AssetServer>,
 ) {
     if figure_spawner.figures.is_empty() {
-        for &position in FIGURE_POSITIONS.iter() {
+        for &position in PLACEHOLDER_POSITION.iter() {
             figure_spawner.figures.insert(
                 random_spawn_figure(&mut commands, Vec2::new(position.0, position.1), &assets),
-                Vec3::new(position.0, position.1, 1.),
+                Vec3::new(position.0, position.1, FIGURE_POSITION_Z),
             );
         }
     }
