@@ -2,7 +2,7 @@ use super::{spawner::spawn_empty_figure, Figure};
 use crate::{
     components::map::Tile,
     constants::{figure::assets::*, figure::*, map::TILE_SIZE},
-    states::StateGame,
+    states::gameplay::StateGame,
 };
 use bevy::prelude::*;
 
@@ -13,7 +13,7 @@ pub struct Square {
 
 pub(super) fn spawn(commands: &mut Commands, position: Vec2, assets: &Res<AssetServer>) -> Entity {
     let (parent, rotation) = spawn_empty_figure(commands, position, &[Vec2::new(0., 0.)]);
-    let child = spawn_child(commands, parent, Vec2::new(0., 0.), rotation, assets);
+    let child = spawn_as_child(commands, parent, Vec2::new(0., 0.), rotation, assets);
 
     commands.entity(parent).insert(Figure {
         squares_entity: vec![child],
@@ -24,7 +24,7 @@ pub(super) fn spawn(commands: &mut Commands, position: Vec2, assets: &Res<AssetS
     parent
 }
 
-pub(super) fn spawn_child(
+pub(super) fn spawn_as_child(
     commands: &mut Commands,
     parent: Entity,
     position: Vec2,
@@ -49,19 +49,20 @@ pub(crate) fn highlight(
     }
 
     if let StateGame::Dragging(figure) = current_state.get() {
-        let all_tiles = tile_query
-            .iter()
-            .map(|(tile, _, transform, entity)| (tile, transform, entity))
-            .collect::<Vec<_>>();
-
         let mut highlight_tiles = vec![];
         if let Ok((figure, transform)) = figure_query.get(*figure) {
             if transform.scale.x < FIGURE_DRAGGING_SCALE {
                 return;
             }
+
+            let tiles = tile_query
+                .iter()
+                .map(|(tile, _, transform, entity)| (tile, transform, entity))
+                .collect::<Vec<_>>();
+
             for &square_entity in figure.squares_entity.iter() {
                 if let Ok((_, square_transform, _)) = square_query.get_mut(square_entity) {
-                    if let Some(tile_entity) = check_for_place(square_transform, &all_tiles) {
+                    if let Some(tile_entity) = check_for_place(square_transform, &tiles) {
                         highlight_tiles.push(tile_entity);
                     }
                 }

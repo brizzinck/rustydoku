@@ -1,4 +1,4 @@
-use crate::{components::map::generate_map, states::StateGame};
+use crate::{components::map::generate_map, states::gameplay::StateGame};
 use bevy::{app::Plugin, prelude::OnEnter};
 #[cfg(feature = "debug-inspector")]
 use bevy_inspector_egui::prelude::*;

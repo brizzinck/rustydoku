@@ -10,11 +10,11 @@ use crate::{
         figure_spawner::{restart_figures, show_figures, FigureSpawner, FigureZone},
         score::{restart_score, Score},
     },
-    states::StateGame,
+    states::gameplay::StateGame,
 };
 use bevy::prelude::*;
 
-#[allow(clippy::too_many_arguments)]
+#[allow(clippy::too_many_arguments)] //TODO: Refactor this function, extracting
 pub fn restart(
     mut commands: Commands,
     mut next_state: ResMut<NextState<StateGame>>,

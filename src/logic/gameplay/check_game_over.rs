@@ -5,7 +5,7 @@ use crate::{
     },
     constants::map::{MAP_SPAWN_POS, TILE_SIZE},
     resource::map::Map,
-    states::StateGame,
+    states::gameplay::StateGame,
 };
 use bevy::prelude::*;
 

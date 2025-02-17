@@ -6,7 +6,7 @@ use bevy_inspector_egui::prelude::*;
 use crate::{
     constants::{figure::MAX_FIGURE_USIZE_SCALED, map::*},
     resource::map::Map,
-    states::StateGame,
+    states::gameplay::StateGame,
 };
 
 #[derive(Component, Default)]

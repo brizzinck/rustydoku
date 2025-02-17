@@ -1,5 +1,8 @@
 use super::button_restart::spawn_restart_button_game_over;
-use crate::{constants::ui::game_over_panel::*, resource::score::Score};
+use crate::{
+    constants::ui::game_over_panel::*, resource::score::Score,
+    states::gameplay::game_over::StateGameOverPanel,
+};
 use bevy::prelude::*;
 
 #[derive(Component)]
@@ -8,7 +11,12 @@ pub struct GameOverPanel {
     pub speed: f32,
 }
 
-pub fn spawn_game_over_panel(mut commands: Commands, assets: Res<AssetServer>, score: Res<Score>) {
+pub fn spawn_game_over_panel(
+    mut commands: Commands,
+    assets: Res<AssetServer>,
+    score: Res<Score>,
+    mut next_state: ResMut<NextState<StateGameOverPanel>>,
+) {
     commands.spawn(create_panel()).with_children(|parent| {
         parent
             .spawn(create_background(&assets))
@@ -22,6 +30,8 @@ pub fn spawn_game_over_panel(mut commands: Commands, assets: Res<AssetServer>, s
                 spawn_restart_button_game_over(panel, &assets);
             });
     });
+
+    next_state.set(StateGameOverPanel::Showing);
 }
 
 pub fn despawn_game_over_panel(commands: &mut Commands, query: Query<Entity, With<GameOverPanel>>) {

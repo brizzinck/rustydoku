@@ -4,18 +4,22 @@ use bevy::prelude::*;
 use bevy_inspector_egui::quick::WorldInspectorPlugin;
 
 use constants::world::background::BACKGROUND_CLEAR_COLOR;
+use events::figure::{FigureTriggerDragging, FigureTriggerEnter, FigureTriggerUp};
 use plugins::default::RustydokuDefault;
 use plugins::game_zone::GameZonePlugin;
+use plugins::gameplay::RustydokuGameplay;
 use plugins::logic::RustydokuLogicPlugin;
 use plugins::ui::RustydokuUIPlugin;
 use plugins::{camera::CameraPlugin, figure::FigurePlugin, map::MapPlugin};
 use resource::figure_spawner::FigureSpawner;
 use resource::map::Map;
 use resource::score::Score;
-use states::StateGame;
+use states::gameplay::game_over::{StateCameraPosition, StateGameOverPanel};
+use states::gameplay::StateGame;
 
 pub mod components;
 pub mod constants;
+pub mod events;
 pub mod logic;
 pub mod plugins;
 pub mod resource;
@@ -24,6 +28,10 @@ pub mod states;
 pub fn run() {
     let mut game = App::new();
 
+    game.add_event::<FigureTriggerEnter>();
+    game.add_event::<FigureTriggerDragging>();
+    game.add_event::<FigureTriggerUp>();
+
     game.add_plugins(RustydokuDefault);
     game.add_plugins(MapPlugin);
     game.add_plugins(CameraPlugin);
@@ -31,6 +39,7 @@ pub fn run() {
     game.add_plugins(GameZonePlugin);
     game.add_plugins(RustydokuUIPlugin);
     game.add_plugins(RustydokuLogicPlugin);
+    game.add_plugins(RustydokuGameplay);
 
     #[cfg(feature = "debug-inspector")]
     game.add_plugins(WorldInspectorPlugin::new());
@@ -41,6 +50,8 @@ pub fn run() {
     game.insert_resource(Map::default());
 
     game.insert_state(StateGame::default());
+    game.insert_state(StateCameraPosition::default());
+    game.insert_state(StateGameOverPanel::default());
 
     game.run();
 }

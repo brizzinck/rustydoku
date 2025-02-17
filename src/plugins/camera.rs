@@ -3,6 +3,11 @@ use bevy::{
     prelude::*,
 };
 
+use crate::{
+    logic::animation::camera::{setting_camera_default, setting_camera_game_over},
+    states::gameplay::{game_over::StateCameraPosition, StateGame},
+};
+
 pub struct CameraPlugin;
 
 impl Plugin for CameraPlugin {
@@ -10,5 +15,26 @@ impl Plugin for CameraPlugin {
         app.add_systems(Startup, |mut commands: Commands| {
             commands.spawn(Camera2d);
         });
+
+        app.add_systems(OnEnter(StateGame::GameOver), set_camera_game_over);
+        app.add_systems(OnExit(StateGame::GameOver), set_camera_default);
+
+        app.add_systems(
+            Update,
+            setting_camera_game_over.run_if(StateCameraPosition::when_to_game_over),
+        );
+
+        app.add_systems(
+            Update,
+            setting_camera_default.run_if(StateCameraPosition::when_to_default),
+        );
     }
+}
+
+fn set_camera_game_over(mut next_state: ResMut<NextState<StateCameraPosition>>) {
+    next_state.set(StateCameraPosition::ToGameOver);
+}
+
+fn set_camera_default(mut next_state: ResMut<NextState<StateCameraPosition>>) {
+    next_state.set(StateCameraPosition::ToDefault);
 }

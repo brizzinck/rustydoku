@@ -84,7 +84,7 @@ pub(super) fn spawn_figure(
     };
 
     for &offset in squares_position.iter() {
-        let child = square::spawn_child(commands, parent, offset, rotation, assets);
+        let child = square::spawn_as_child(commands, parent, offset, rotation, assets);
         figure.squares_entity.push(child);
     }
 

@@ -1,6 +1,6 @@
 use crate::constants::ui::assets::*;
 use crate::constants::ui::restart_button::*;
-use crate::states::StateGame;
+use crate::states::gameplay::StateGame;
 use bevy::prelude::*;
 
 #[derive(Component)]

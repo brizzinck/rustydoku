@@ -1,3 +1,4 @@
+pub mod animation;
 pub mod figure;
 pub mod game_over;
 pub mod idle;

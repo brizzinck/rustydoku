@@ -1,9 +1,13 @@
 use crate::{
-    components::figures::{dragging, placing, square::highlight, stop_dragging},
-    resource::figure_spawner::{
-        despawn_figures, lerping_figures, spawn_figures, spawn_zone_figures,
+    components::figures::{
+        animation::upscaling_dragging, moving, placing, square::highlight, stop_dragging, Figure,
     },
-    states::StateGame,
+    events::figure::FigureTriggerDragging,
+    resource::figure_spawner::{
+        despawn_figures, lerping_figures, removig_lerp_figures, spawn_figures, spawn_zone_figures,
+        FigureSpawner,
+    },
+    states::gameplay::StateGame,
 };
 use bevy::prelude::*;
 
@@ -18,21 +22,45 @@ impl Plugin for FigurePlugin {
             OnEnter(StateGame::GenerateWorld),
             (spawn_zone_figures, spawn_figures).chain(),
         );
+
+        app.add_systems(Update, lerping_figures);
+
         app.add_systems(
             Update,
-            (
-                dragging,
-                stop_dragging,
-                highlight,
-                placing,
-                despawn_figures,
-                lerping_figures,
-            ),
+            (stop_dragging, moving, highlight, call_dragging_events)
+                .run_if(StateGame::when_draggin)
+                .chain(),
         );
+
+        app.add_systems(
+            Update,
+            (removig_lerp_figures, placing)
+                .run_if(StateGame::when_placing)
+                .chain(),
+        );
+
+        app.add_systems(Update, despawn_figures.run_if(StateGame::when_placed));
+
         #[cfg(feature = "debug-inspector")]
         {
             use crate::components::figures::FigureBounds;
             app.register_type::<FigureBounds>();
         }
+    }
+}
+
+fn call_dragging_events(
+    mut event_reader: EventReader<FigureTriggerDragging>,
+    mut figures: Query<&mut Transform, With<Figure>>,
+    mut figure_spawner: ResMut<FigureSpawner>,
+    time: Res<Time>,
+) {
+    for figure in event_reader.read() {
+        let entity = figure.0;
+        let mut transform = figures.get_mut(entity).unwrap();
+
+        upscaling_dragging(&mut transform, time.delta_secs());
+
+        figure_spawner.remove_lerp_figure(entity);
     }
 }

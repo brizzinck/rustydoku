@@ -3,9 +3,9 @@ use crate::{
         figures::{spawner::random_spawn_figure, Figure},
         ui::header::HeaderUI,
     },
-    constants::figure::placeholder::*,
-    constants::figure::*,
-    states::StateGame,
+    constants::figure::{placeholder::*, *},
+    events::figure::FigureTriggerUp,
+    states::gameplay::StateGame,
 };
 use assets::FIGURE_PLACEHOLDER_IMAGE_PATH;
 use bevy::{
@@ -30,6 +30,15 @@ impl FigureSpawner {
 
     pub fn remove_lerp_figure(&mut self, entity: Entity) {
         self.lerp_figures.remove(&entity);
+    }
+}
+
+pub fn removig_lerp_figures(
+    mut event_reader: EventReader<FigureTriggerUp>,
+    mut figure_spawner: ResMut<FigureSpawner>,
+) {
+    for FigureTriggerUp(entity) in event_reader.read() {
+        figure_spawner.remove_lerp_figure(*entity);
     }
 }
 

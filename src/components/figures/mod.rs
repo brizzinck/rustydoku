@@ -1,14 +1,16 @@
 use super::map::Tile;
 use crate::{
     constants::figure::*,
+    events::figure::{FigureTriggerDragging, FigureTriggerUp},
     resource::{figure_spawner::FigureSpawner, game_zone::GameZone},
-    states::StateGame,
+    states::gameplay::StateGame,
 };
 use bevy::{prelude::*, window::PrimaryWindow};
 #[cfg(feature = "debug-inspector")]
 use bevy_inspector_egui::prelude::*;
 use square::{check_for_place, Square};
 
+pub mod animation;
 pub mod big_t_shape;
 pub mod cube;
 pub mod line;
@@ -53,22 +55,21 @@ pub(crate) fn start_dragging(
 }
 
 #[allow(clippy::too_many_arguments)]
-pub(crate) fn dragging(
+pub(crate) fn moving(
     mut figure_query: Query<(&mut Transform, &Figure, &FigureBounds)>,
-    mouse_button_input: Res<ButtonInput<MouseButton>>,
+    mouse_input: Res<ButtonInput<MouseButton>>,
     touch_input: Res<Touches>,
     cursor: Query<&Window, With<PrimaryWindow>>,
     cameras: Query<(&Camera, &GlobalTransform)>,
     game_zone: Res<GameZone>,
     game_state: Res<State<StateGame>>,
-    time: Res<Time>,
-    mut figure_spawner: ResMut<FigureSpawner>,
+    mut event_writer: EventWriter<FigureTriggerDragging>,
 ) {
     if let StateGame::Dragging(figure) = game_state.get() {
-        figure_spawner.remove_lerp_figure(*figure);
+        event_writer.send(FigureTriggerDragging(*figure));
         let (camera, camera_transform) = cameras.single();
 
-        if mouse_button_input.pressed(MouseButton::Left) || touch_input.any_just_pressed() {
+        if mouse_input.pressed(MouseButton::Left) || touch_input.any_just_pressed() {
             let window = cursor.single();
             if let Some(cursor_pos) = window.cursor_position() {
                 if let Ok(world_pos) = camera.viewport_to_world(camera_transform, cursor_pos) {
@@ -91,15 +92,6 @@ pub(crate) fn dragging(
 
                         transform.translation.x = desired.x;
                         transform.translation.y = desired.y;
-
-                        transform.scale = transform.scale.lerp(
-                            Vec3::splat(FIGURE_DRAGGING_SCALE),
-                            time.delta_secs() * FIGURE_SPEED_TO_UPSCALE,
-                        );
-
-                        if transform.scale.x >= 0.99 {
-                            transform.scale = Vec3::splat(FIGURE_DRAGGING_SCALE);
-                        }
                     }
                 }
             }
@@ -112,10 +104,12 @@ pub(crate) fn stop_dragging(
     touch_input: Res<Touches>,
     current_state: Res<State<StateGame>>,
     mut next_state: ResMut<NextState<StateGame>>,
+    mut event_writer: EventWriter<FigureTriggerUp>,
 ) {
     if mouse_input.just_released(MouseButton::Left) || touch_input.any_just_released() {
         if let StateGame::Dragging(figure) = current_state.get() {
             next_state.set(StateGame::Placing(*figure));
+            event_writer.send(FigureTriggerUp(*figure));
         }
     }
 }
