@@ -1,6 +1,6 @@
 use crate::{
     components::map::Tile,
-    constants::{figure::MAX_FIGURE_USIZE, map::*},
+    constants::{figure::MAX_FIGURE_USIZE_SCALED, map::*},
     resource::score::Score,
     states::StateGame,
 };
@@ -77,7 +77,7 @@ fn check_vertical(grid: &[[bool; MAP_USIZE]; MAP_USIZE], tiles_to_clear: &mut Ve
 
 /// Checks for full 3x3 blocks and marks them for clearing
 fn check_blocks(grid: &[[bool; MAP_USIZE]; MAP_USIZE], tiles_to_clear: &mut Vec<(usize, usize)>) {
-    let local_size = MAP_USIZE / MAX_FIGURE_USIZE;
+    let local_size = MAP_USIZE / MAX_FIGURE_USIZE_SCALED;
     for i in 0..local_size {
         for j in 0..local_size {
             let mut is_full = true;

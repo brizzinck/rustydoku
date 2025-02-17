@@ -1,10 +1,10 @@
 use assets::TILE_IMAGE_PATH;
-use bevy::{prelude::*, utils::HashMap};
+use bevy::{prelude::*, text::cosmic_text::ttf_parser::gpos::MarkToBaseAdjustment, utils::HashMap};
 #[cfg(feature = "debug-inspector")]
 use bevy_inspector_egui::prelude::*;
 
 use crate::{
-    constants::{figure::MAX_FIGURE_USIZE, map::*},
+    constants::{figure::MAX_FIGURE_USIZE_SCALED, map::*},
     resource::map::Map,
     states::StateGame,
 };
@@ -28,7 +28,10 @@ pub(crate) fn generate_map(
     let mut hash_titles = HashMap::with_capacity(MAP_SIZE as usize * MAP_SIZE as usize);
     for (zero_x, x) in MAP_SPAWN_POS.enumerate() {
         for (zero_y, y) in MAP_SPAWN_POS.enumerate() {
-            let color = if ((zero_x / MAX_FIGURE_USIZE) + (zero_y / MAX_FIGURE_USIZE)) % 2 == 0 {
+            let color = if ((zero_x / MAX_FIGURE_USIZE_SCALED) + (zero_y / MAX_FIGURE_USIZE_SCALED))
+                % 2
+                == 0
+            {
                 COLOR_DARK
             } else {
                 COLOR_LIGHT
