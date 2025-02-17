@@ -1,5 +1,5 @@
 use assets::TILE_IMAGE_PATH;
-use bevy::{prelude::*, text::cosmic_text::ttf_parser::gpos::MarkToBaseAdjustment, utils::HashMap};
+use bevy::{prelude::*, utils::HashMap};
 #[cfg(feature = "debug-inspector")]
 use bevy_inspector_egui::prelude::*;
 
