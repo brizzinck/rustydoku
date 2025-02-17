@@ -37,7 +37,7 @@ fn create_panel() -> (Node, GameOverPanel) {
             right: GAME_OVER_PANEL_RIGHT,
             bottom: GAME_OVER_PANEL_BOTTOM,
             position_type: GAME_OVER_PANEL_POSITION_TYPE,
-            top: GAME_OVER_PANEL_TOP,
+            top: GAME_OVER_PANEL_TOP_DEFAULT,
             width: GAME_OVER_PANEL_WIDTH,
             height: GAME_OVER_PANEL_HEIGHT,
             margin: GAME_OVER_PANEL_MARGIN,

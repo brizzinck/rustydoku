@@ -3,6 +3,7 @@ use bevy::prelude::*;
 #[cfg(feature = "debug-inspector")]
 use bevy_inspector_egui::quick::WorldInspectorPlugin;
 
+use constants::world::background::BACKGROUND_CLEAR_COLOR;
 use plugins::default::RustydokuDefault;
 use plugins::game_zone::GameZonePlugin;
 use plugins::logic::RustydokuLogicPlugin;
@@ -30,10 +31,11 @@ pub fn run() {
     game.add_plugins(GameZonePlugin);
     game.add_plugins(RustydokuUIPlugin);
     game.add_plugins(RustydokuLogicPlugin);
+
     #[cfg(feature = "debug-inspector")]
     game.add_plugins(WorldInspectorPlugin::new());
 
-    game.insert_resource(ClearColor(Color::srgb(0.9, 0.9, 0.3)));
+    game.insert_resource(ClearColor(BACKGROUND_CLEAR_COLOR));
     game.insert_resource(Score::default());
     game.insert_resource(FigureSpawner::default());
     game.insert_resource(Map::default());

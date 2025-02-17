@@ -1,9 +1,13 @@
-use bevy::prelude::*;
-
 use crate::{
     components::ui::{game_over::GameOverPanel, header::HeaderUI},
+    constants::{
+        game_over::{camera::*, ui_panel::GAME_OVER_PANEL_TOP_END_FLOAT},
+        idle::camera::*,
+        ui::game_over_panel::*,
+    },
     states::StateGame,
 };
+use bevy::prelude::*;
 
 pub fn display(
     mut camera: Query<(&Transform, &mut OrthographicProjection), With<Camera2d>>,
@@ -12,19 +16,20 @@ pub fn display(
 ) {
     if *state.get() != StateGame::GameOver {
         for (_transform, mut orthographic_projection) in camera.iter_mut() {
-            orthographic_projection.viewport_origin.y = orthographic_projection
-                .viewport_origin
-                .y
-                .lerp(0.5, time.delta_secs() * 2.0);
+            orthographic_projection.viewport_origin.y =
+                orthographic_projection.viewport_origin.y.lerp(
+                    CAMERA_POSITION_Y_IDLE,
+                    time.delta_secs() * CAMERA_ANIMATION_IN_POSITION_SPEED,
+                );
         }
         return;
     }
 
     for (_transform, mut orthographic_projection) in camera.iter_mut() {
-        orthographic_projection.viewport_origin.y = orthographic_projection
-            .viewport_origin
-            .y
-            .lerp(0.65, time.delta_secs() * 2.0);
+        orthographic_projection.viewport_origin.y = orthographic_projection.viewport_origin.y.lerp(
+            CAMERA_POSITION_Y_GAME_OVER,
+            time.delta_secs() * CAMERA_ANIMATION_OUT_POSITION_SPEED,
+        );
     }
 }
 
@@ -45,7 +50,9 @@ pub fn animate_game_over_panel(
 
         let progress = panel.timer.elapsed_secs() / panel.timer.duration().as_secs_f32();
 
-        style.top = Val::Percent(120.0 - 54.0 * progress);
+        style.top = Val::Percent(
+            GAME_OVER_PANEL_TOP_DEFAULT_FLOAT - GAME_OVER_PANEL_TOP_END_FLOAT * progress,
+        );
     }
 }
 

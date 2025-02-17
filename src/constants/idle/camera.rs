@@ -1,0 +1,1 @@
+pub const CAMERA_POSITION_Y_IDLE: f32 = 0.5;
