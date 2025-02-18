@@ -1,5 +1,5 @@
-use super::{big_t_shape, cube, line, square, start_dragging, t_shape, Figure, FigureBounds};
-use crate::constants::figure::*;
+use super::{big_t_shape, cube, line, square, t_shape, Figure, FigureBounds};
+use crate::{constants::figure::*, logic::figure::trigger::start_dragging};
 use bevy::prelude::*;
 use rand::Rng;
 

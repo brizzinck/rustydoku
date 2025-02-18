@@ -8,7 +8,7 @@ use bevy::prelude::*;
 
 #[derive(Component, Default)]
 pub struct Square {
-    pub(super) parent: Option<Entity>,
+    pub(crate) parent: Option<Entity>,
 }
 
 pub(super) fn spawn(commands: &mut Commands, position: Vec2, assets: &Res<AssetServer>) -> Entity {

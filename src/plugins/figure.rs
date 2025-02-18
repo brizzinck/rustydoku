@@ -1,11 +1,10 @@
 use crate::{
-    components::figures::{
-        animation::upscaling_dragging, moving, placing, square::highlight, stop_dragging, Figure,
-    },
+    components::figures::{animation::upscaling_dragging, square::highlight, Figure},
     events::figure::FigureTriggerDragging,
+    logic::figure::{dragging::moving, placing::placing, trigger::stop_dragging},
     resource::figure_spawner::{
-        despawn_figures, lerping_figures, removig_lerp_figures, spawn_figures, spawn_zone_figures,
-        FigureSpawner,
+        adding_lerp_figures, despawn_figures, lerping_figures, removig_lerp_figures, spawn_figures,
+        spawn_zone_figures, FigureSpawner,
     },
     states::gameplay::StateGame,
 };
@@ -34,7 +33,7 @@ impl Plugin for FigurePlugin {
 
         app.add_systems(
             Update,
-            (removig_lerp_figures, placing)
+            (removig_lerp_figures, placing, adding_lerp_figures)
                 .run_if(StateGame::when_placing)
                 .chain(),
         );

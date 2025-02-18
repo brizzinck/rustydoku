@@ -4,7 +4,7 @@ use crate::{
         ui::header::HeaderUI,
     },
     constants::figure::{placeholder::*, *},
-    events::figure::FigureTriggerUp,
+    events::figure::{FigureDeniedPlacing, FigureTriggerUp},
     states::gameplay::StateGame,
 };
 use assets::FIGURE_PLACEHOLDER_IMAGE_PATH;
@@ -30,6 +30,15 @@ impl FigureSpawner {
 
     pub fn remove_lerp_figure(&mut self, entity: Entity) {
         self.lerp_figures.remove(&entity);
+    }
+}
+
+pub fn adding_lerp_figures(
+    mut event_reader: EventReader<FigureDeniedPlacing>,
+    mut figure_spawner: ResMut<FigureSpawner>,
+) {
+    for FigureDeniedPlacing(entity) in event_reader.read() {
+        figure_spawner.add_lerp_figure(*entity);
     }
 }
 

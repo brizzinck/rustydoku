@@ -8,3 +8,6 @@ pub struct FigureTriggerDragging(pub Entity);
 
 #[derive(Event)]
 pub struct FigureTriggerUp(pub Entity);
+
+#[derive(Event)]
+pub struct FigureDeniedPlacing(pub Entity);
