@@ -1,10 +1,8 @@
 use crate::{
-    components::{
-        figures::{spawner::random_spawn_figure, Figure},
-        ui::header::HeaderUI,
-    },
+    components::{figures::Figure, ui::header::HeaderUI},
     constants::figure::{placeholder::*, *},
     events::figure::{FigureDeniedPlacing, FigureTriggerUp},
+    logic::figure::spawner::random_spawn_figure,
     states::gameplay::StateGame,
 };
 use assets::FIGURE_PLACEHOLDER_IMAGE_PATH;

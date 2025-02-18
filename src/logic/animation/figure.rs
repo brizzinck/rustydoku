@@ -1,4 +1,4 @@
-use super::{FIGURE_DRAGGING_SCALE, FIGURE_SPEED_TO_UPSCALE};
+use crate::constants::figure::{FIGURE_DRAGGING_SCALE, FIGURE_SPEED_TO_UPSCALE};
 use bevy::prelude::*;
 
 pub fn upscaling_dragging(transform: &mut Transform, delta: f32) {

@@ -1,13 +1,12 @@
 use crate::{
-    components::{
-        figures::{square::check_for_place, Figure},
-        map::Tile,
-    },
+    components::{figures::Figure, map::Tile},
     constants::figure::*,
     events::figure::FigureDeniedPlacing,
     states::gameplay::StateGame,
 };
 use bevy::prelude::*;
+
+use super::square::check_for_place;
 
 pub(crate) fn placing(
     mut commands: Commands,

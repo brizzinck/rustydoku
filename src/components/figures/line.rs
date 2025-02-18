@@ -1,4 +1,4 @@
-use super::spawner::spawn_figure;
+use crate::logic::figure::spawner::spawn_figure;
 use bevy::prelude::*;
 
 pub fn spawn(commands: &mut Commands, position: Vec2, assets: &Res<AssetServer>) -> Entity {

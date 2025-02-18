@@ -1,7 +1,12 @@
-use super::{big_t_shape, cube, line, square, t_shape, Figure, FigureBounds};
-use crate::{constants::figure::*, logic::figure::trigger::start_dragging};
+use crate::{
+    components::figures::{big_t_shape, cube, line, square, t_shape, Figure, FigureBounds},
+    constants::figure::*,
+    logic::figure::trigger::start_dragging,
+};
 use bevy::prelude::*;
 use rand::Rng;
+
+use super::square::spawn_as_child;
 
 pub(crate) fn random_spawn_figure(
     commands: &mut Commands,
@@ -18,7 +23,7 @@ pub(crate) fn random_spawn_figure(
     }
 }
 
-pub(super) fn spawn_empty_figure(
+pub fn spawn_empty_figure(
     commands: &mut Commands,
     position: Vec2,
     squares_position: &[Vec2],
@@ -70,7 +75,7 @@ pub(super) fn spawn_empty_figure(
     )
 }
 
-pub(super) fn spawn_figure(
+pub fn spawn_figure(
     commands: &mut Commands,
     absolute_position: Vec2,
     squares_position: &[Vec2],
@@ -84,7 +89,7 @@ pub(super) fn spawn_figure(
     };
 
     for &offset in squares_position.iter() {
-        let child = square::spawn_as_child(commands, parent, offset, rotation, assets);
+        let child = spawn_as_child(commands, parent, offset, rotation, assets);
         figure.squares_entity.push(child);
     }
 

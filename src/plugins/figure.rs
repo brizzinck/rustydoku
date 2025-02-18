@@ -1,7 +1,10 @@
 use crate::{
-    components::figures::{animation::upscaling_dragging, square::highlight, Figure},
+    components::figures::Figure,
     events::figure::FigureTriggerDragging,
-    logic::figure::{dragging::moving, placing::placing, trigger::stop_dragging},
+    logic::{
+        animation::figure::upscaling_dragging,
+        figure::{dragging::moving, placing::placing, square::highlight, trigger::stop_dragging},
+    },
     resource::figure_spawner::{
         adding_lerp_figures, despawn_figures, lerping_figures, removig_lerp_figures, spawn_figures,
         spawn_zone_figures, FigureSpawner,
