@@ -35,7 +35,7 @@ pub(crate) fn placing(
                 }
             }
 
-            if tiles.len() != figure.squares_entity.len() {
+            if tiles.len() != figure.squares_entity.len() || !figure.state_animation.is_default() {
                 next_state.set(StateGame::Idle);
                 event_writer.send(FigureDeniedPlacing(*placed));
                 info!("Invalid placement, returning to idle state.");

@@ -6,7 +6,7 @@ use crate::{
         },
         map::Tile,
     },
-    constants::{figure::FIGURE_DRAGGING_SCALE, map::TILE_SIZE},
+    constants::map::TILE_SIZE,
     states::gameplay::StateGame,
 };
 use bevy::prelude::*;
@@ -27,7 +27,7 @@ pub fn spawn_as_child(
 
 pub(crate) fn highlight(
     mut tile_query: Query<(&Tile, &mut Sprite, &GlobalTransform, Entity)>,
-    figure_query: Query<(&Figure, &Transform)>,
+    figure_query: Query<&Figure>,
     mut square_query: Query<(Entity, &GlobalTransform, &mut Square)>,
     current_state: Res<State<StateGame>>,
 ) {
@@ -37,8 +37,8 @@ pub(crate) fn highlight(
 
     if let StateGame::Dragging(figure) = current_state.get() {
         let mut highlight_tiles = vec![];
-        if let Ok((figure, transform)) = figure_query.get(*figure) {
-            if transform.scale.x < FIGURE_DRAGGING_SCALE {
+        if let Ok(figure) = figure_query.get(*figure) {
+            if !figure.state_animation.is_default() {
                 return;
             }
 

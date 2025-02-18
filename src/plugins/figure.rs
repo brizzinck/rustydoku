@@ -53,15 +53,19 @@ impl Plugin for FigurePlugin {
 
 fn call_dragging_events(
     mut event_reader: EventReader<FigureTriggerDragging>,
-    mut figures: Query<&mut Transform, With<Figure>>,
+    mut figures: Query<(&mut Transform, &mut Figure)>,
     mut figure_spawner: ResMut<FigureSpawner>,
     time: Res<Time>,
 ) {
-    for figure in event_reader.read() {
-        let entity = figure.0;
-        let mut transform = figures.get_mut(entity).unwrap();
+    for entity in event_reader.read() {
+        let entity = entity.0;
+        let (mut transform, mut figure) = figures.get_mut(entity).unwrap();
 
-        upscaling_dragging(&mut transform, time.delta_secs());
+        upscaling_dragging(
+            &mut transform,
+            time.delta_secs(),
+            &mut figure.state_animation,
+        );
 
         figure_spawner.remove_lerp_figure(entity);
     }

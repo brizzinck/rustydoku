@@ -2,19 +2,14 @@ use bevy::prelude::*;
 
 #[derive(Default, States, Debug, Clone, PartialEq, Eq, Hash)]
 pub enum StateGameOverPanel {
-    #[default]
-    None,
     Showing,
     Showed,
     Hidding,
+    #[default]
     Hidded,
 }
 
 impl StateGameOverPanel {
-    pub fn when_none(state: Res<State<StateGameOverPanel>>) -> bool {
-        StateGameOverPanel::None == *state.get()
-    }
-
     pub fn when_showing(state: Res<State<StateGameOverPanel>>) -> bool {
         StateGameOverPanel::Showing == *state.get()
     }

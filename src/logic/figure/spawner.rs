@@ -2,6 +2,7 @@ use crate::{
     components::figures::{big_t_shape, cube, line, square, t_shape, Figure, FigureBounds},
     constants::figure::*,
     logic::figure::trigger::start_dragging,
+    states::figure::StateFigureAnimation,
 };
 use bevy::prelude::*;
 use rand::Rng;
@@ -86,6 +87,7 @@ pub fn spawn_figure(
     let mut figure = Figure {
         squares_entity: Vec::with_capacity(squares_position.len()),
         squares_position: squares_position.to_vec(),
+        state_animation: StateFigureAnimation::default(),
     };
 
     for &offset in squares_position.iter() {

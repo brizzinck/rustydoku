@@ -1,16 +1,13 @@
 use crate::{
     components::{
         map::{restart_tiles, Tile},
-        ui::{
-            game_over::{despawn_game_over_panel, GameOverPanel},
-            header::{reset_header, HeaderUI},
-        },
+        ui::header::{reset_header, HeaderUI},
     },
     resource::{
         figure_spawner::{restart_figures, show_figures, FigureSpawner, FigureZone},
         score::{restart_score, Score},
     },
-    states::gameplay::StateGame,
+    states::gameplay::{game_over::StateGameOverPanel, StateGame},
 };
 use bevy::prelude::*;
 
@@ -22,16 +19,16 @@ pub fn restart(
     figure_spawner: ResMut<FigureSpawner>,
     score: ResMut<Score>,
     tiles: Query<&mut Tile>,
-    game_over_panel: Query<Entity, With<GameOverPanel>>,
     mut header: Query<&mut Visibility, With<HeaderUI>>,
     mut figures_zone: Query<&mut Visibility, (With<FigureZone>, Without<HeaderUI>)>,
+    mut next_state_panel: ResMut<NextState<StateGameOverPanel>>,
 ) {
     info!("Restarting game");
 
     restart_figures(&mut commands, figure_spawner, assets);
     restart_score(score);
     restart_tiles(&mut commands, tiles);
-    despawn_game_over_panel(&mut commands, game_over_panel);
+    next_state_panel.set(StateGameOverPanel::Hidding);
     reset_header(&mut header);
     show_figures(&mut figures_zone);
 

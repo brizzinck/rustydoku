@@ -2,6 +2,7 @@ use super::Figure;
 use crate::{
     constants::figure::*,
     logic::figure::{spawner::spawn_empty_figure, square::spawn_as_child},
+    states::figure::StateFigureAnimation,
 };
 use assets::SQAURE_IMAGE_PATH;
 use bevy::prelude::*;
@@ -18,6 +19,7 @@ pub fn spawn(commands: &mut Commands, position: Vec2, assets: &Res<AssetServer>)
     commands.entity(parent).insert(Figure {
         squares_entity: vec![child],
         squares_position: vec![Vec2::new(0., 0.)],
+        state_animation: StateFigureAnimation::default(),
     });
     commands.entity(parent).insert(Name::new("square"));
 

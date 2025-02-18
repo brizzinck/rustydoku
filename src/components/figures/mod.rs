@@ -1,5 +1,7 @@
 use bevy::prelude::*;
 
+use crate::states::figure::StateFigureAnimation;
+
 pub mod big_t_shape;
 pub mod cube;
 pub mod line;
@@ -18,4 +20,5 @@ pub struct FigureBounds {
 pub struct Figure {
     pub squares_entity: Vec<Entity>,
     pub squares_position: Vec<Vec2>,
+    pub state_animation: StateFigureAnimation,
 }

@@ -3,7 +3,7 @@ use crate::{
     constants::figure::{placeholder::*, *},
     events::figure::{FigureDeniedPlacing, FigureTriggerUp},
     logic::figure::spawner::random_spawn_figure,
-    states::gameplay::StateGame,
+    states::{figure::StateFigureAnimation, gameplay::StateGame},
 };
 use assets::FIGURE_PLACEHOLDER_IMAGE_PATH;
 use bevy::{
@@ -51,12 +51,12 @@ pub fn removig_lerp_figures(
 
 pub fn lerping_figures(
     mut figure_spawner: ResMut<FigureSpawner>,
-    mut figures: Query<(&Figure, &mut Transform)>,
+    mut figures: Query<(&mut Figure, &mut Transform)>,
     time: Res<Time>,
 ) {
     let mut to_remove = Vec::new();
     for entity in figure_spawner.lerp_figures.iter() {
-        if let Ok((_figure, mut transform)) = figures.get_mut(*entity) {
+        if let Ok((mut figure, mut transform)) = figures.get_mut(*entity) {
             let mut remove = true;
             if let Some(position) = figure_spawner.figures.get(entity) {
                 transform.translation = transform.translation.lerp(
@@ -77,8 +77,10 @@ pub fn lerping_figures(
 
             if transform.scale.distance(Vec3::splat(PLACEHOLDER_SCALE)) < 0.01 {
                 transform.scale = Vec3::splat(PLACEHOLDER_SCALE);
+                figure.state_animation = StateFigureAnimation::default();
             } else {
                 remove = false;
+                figure.state_animation = StateFigureAnimation::BackLerping;
             }
 
             if remove {
