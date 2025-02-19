@@ -2,7 +2,7 @@ use bevy::prelude::*;
 
 use crate::logic::figure::spawner::spawn_figure;
 
-pub fn spawn(commands: &mut Commands, position: Vec2, assets: &Res<AssetServer>) -> Entity {
+pub(crate) fn spawn(commands: &mut Commands, position: Vec2, assets: &Res<AssetServer>) -> Entity {
     spawn_figure(
         commands,
         position,

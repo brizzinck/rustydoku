@@ -1,10 +1,10 @@
 use crate::{
     components::{map::reset_tiles, ui::header::show_header},
-    logic::animation::game_over_panel::set_hide_game_over_panel,
-    resource::{
-        figure_spawner::{clear_figures, hide_figures, respawn_figures, show_figures},
-        score::reset_score,
+    logic::{
+        animation::game_over_panel::set_hide_game_over_panel,
+        gameplay::figure_spawner::{clear_figures, hide_figures, respawn_figures, show_figures},
     },
+    resource::score::Score,
     states::gameplay::{reset_state, StateGame},
 };
 use bevy::prelude::*;
@@ -17,7 +17,7 @@ impl Plugin for RustydokuGameplay {
             OnEnter(StateGame::Restart),
             (
                 respawn_figures,
-                reset_score,
+                Score::reset_score,
                 reset_tiles,
                 set_hide_game_over_panel,
                 show_header,

@@ -1,10 +1,7 @@
 use bevy::prelude::*;
 
-pub mod game_over;
-
 #[derive(States, Default, Debug, Clone, PartialEq, Eq, Hash)]
 pub enum StateGame {
-    #[default]
     GenerateWorld,
     Idle,
     Dragging(Entity),
@@ -12,6 +9,7 @@ pub enum StateGame {
     Placed(Entity),
     CheckCombo,
     CheckGameOver,
+    #[default]
     GameOver,
     Restart,
 }
@@ -35,5 +33,5 @@ impl StateGame {
 }
 
 pub fn reset_state(mut state: ResMut<NextState<StateGame>>) {
-    state.set(StateGame::default());
+    state.set(StateGame::Idle);
 }

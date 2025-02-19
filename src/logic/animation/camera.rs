@@ -1,6 +1,6 @@
 use crate::{
-    constants::{animation::ELAPSED_TIME, game_over::camera::*, idle::camera::*},
-    states::gameplay::game_over::StateCameraPosition,
+    constants::{animation::ELAPSED_TIME, world::camera::*},
+    states::world::camera::StateCameraPosition,
 };
 use bevy::prelude::*;
 

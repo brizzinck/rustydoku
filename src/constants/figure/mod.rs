@@ -4,6 +4,7 @@ use super::map::TILE_SIZE;
 
 pub mod assets;
 pub mod placeholder;
+pub mod spawn_zone;
 
 pub const SQUARE_SIZE: f32 = TILE_SIZE;
 pub const SQUARE_PLACED_POSITION: Vec3 = Vec3::new(0., 0., 0.5);

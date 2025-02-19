@@ -11,8 +11,8 @@ use crate::{
         },
         ui::game_over_panel::hide_header,
     },
-    resource::score::update_max_score,
-    states::gameplay::{game_over::StateGameOverPanel, StateGame},
+    resource::score::Score,
+    states::{gameplay::StateGame, ui::game_over_panel::StateGameOverPanel},
 };
 use bevy::prelude::*;
 
@@ -25,7 +25,12 @@ impl Plugin for RustydokuUIPlugin {
 
         app.add_systems(
             OnEnter(StateGame::GameOver),
-            (update_max_score, hide_header, set_show_game_over_panel).chain(),
+            (
+                Score::update_max_score,
+                hide_header,
+                set_show_game_over_panel,
+            )
+                .chain(),
         );
 
         app.add_systems(OnExit(StateGame::GameOver), set_hide_game_over_panel);

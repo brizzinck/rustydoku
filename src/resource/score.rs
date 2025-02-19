@@ -6,10 +6,12 @@ pub struct Score {
     pub max_value: i32,
 }
 
-pub fn reset_score(mut score: ResMut<Score>) {
-    score.current_value = 0;
-}
+impl Score {
+    pub(crate) fn reset_score(mut score: ResMut<Score>) {
+        score.current_value = 0;
+    }
 
-pub fn update_max_score(mut score: ResMut<Score>) {
-    score.max_value = score.current_value.max(score.max_value);
+    pub(crate) fn update_max_score(mut score: ResMut<Score>) {
+        score.max_value = score.current_value.max(score.max_value);
+    }
 }

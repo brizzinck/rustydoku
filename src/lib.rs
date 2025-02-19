@@ -15,8 +15,9 @@ use plugins::{camera::CameraPlugin, figure::FigurePlugin, map::MapPlugin};
 use resource::figure_spawner::FigureSpawner;
 use resource::map::Map;
 use resource::score::Score;
-use states::gameplay::game_over::{StateCameraPosition, StateGameOverPanel};
 use states::gameplay::StateGame;
+use states::ui::game_over_panel::StateGameOverPanel;
+use states::world::camera::StateCameraPosition;
 
 pub mod components;
 pub mod constants;

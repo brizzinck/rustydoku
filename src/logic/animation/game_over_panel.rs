@@ -1,7 +1,6 @@
 use crate::{
-    components::ui::game_over::GameOverPanel,
-    constants::{game_over::ui_panel::GAME_OVER_PANEL_TOP_END_FLOAT, ui::game_over_panel::*},
-    states::gameplay::game_over::StateGameOverPanel,
+    components::ui::game_over::GameOverPanel, constants::ui::game_over_panel::*,
+    states::ui::game_over_panel::StateGameOverPanel,
 };
 use bevy::prelude::*;
 

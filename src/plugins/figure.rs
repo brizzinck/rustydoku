@@ -4,11 +4,14 @@ use crate::{
     logic::{
         animation::figure::upscaling_dragging,
         figure::{dragging::moving, placing::placing, square::highlight, trigger::stop_dragging},
+        gameplay::figure_spawner::{
+            animation::{adding_lerp_figures, lerping_figures, removig_lerp_figures},
+            despawn_figure,
+            init::spawn_zone_figures,
+            spawn_figures,
+        },
     },
-    resource::figure_spawner::{
-        adding_lerp_figures, despawn_figures, lerping_figures, removig_lerp_figures, spawn_figures,
-        spawn_zone_figures, FigureSpawner,
-    },
+    resource::figure_spawner::FigureSpawner,
     states::gameplay::StateGame,
 };
 use bevy::prelude::*;
@@ -41,7 +44,7 @@ impl Plugin for FigurePlugin {
                 .chain(),
         );
 
-        app.add_systems(Update, despawn_figures.run_if(StateGame::when_placed));
+        app.add_systems(Update, despawn_figure.run_if(StateGame::when_placed));
 
         #[cfg(feature = "debug-inspector")]
         {

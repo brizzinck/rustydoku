@@ -24,7 +24,7 @@ pub(crate) fn random_spawn_figure(
     }
 }
 
-pub fn spawn_empty_figure(
+pub(crate) fn spawn_empty_figure(
     commands: &mut Commands,
     position: Vec2,
     squares_position: &[Vec2],
@@ -76,7 +76,7 @@ pub fn spawn_empty_figure(
     )
 }
 
-pub fn spawn_figure(
+pub(crate) fn spawn_figure(
     commands: &mut Commands,
     absolute_position: Vec2,
     squares_position: &[Vec2],

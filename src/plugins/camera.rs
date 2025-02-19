@@ -1,11 +1,10 @@
+use crate::{
+    logic::animation::camera::{setting_camera_default, setting_camera_game_over},
+    states::{gameplay::StateGame, world::camera::StateCameraPosition},
+};
 use bevy::{
     app::{Plugin, Startup},
     prelude::*,
-};
-
-use crate::{
-    logic::animation::camera::{setting_camera_default, setting_camera_game_over},
-    states::gameplay::{game_over::StateCameraPosition, StateGame},
 };
 
 pub struct CameraPlugin;
