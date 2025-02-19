@@ -52,7 +52,7 @@ pub(crate) fn generate_map(
     next_state.set(StateGame::Idle);
 }
 
-pub fn restart_tiles(commands: &mut Commands, mut tiles: Query<&mut Tile>) {
+pub fn reset_tiles(mut commands: Commands, mut tiles: Query<&mut Tile>) {
     for mut tile in tiles.iter_mut() {
         if let Some(square) = tile.square {
             tile.square = None;

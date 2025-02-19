@@ -153,8 +153,8 @@ pub fn despawn_figures(
     }
 }
 
-pub fn restart_figures(
-    commands: &mut Commands,
+pub fn respawn_figures(
+    mut commands: Commands,
     mut figure_spawner: ResMut<FigureSpawner>,
     assets: Res<AssetServer>,
 ) {
@@ -172,17 +172,13 @@ pub fn clear_figures(mut commands: Commands, mut figure_spawner: ResMut<FigureSp
     figure_spawner.figures.clear();
 }
 
-pub fn hidden_figures(
-    mut visibility: Query<&mut Visibility, (With<FigureZone>, Without<HeaderUI>)>,
-) {
+pub fn hide_figures(mut visibility: Query<&mut Visibility, (With<FigureZone>, Without<HeaderUI>)>) {
     for mut vis in visibility.iter_mut() {
         *vis = Visibility::Hidden;
     }
 }
 
-pub fn show_figures(
-    visibility: &mut Query<&mut Visibility, (With<FigureZone>, Without<HeaderUI>)>,
-) {
+pub fn show_figures(mut visibility: Query<&mut Visibility, (With<FigureZone>, Without<HeaderUI>)>) {
     for mut vis in visibility.iter_mut() {
         *vis = Visibility::Visible;
     }

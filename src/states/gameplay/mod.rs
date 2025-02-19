@@ -33,3 +33,7 @@ impl StateGame {
         matches!(state.get(), StateGame::Placed(_))
     }
 }
+
+pub fn reset_state(mut state: ResMut<NextState<StateGame>>) {
+    state.set(StateGame::default());
+}

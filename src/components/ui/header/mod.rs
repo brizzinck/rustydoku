@@ -15,7 +15,7 @@ pub fn spawn_header(mut commands: Commands, assets: Res<AssetServer>) {
     spawn_restart_button_header(&mut commands, parent, &assets);
 }
 
-pub fn reset_header(visibility: &mut Query<&mut Visibility, With<HeaderUI>>) {
+pub fn show_header(mut visibility: Query<&mut Visibility, With<HeaderUI>>) {
     for mut vis in visibility.iter_mut() {
         *vis = Visibility::Inherited;
     }

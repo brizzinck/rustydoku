@@ -6,7 +6,7 @@ pub struct Score {
     pub max_value: i32,
 }
 
-pub fn restart_score(mut score: ResMut<Score>) {
+pub fn reset_score(mut score: ResMut<Score>) {
     score.current_value = 0;
 }
 
