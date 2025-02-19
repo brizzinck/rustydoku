@@ -1,12 +1,13 @@
 use crate::{
-    components::{figures::Figure, map::Tile},
+    components::{
+        figures::{square::Square, Figure},
+        map::Tile,
+    },
     constants::figure::*,
     events::figure::FigureDeniedPlacing,
     states::gameplay::StateGame,
 };
 use bevy::prelude::*;
-
-use super::square::check_for_place;
 
 pub(crate) fn placing(
     mut commands: Commands,
@@ -29,7 +30,7 @@ pub(crate) fn placing(
 
             for &square_entity in figure.squares_entity.iter() {
                 if let Ok((_, transform, _)) = square_query.get_mut(square_entity) {
-                    if let Some(entity) = check_for_place(transform, &all_tiles) {
+                    if let Some(entity) = Square::check_for_place(transform, &all_tiles) {
                         tiles.push(entity);
                     }
                 }

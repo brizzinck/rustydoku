@@ -1,5 +1,3 @@
-use bevy::prelude::*;
-
 use crate::{
     components::figures::FigureZone,
     constants::figure::{
@@ -11,8 +9,9 @@ use crate::{
         spawn_zone::SPAWN_ZONE_NAME_HIERARCHY,
     },
 };
+use bevy::prelude::*;
 
-pub fn spawn_zone_figures(mut commands: Commands, assets: Res<AssetServer>) {
+pub(crate) fn spawn_zone_figures(mut commands: Commands, assets: Res<AssetServer>) {
     let parent = commands
         .spawn((
             Name::new(SPAWN_ZONE_NAME_HIERARCHY),

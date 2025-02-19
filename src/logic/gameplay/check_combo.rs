@@ -7,7 +7,7 @@ use crate::{
 use bevy::prelude::*;
 
 /// Runs all checks combination and updates the score
-pub fn check_combination(
+pub(crate) fn check_combination(
     mut commands: Commands,
     mut tiles: Query<(&mut Tile, &Transform)>,
     mut score: ResMut<Score>,

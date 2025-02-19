@@ -1,15 +1,11 @@
 use crate::{
     components::ui::{
-        button_restart::handle_restart_button,
-        game_over::GameOverPanel,
-        header::{score::update_text_score, spawn_header},
+        button_restart::RestartButton, game_over::GameOverPanel, header::score_text::ScoreText,
+        header::HeaderUI,
     },
-    logic::{
-        animation::game_over_panel::{
-            hide_game_over_panel, set_hide_game_over_panel, set_show_game_over_panel,
-            show_game_over_panel,
-        },
-        ui::game_over_panel::hide_header,
+    logic::animation::game_over_panel::{
+        hide_game_over_panel, set_hide_game_over_panel, set_show_game_over_panel,
+        show_game_over_panel,
     },
     resource::score::Score,
     states::{gameplay::StateGame, ui::game_over_panel::StateGameOverPanel},
@@ -20,17 +16,14 @@ pub struct RustydokuUIPlugin;
 
 impl Plugin for RustydokuUIPlugin {
     fn build(&self, app: &mut App) {
-        app.add_systems(
-            Startup,
-            (spawn_header, GameOverPanel::spawn_game_over_panel),
-        );
-        app.add_systems(Update, (update_text_score, handle_restart_button));
+        app.add_systems(Startup, (HeaderUI::spawn, GameOverPanel::spawn));
+        app.add_systems(Update, (ScoreText::update, RestartButton::handle));
 
         app.add_systems(
             OnEnter(StateGame::GameOver),
             (
                 Score::update_max_score,
-                hide_header,
+                HeaderUI::hide,
                 set_show_game_over_panel,
             )
                 .chain(),

@@ -1,4 +1,4 @@
-use super::button_restart::spawn_restart_button_game_over;
+use super::button_restart::RestartButton;
 use crate::{constants::ui::game_over_panel::*, resource::score::Score};
 use bevy::prelude::*;
 
@@ -9,11 +9,7 @@ pub struct GameOverPanel {
 }
 
 impl GameOverPanel {
-    pub fn spawn_game_over_panel(
-        mut commands: Commands,
-        assets: Res<AssetServer>,
-        score: Res<Score>,
-    ) {
+    pub fn spawn(mut commands: Commands, assets: Res<AssetServer>, score: Res<Score>) {
         commands.spawn(create_panel()).with_children(|parent| {
             parent
                 .spawn(create_background(&assets))
@@ -24,7 +20,7 @@ impl GameOverPanel {
 
                     panel.spawn(create_current_score(score.current_value, &assets));
 
-                    spawn_restart_button_game_over(panel, &assets);
+                    RestartButton::spawn_in_game_over(panel, &assets);
                 });
         });
     }

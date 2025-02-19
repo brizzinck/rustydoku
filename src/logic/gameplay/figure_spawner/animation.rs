@@ -1,5 +1,3 @@
-use bevy::prelude::*;
-
 use crate::{
     components::figures::Figure,
     constants::figure::placeholder::{FIGURE_SPEED_RETURN_TO_PLACEHOLDER, PLACEHOLDER_SCALE},
@@ -7,8 +5,9 @@ use crate::{
     resource::figure_spawner::FigureSpawner,
     states::figure::StateFigureAnimation,
 };
+use bevy::prelude::*;
 
-pub fn adding_lerp_figures(
+pub(crate) fn adding_lerp_figures(
     mut event_reader: EventReader<FigureDeniedPlacing>,
     mut figure_spawner: ResMut<FigureSpawner>,
 ) {
@@ -17,7 +16,7 @@ pub fn adding_lerp_figures(
     }
 }
 
-pub fn removig_lerp_figures(
+pub(crate) fn removig_lerp_figures(
     mut event_reader: EventReader<FigureTriggerUp>,
     mut figure_spawner: ResMut<FigureSpawner>,
 ) {
@@ -26,7 +25,7 @@ pub fn removig_lerp_figures(
     }
 }
 
-pub fn lerping_figures(
+pub(crate) fn lerping_figures(
     mut figure_spawner: ResMut<FigureSpawner>,
     mut figures: Query<(&mut Figure, &mut Transform)>,
     time: Res<Time>,

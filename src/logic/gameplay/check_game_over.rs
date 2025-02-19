@@ -9,7 +9,7 @@ use crate::{
 };
 use bevy::prelude::*;
 
-pub fn check_game_over(
+pub(crate) fn check_game_over(
     figures: Query<(&Transform, &FigureBounds, &Figure)>,
     map: Res<Map>,
     tiles: Query<&Tile>,

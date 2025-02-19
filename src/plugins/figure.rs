@@ -1,9 +1,9 @@
 use crate::{
-    components::figures::Figure,
+    components::figures::{square::Square, Figure},
     events::figure::FigureTriggerDragging,
     logic::{
         animation::figure::upscaling_dragging,
-        figure::{dragging::moving, placing::placing, square::highlight, trigger::stop_dragging},
+        figure::{dragging::moving, placing::placing, trigger::stop_dragging},
         gameplay::figure_spawner::{
             animation::{adding_lerp_figures, lerping_figures, removig_lerp_figures},
             despawn_figure,
@@ -32,7 +32,12 @@ impl Plugin for FigurePlugin {
 
         app.add_systems(
             Update,
-            (stop_dragging, moving, highlight, call_dragging_events)
+            (
+                stop_dragging,
+                moving,
+                Square::highlight,
+                call_dragging_events,
+            )
                 .run_if(StateGame::when_draggin)
                 .chain(),
         );

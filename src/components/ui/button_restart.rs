@@ -6,32 +6,30 @@ use bevy::prelude::*;
 #[derive(Component)]
 pub struct RestartButton;
 
-pub fn spawn_restart_button_header(
-    commands: &mut Commands,
-    parent: Entity,
-    assets: &Res<AssetServer>,
-) {
-    commands
-        .spawn(create_restart_button(create_node_header(), assets))
-        .with_child(create_image(assets))
-        .set_parent(parent);
-}
+impl RestartButton {
+    pub fn spawn_in_header(commands: &mut Commands, parent: Entity, assets: &Res<AssetServer>) {
+        commands
+            .spawn(create_restart_button(create_node_header(), assets))
+            .with_child(create_image(assets))
+            .set_parent(parent);
+    }
 
-pub fn spawn_restart_button_game_over(commands: &mut ChildBuilder, assets: &Res<AssetServer>) {
-    commands
-        .spawn(create_restart_button(create_node_game_over(), assets))
-        .with_child(create_image(assets));
-}
+    pub fn spawn_in_game_over(commands: &mut ChildBuilder, assets: &Res<AssetServer>) {
+        commands
+            .spawn(create_restart_button(create_node_game_over(), assets))
+            .with_child(create_image(assets));
+    }
 
-pub fn handle_restart_button(
-    mut interaction_query: Query<&Interaction, (Changed<Interaction>, With<RestartButton>)>,
-    mut state: ResMut<NextState<StateGame>>,
-) {
-    for interaction in &mut interaction_query {
-        if *interaction == Interaction::Pressed {
-            info!("restart button pressed");
-            state.set(StateGame::Restart);
-            break;
+    pub fn handle(
+        mut interaction_query: Query<&Interaction, (Changed<Interaction>, With<RestartButton>)>,
+        mut state: ResMut<NextState<StateGame>>,
+    ) {
+        for interaction in &mut interaction_query {
+            if *interaction == Interaction::Pressed {
+                info!("restart button pressed");
+                state.set(StateGame::Restart);
+                break;
+            }
         }
     }
 }
