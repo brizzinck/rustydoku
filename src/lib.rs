@@ -22,11 +22,11 @@ use states::world::camera::StateCameraPosition;
 pub mod components;
 pub mod constants;
 pub mod events;
-pub mod global;
 pub mod logic;
 pub mod plugins;
 pub mod resource;
 pub mod states;
+pub mod world;
 
 pub fn run() {
     let mut game = App::new();

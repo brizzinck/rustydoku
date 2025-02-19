@@ -1,8 +1,9 @@
 use crate::{
-    components::{map::reset_tiles, ui::header::show_header},
+    components::ui::header::show_header,
     logic::{
         animation::game_over_panel::set_hide_game_over_panel,
         gameplay::figure_spawner::{clear_figures, hide_figures, respawn_figures, show_figures},
+        map::reset_tiles,
     },
     resource::score::Score,
     states::gameplay::{reset_state, StateGame},

@@ -8,20 +8,26 @@ pub struct GameOverPanel {
     pub speed: f32,
 }
 
-pub fn spawn_game_over_panel(mut commands: Commands, assets: Res<AssetServer>, score: Res<Score>) {
-    commands.spawn(create_panel()).with_children(|parent| {
-        parent
-            .spawn(create_background(&assets))
-            .with_children(|panel| {
-                panel.spawn(create_header_title(&assets));
+impl GameOverPanel {
+    pub fn spawn_game_over_panel(
+        mut commands: Commands,
+        assets: Res<AssetServer>,
+        score: Res<Score>,
+    ) {
+        commands.spawn(create_panel()).with_children(|parent| {
+            parent
+                .spawn(create_background(&assets))
+                .with_children(|panel| {
+                    panel.spawn(create_header_title(&assets));
 
-                panel.spawn(create_max_score(score.max_value, &assets));
+                    panel.spawn(create_max_score(score.max_value, &assets));
 
-                panel.spawn(create_current_score(score.current_value, &assets));
+                    panel.spawn(create_current_score(score.current_value, &assets));
 
-                spawn_restart_button_game_over(panel, &assets);
-            });
-    });
+                    spawn_restart_button_game_over(panel, &assets);
+                });
+        });
+    }
 }
 
 fn create_panel() -> (Node, GameOverPanel) {

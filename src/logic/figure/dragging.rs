@@ -2,8 +2,8 @@ use crate::{
     components::figures::{Figure, FigureBounds},
     constants::figure::*,
     events::figure::FigureTriggerDragging,
-    global::GameZone,
     states::gameplay::StateGame,
+    world::GameZone,
 };
 use bevy::{prelude::*, window::PrimaryWindow};
 #[cfg(feature = "debug-inspector")]
