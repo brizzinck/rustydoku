@@ -1,13 +1,15 @@
 use crate::components::ui::{
     button_restart::RestartButton,
-    header::{score_text::ScoreText, HeaderUI},
+    header::{score_text::HeaderCurrentScoreText, HeaderUI},
 };
 use bevy::prelude::*;
+
+pub mod score_text;
 
 impl HeaderUI {
     pub fn spawn(mut commands: Commands, assets: Res<AssetServer>) {
         let parent = commands.spawn(Self::create_header()).id();
-        ScoreText::spawn(&mut commands, parent, &assets);
+        HeaderCurrentScoreText::spawn(&mut commands, parent, &assets);
         RestartButton::spawn_in_header(&mut commands, parent, &assets);
     }
 

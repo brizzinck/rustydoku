@@ -1,5 +1,6 @@
 use crate::states::figure::StateFigureAnimation;
 use bevy::prelude::*;
+
 #[cfg(feature = "debug-inspector")]
 use bevy_inspector_egui::prelude::*;
 

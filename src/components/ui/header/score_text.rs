@@ -1,9 +1,9 @@
 use super::*;
 
 #[derive(Component)]
-pub struct ScoreText;
+pub struct HeaderCurrentScoreText;
 
-impl ScoreText {
+impl HeaderCurrentScoreText {
     pub(crate) fn create_background() -> Node {
         Node {
             margin: SCORE_BACKGROUND_MARGIN,
@@ -26,7 +26,7 @@ impl ScoreText {
             TextColor(
                 Srgba::rgb_u8(SCORE_TEXT_COLOR.0, SCORE_TEXT_COLOR.1, SCORE_TEXT_COLOR.1).into(),
             ),
-            ScoreText,
+            HeaderCurrentScoreText,
         )
     }
 }

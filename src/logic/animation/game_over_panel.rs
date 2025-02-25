@@ -1,5 +1,5 @@
 use crate::{
-    components::ui::game_over::GameOverPanel, constants::ui::game_over_panel::*,
+    components::ui::game_over_panel::panel::GameOverPanel, constants::ui::game_over_panel::*,
     states::ui::game_over_panel::StateGameOverPanel,
 };
 use bevy::prelude::*;

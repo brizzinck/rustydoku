@@ -1,5 +1,5 @@
 use crate::{
-    components::ui::{game_over::GameOverPanel, header::HeaderUI},
+    components::ui::{game_over_panel::panel::GameOverPanel, header::HeaderUI},
     resource::{figure_spawner::FigureSpawner, map::Map, score::Score},
     states::{gameplay::StateGame, ui::game_over_panel::StateGameOverPanel},
 };
@@ -12,7 +12,6 @@ impl Plugin for RustydokuGameplay {
         app.add_systems(
             OnEnter(StateGame::Restart),
             (
-                Score::reset_score,
                 Map::reset_tiles,
                 HeaderUI::show,
                 StateGame::reset_state,
@@ -21,7 +20,10 @@ impl Plugin for RustydokuGameplay {
                 .chain(),
         );
 
-        app.add_systems(OnExit(StateGame::GameOver), GameOverPanel::set_hide);
+        app.add_systems(
+            OnExit(StateGame::GameOver),
+            (Score::reset_score, GameOverPanel::set_hide).chain(),
+        );
 
         app.add_systems(
             OnEnter(StateGameOverPanel::Hidden),

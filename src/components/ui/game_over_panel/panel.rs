@@ -1,5 +1,5 @@
-use super::button_restart::RestartButton;
-use crate::{constants::ui::game_over_panel::*, resource::score::Score};
+use super::{super::button_restart::RestartButton, score_text::*};
+use crate::constants::ui::game_over_panel::*;
 use bevy::prelude::*;
 
 #[derive(Component)]
@@ -9,7 +9,7 @@ pub struct GameOverPanel {
 }
 
 impl GameOverPanel {
-    pub fn spawn(mut commands: Commands, assets: Res<AssetServer>, score: Res<Score>) {
+    pub fn spawn(mut commands: Commands, assets: Res<AssetServer>) {
         commands
             .spawn(GameOverPanel::create_panel())
             .with_children(|parent| {
@@ -18,12 +18,9 @@ impl GameOverPanel {
                     .with_children(|panel| {
                         panel.spawn(GameOverPanel::create_header_title(&assets));
 
-                        panel.spawn(GameOverPanel::create_max_score(score.max_value, &assets));
+                        panel.spawn(GameOverMaxScoreText::create_max_score(&assets));
 
-                        panel.spawn(GameOverPanel::create_current_score(
-                            score.current_value,
-                            &assets,
-                        ));
+                        panel.spawn(GameOverCurrentScoreText::create_current_score(&assets));
 
                         RestartButton::spawn_in_game_over(panel, &assets);
                     });
@@ -84,32 +81,6 @@ impl GameOverPanel {
                 ..default()
             },
             TextColor(HEADER_TITLE_COLOR),
-        )
-    }
-
-    fn create_current_score(score: i32, assets: &Res<AssetServer>) -> impl Bundle {
-        (
-            Name::new(SCORE_NAME_HIERARCHY),
-            Text::new(format!("{SCORE_TEXT_CONTENT}: {score}")),
-            TextFont {
-                font_size: SCORE_TEXT_FONT_SIZE,
-                font: assets.load(SCORE_TEXT_FONT_PATH),
-                ..default()
-            },
-            TextColor(SCORE_TEXT_COLOR),
-        )
-    }
-
-    fn create_max_score(max_score: i32, assets: &Res<AssetServer>) -> impl Bundle {
-        (
-            Name::new(MAX_SCORE_NAME_HIERARCHY),
-            Text::new(format!("{MAX_SCORE_TEXT_CONTENT}: {max_score}")),
-            TextFont {
-                font_size: MAX_SCORE_TEXT_FONT_SIZE,
-                font: assets.load(MAX_SCORE_TEXT_FONT_PATH),
-                ..default()
-            },
-            TextColor(MAX_SCORE_TEXT_COLOR),
         )
     }
 }

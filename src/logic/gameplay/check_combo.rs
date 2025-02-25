@@ -104,8 +104,8 @@ fn check_blocks(grid: &[[bool; MAP_USIZE]; MAP_USIZE], tiles_to_clear: &mut Vec<
 fn update_score(score: &mut Score, tiles_to_clear: &[(usize, usize)]) {
     if !tiles_to_clear.is_empty() {
         let combinations = tiles_to_clear.len();
-        score.current_value += combinations as i32;
-        info!("Updated Score: {}", score.current_value);
+        score.add_score(combinations as i32);
+        info!("Updated Score: {}", score.get_current_score());
     }
 }
 
@@ -209,10 +209,7 @@ mod tests {
     #[test]
     fn update_score_works() {
         let mut world = World::new();
-        world.insert_resource(Score {
-            current_value: 0,
-            max_value: 0,
-        });
+        world.insert_resource(Score::default());
 
         let mut score = world.resource_mut::<Score>();
 
@@ -221,9 +218,9 @@ mod tests {
         update_score(&mut score, &tiles_to_clear);
 
         assert!(
-            score.current_value > 0,
+            score.get_max_score() > 0,
             "Expected score to increase, but got {}",
-            score.current_value
+            score.get_max_score()
         );
     }
 }
