@@ -19,7 +19,7 @@ impl Plugin for CameraPlugin {
         });
 
         app.add_systems(OnEnter(StateGame::GameOver), set_camera_game_over);
-        app.add_systems(OnEnter(StateGameOverPanel::Hidded), set_camera_default);
+        app.add_systems(OnEnter(StateGameOverPanel::Hidden), set_camera_default);
 
         app.add_systems(
             Update,

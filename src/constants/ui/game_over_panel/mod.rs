@@ -10,6 +10,8 @@ pub use background::*;
 pub use header_title::*;
 pub use score_text::*;
 
+pub const GAME_OVER_PANEL_NAME_HIERARCHY: &str = "GameOverPanel UI";
+
 pub const GAME_OVER_PANEL_LEFT: Val = Val::Auto;
 pub const GAME_OVER_PANEL_RIGHT: Val = Val::Auto;
 pub const GAME_OVER_PANEL_BOTTOM: Val = Val::Auto;
@@ -30,6 +32,8 @@ pub const GAME_OVER_PANEL_JUSTIFY_SELF: JustifySelf = JustifySelf::Center;
 
 pub const GAME_OVER_PANEL_TIMER_ANIMATION: f32 = 1.;
 pub const GAME_OVER_PANEL_DEFAULT_SPEED_ANIMATION: f32 = 1.;
-pub const GAME_OVER_PANEL_SHOW_MUL_SPEED_ANIMATION: f32 = 2.;
-pub const GAME_OVER_PANEL_HIDE_MUL_SPEED_ANIMATION: f32 = 25.;
+pub const GAME_OVER_PANEL_SHOW_MUL_SPEED_ANIMATION: f32 = 1.;
+pub const GAME_OVER_PANEL_HIDE_MUL_SPEED_ANIMATION: f32 = 5.;
 pub const GAME_OVER_PANEL_TOP_END_FLOAT: f32 = GAME_OVER_PANEL_TOP_DEFAULT_FLOAT / 2. - 10.;
+pub const GAME_OVER_PANEL_TOP_END_FLOAT_DEFAULT: f32 =
+    GAME_OVER_PANEL_TOP_DEFAULT_FLOAT - GAME_OVER_PANEL_TOP_END_FLOAT;

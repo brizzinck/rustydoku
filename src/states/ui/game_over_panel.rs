@@ -6,7 +6,7 @@ pub enum StateGameOverPanel {
     Showed,
     Hidding,
     #[default]
-    Hidded,
+    Hidden,
 }
 
 impl StateGameOverPanel {
@@ -23,6 +23,6 @@ impl StateGameOverPanel {
     }
 
     pub fn when_hidded(state: Res<State<StateGameOverPanel>>) -> bool {
-        StateGameOverPanel::Hidded == *state.get()
+        StateGameOverPanel::Hidden == *state.get()
     }
 }

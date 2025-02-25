@@ -1,5 +1,7 @@
 use bevy::prelude::*;
 
+pub const GAME_OVER_BACKGROUND_NAME_HIERARCHY: &str = "GameOverBackground UI";
+
 pub const GAME_OVER_BACKGROUND_WIDTH: Val = Val::Percent(60.);
 pub const GAME_OVER_BACKGROUND_HEIGHT: Val = Val::Percent(125.);
 pub const GAME_OVER_BACKGROUND_FLEX_DIRECTION: FlexDirection = FlexDirection::Column;

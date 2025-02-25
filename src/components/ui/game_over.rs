@@ -26,8 +26,9 @@ impl GameOverPanel {
     }
 }
 
-fn create_panel() -> (Node, GameOverPanel) {
+fn create_panel() -> impl Bundle {
     (
+        Name::new(GAME_OVER_PANEL_NAME_HIERARCHY),
         Node {
             left: GAME_OVER_PANEL_LEFT,
             right: GAME_OVER_PANEL_RIGHT,
@@ -49,8 +50,9 @@ fn create_panel() -> (Node, GameOverPanel) {
     )
 }
 
-fn create_background(assets: &Res<AssetServer>) -> (Node, ImageNode) {
+fn create_background(assets: &Res<AssetServer>) -> impl Bundle {
     (
+        Name::new(GAME_OVER_BACKGROUND_NAME_HIERARCHY),
         Node {
             width: GAME_OVER_BACKGROUND_WIDTH,
             height: GAME_OVER_BACKGROUND_HEIGHT,
@@ -81,8 +83,9 @@ fn create_header_title(assets: &Res<AssetServer>) -> (Text, TextFont, TextColor)
     )
 }
 
-fn create_current_score(score: i32, assets: &Res<AssetServer>) -> (Text, TextFont, TextColor) {
+fn create_current_score(score: i32, assets: &Res<AssetServer>) -> impl Bundle {
     (
+        Name::new(SCORE_NAME_HIERARCHY),
         Text::new(format!("{SCORE_TEXT_CONTENT}: {score}")),
         TextFont {
             font_size: SCORE_TEXT_FONT_SIZE,
@@ -93,8 +96,9 @@ fn create_current_score(score: i32, assets: &Res<AssetServer>) -> (Text, TextFon
     )
 }
 
-fn create_max_score(max_score: i32, assets: &Res<AssetServer>) -> (Text, TextFont, TextColor) {
+fn create_max_score(max_score: i32, assets: &Res<AssetServer>) -> impl Bundle {
     (
+        Name::new(MAX_SCORE_NAME_HIERARCHY),
         Text::new(format!("{MAX_SCORE_TEXT_CONTENT}: {max_score}")),
         TextFont {
             font_size: MAX_SCORE_TEXT_FONT_SIZE,
