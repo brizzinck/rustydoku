@@ -21,6 +21,7 @@ pub fn show_game_over_panel(
 
     if panel.timer.finished() {
         panel.timer.reset();
+        panel.speed = GAME_OVER_PANEL_DEFAULT_SPEED_ANIMATION;
         next_state.set(StateGameOverPanel::Showed);
         return;
     }
@@ -45,6 +46,7 @@ pub fn hide_game_over_panel(
 
     if panel.timer.finished() {
         panel.timer.reset();
+        panel.speed = GAME_OVER_PANEL_DEFAULT_SPEED_ANIMATION;
         next_state.set(StateGameOverPanel::Hidden);
         return;
     }
@@ -57,6 +59,6 @@ pub fn hide_game_over_panel(
     let progress = panel.timer.elapsed_secs() / panel.timer.duration().as_secs_f32();
 
     style.top = Val::Percent(
-        GAME_OVER_PANEL_TOP_END_FLOAT_DEFAULT + GAME_OVER_PANEL_TOP_END_FLOAT * progress,
+        GAME_OVER_PANEL_TOP_REVERSE_END_FLOAT + GAME_OVER_PANEL_TOP_END_FLOAT * progress,
     );
 }
