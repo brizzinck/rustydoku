@@ -1,3 +1,1 @@
-use crate::constants::ui::DEFAULT_FONT_PATH;
-
-pub const SCORE_FONT_PATH: &str = DEFAULT_FONT_PATH;
+pub const SCORE_FONT_PATH: &str = crate::constants::ui::assets::DEFAULT_FONT_PATH;

@@ -1,19 +1,21 @@
-use crate::constants::figure::square::*;
+use crate::{components::figures::square::Square, constants::figure::square::*};
 use bevy::prelude::*;
 
-pub fn fading_out(color: &mut Color, delta: f32) -> bool {
-    let srgb = color.to_srgba().with_alpha(color.alpha().lerp(
-        SQUARE_ALPHA_TARGET_WHEN_COMBO,
-        delta
-            * SQUARE_ALPHA_SPEED_ANIMATION
-            * (SQUARE_FADE_OUT_SPEED_INCREMENT_FACTOR_PER_FRAME + color.alpha()),
-    ));
+impl Square {
+    pub(crate) fn fading_out(color: &mut Color, delta: f32) -> bool {
+        let srgb = color.to_srgba().with_alpha(color.alpha().lerp(
+            SQUARE_ALPHA_TARGET_WHEN_COMBO,
+            delta
+                * SQUARE_ALPHA_SPEED_ANIMATION
+                * (SQUARE_FADE_OUT_SPEED_INCREMENT_FACTOR_PER_FRAME + color.alpha()),
+        ));
 
-    if color.alpha() <= 0.01 {
-        *color = srgb.with_alpha(0.).into();
-        true
-    } else {
-        *color = srgb.into();
-        false
+        if color.alpha() <= 0.01 {
+            *color = srgb.with_alpha(0.).into();
+            true
+        } else {
+            *color = srgb.into();
+            false
+        }
     }
 }

@@ -1,4 +1,4 @@
-use crate::constants::ui::DEFAULT_FONT_PATH;
+use crate::constants::ui::assets::DEFAULT_FONT_PATH;
 
 pub const GAME_OVER_BACKGROUND_IMAGE_PATH: &str = "ui/game_over_panel_back.png";
 pub const HEADER_TITLE_FONT_PATH: &str = DEFAULT_FONT_PATH;

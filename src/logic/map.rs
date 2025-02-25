@@ -16,8 +16,8 @@ impl Map {
         let parent = commands.spawn(Map::create_map()).id();
 
         let mut hash_titles = HashMap::with_capacity(MAP_SIZE as usize * MAP_SIZE as usize);
-        for (zero_x, x) in MAP_SPAWN_POS.enumerate() {
-            for (zero_y, y) in MAP_SPAWN_POS.enumerate() {
+        for (zero_x, x) in MAP_SPAWN_POSITIOM.enumerate() {
+            for (zero_y, y) in MAP_SPAWN_POSITIOM.enumerate() {
                 let color = if ((zero_x / MAX_FIGURE_USIZE_SCALED)
                     + (zero_y / MAX_FIGURE_USIZE_SCALED))
                     % 2

@@ -3,7 +3,7 @@ use crate::{
         figures::{Figure, FigureBounds},
         map::Tile,
     },
-    constants::map::{MAP_SPAWN_POS, TILE_SIZE},
+    constants::map::{MAP_SPAWN_POSITIOM, TILE_SIZE},
     resource::map::Map,
     states::gameplay::StateGame,
 };
@@ -23,8 +23,8 @@ pub(crate) fn check_game_over(
             transform.translation, bounds.min, figure.squares_position
         );
 
-        for grid_x in MAP_SPAWN_POS {
-            for grid_y in MAP_SPAWN_POS {
+        for grid_x in MAP_SPAWN_POSITIOM {
+            for grid_y in MAP_SPAWN_POSITIOM {
                 let grid = Vec2::new(grid_x as f32, grid_y as f32);
 
                 if can_place_figure_at_grid(

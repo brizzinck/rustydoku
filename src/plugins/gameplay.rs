@@ -1,14 +1,7 @@
 use crate::{
-    components::ui::header::HeaderUI,
-    logic::{
-        animation::game_over_panel::set_hide_game_over_panel,
-        gameplay::figure_spawner::{clear_figures, hide_figures, respawn_figures, show_figures},
-    },
-    resource::{map::Map, score::Score},
-    states::{
-        gameplay::{reset_state, StateGame},
-        ui::game_over_panel::StateGameOverPanel,
-    },
+    components::ui::{game_over::GameOverPanel, header::HeaderUI},
+    resource::{figure_spawner::FigureSpawner, map::Map, score::Score},
+    states::{gameplay::StateGame, ui::game_over_panel::StateGameOverPanel},
 };
 use bevy::prelude::*;
 
@@ -22,19 +15,22 @@ impl Plugin for RustydokuGameplay {
                 Score::reset_score,
                 Map::reset_tiles,
                 HeaderUI::show,
-                reset_state,
-                respawn_figures,
+                StateGame::reset_state,
+                FigureSpawner::respawn_figures,
             )
                 .chain(),
         );
 
-        app.add_systems(OnExit(StateGame::GameOver), set_hide_game_over_panel);
+        app.add_systems(OnExit(StateGame::GameOver), GameOverPanel::set_hide);
 
-        app.add_systems(OnEnter(StateGameOverPanel::Hidden), show_figures);
+        app.add_systems(
+            OnEnter(StateGameOverPanel::Hidden),
+            FigureSpawner::show_figures,
+        );
 
         app.add_systems(
             OnEnter(StateGame::GameOver),
-            (clear_figures, hide_figures).chain(),
+            (FigureSpawner::clear_figures, FigureSpawner::hide_figures).chain(),
         );
     }
 }

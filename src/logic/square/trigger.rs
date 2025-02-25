@@ -1,4 +1,3 @@
-use super::spawner::spawn_empty_figure;
 use crate::{
     components::{
         figures::{square::Square, Figure},
@@ -15,7 +14,8 @@ impl Square {
         position: Vec2,
         assets: &Res<AssetServer>,
     ) -> Entity {
-        let (parent, rotation) = spawn_empty_figure(commands, position, &[Vec2::new(0., 0.)]);
+        let (parent, rotation) =
+            Figure::spawn_empty_figure(commands, position, &[Vec2::new(0., 0.)]);
         let child = Self::spawn_as_child(commands, parent, Vec2::new(0., 0.), rotation, assets);
 
         commands.entity(parent).insert(Figure {
@@ -28,7 +28,7 @@ impl Square {
         parent
     }
 
-    pub(super) fn spawn_as_child(
+    pub(crate) fn spawn_as_child(
         commands: &mut Commands,
         parent: Entity,
         position: Vec2,
