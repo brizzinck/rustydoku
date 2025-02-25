@@ -1,6 +1,7 @@
 use crate::constants::figure::*;
 use assets::SQAURE_IMAGE_PATH;
 use bevy::prelude::*;
+use square::*;
 
 #[derive(Component, Default)]
 pub struct Square {
@@ -18,6 +19,7 @@ impl Square {
             Sprite {
                 image: assets.load(SQAURE_IMAGE_PATH),
                 custom_size: Some(Vec2::new(SQUARE_SIZE, SQUARE_SIZE)),
+                color: SQUARE_COLOR_DEFAULT.into(),
                 ..default()
             },
             Transform {

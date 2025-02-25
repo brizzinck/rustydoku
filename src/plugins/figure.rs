@@ -2,7 +2,7 @@ use crate::{
     components::figures::{square::Square, Figure},
     events::figure::FigureTriggerDragging,
     logic::{
-        animation::figure::upscaling_dragging,
+        animation::{figure::upscaling_dragging, square::fading_out},
         figure::{dragging::moving, placing::placing, trigger::stop_dragging},
         gameplay::figure_spawner::{
             animation::{adding_lerp_figures, lerping_figures, removig_lerp_figures},
@@ -11,7 +11,7 @@ use crate::{
             spawn_figures,
         },
     },
-    resource::figure_spawner::FigureSpawner,
+    resource::{figure_spawner::FigureSpawner, square::SquaresToDespawn},
     states::gameplay::StateGame,
 };
 use bevy::prelude::*;
@@ -49,6 +49,8 @@ impl Plugin for FigurePlugin {
                 .chain(),
         );
 
+        app.add_systems(Update, call_squares_despawn);
+
         app.add_systems(Update, despawn_figure.run_if(StateGame::when_placed));
 
         #[cfg(feature = "debug-inspector")]
@@ -77,4 +79,24 @@ fn call_dragging_events(
 
         figure_spawner.remove_lerp_figure(entity);
     }
+}
+
+fn call_squares_despawn(
+    mut commands: Commands,
+    mut squares_to_despawn: ResMut<SquaresToDespawn>,
+    mut squares: Query<&mut Sprite, With<Square>>,
+    time: Res<Time>,
+) {
+    squares_to_despawn.squares.retain(|entity| {
+        if let Ok(mut sprite) = squares.get_mut(*entity) {
+            if fading_out(&mut sprite.color, time.delta_secs()) {
+                commands.entity(*entity).despawn();
+                false
+            } else {
+                true
+            }
+        } else {
+            false
+        }
+    });
 }

@@ -1,17 +1,17 @@
 use crate::{
     components::map::Tile,
     constants::{figure::MAX_FIGURE_USIZE_SCALED, map::*},
-    resource::score::Score,
+    resource::{score::Score, square::SquaresToDespawn},
     states::gameplay::StateGame,
 };
 use bevy::prelude::*;
 
 /// Runs all checks combination and updates the score
 pub(crate) fn check_combination(
-    mut commands: Commands,
     mut tiles: Query<(&mut Tile, &Transform)>,
     mut score: ResMut<Score>,
-    mut next_state: ResMut<NextState<StateGame>>,
+    mut next_game_state: ResMut<NextState<StateGame>>,
+    mut squares_to_despawn: ResMut<SquaresToDespawn>,
 ) {
     let grid = build_grid(tiles.iter());
     let mut tiles_to_clear = Vec::new();
@@ -21,9 +21,10 @@ pub(crate) fn check_combination(
     check_blocks(&grid, &mut tiles_to_clear);
 
     update_score(score.as_mut(), &tiles_to_clear);
-    clear_tiles(&mut tiles, &mut commands, &tiles_to_clear);
 
-    next_state.set(StateGame::CheckGameOver);
+    clear_tiles(&mut tiles, &tiles_to_clear, &mut squares_to_despawn);
+
+    next_game_state.set(StateGame::CheckGameOver);
 }
 
 /// Builds a 9x9 grid representation from the tile states
@@ -111,8 +112,8 @@ fn update_score(score: &mut Score, tiles_to_clear: &[(usize, usize)]) {
 /// Clears marked tiles and sets them to free
 fn clear_tiles(
     tiles: &mut Query<(&mut Tile, &Transform)>,
-    commands: &mut Commands,
     tiles_to_clear: &[(usize, usize)],
+    squares_to_despawn: &mut ResMut<SquaresToDespawn>,
 ) {
     for (mut tile, transform) in tiles.iter_mut() {
         if let Some(square) = tile.square {
@@ -125,8 +126,9 @@ fn clear_tiles(
                 && tile_y < MAP_USIZE as isize
                 && tiles_to_clear.contains(&(tile_x as usize, tile_y as usize))
             {
-                commands.entity(square).despawn();
+                squares_to_despawn.add(square);
                 tile.square = None;
+
                 info!("Cleared tile at ({}, {})", tile_x, tile_y);
             }
         }

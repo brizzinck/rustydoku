@@ -15,6 +15,7 @@ use plugins::{camera::CameraPlugin, figure::FigurePlugin, map::MapPlugin};
 use resource::figure_spawner::FigureSpawner;
 use resource::map::Map;
 use resource::score::Score;
+use resource::square::SquaresToDespawn;
 use states::gameplay::StateGame;
 use states::ui::game_over_panel::StateGameOverPanel;
 use states::world::camera::StateCameraPosition;
@@ -51,6 +52,7 @@ pub fn run() {
     game.insert_resource(Score::default());
     game.insert_resource(FigureSpawner::default());
     game.insert_resource(Map::default());
+    game.insert_resource(SquaresToDespawn::default());
 
     game.insert_state(StateGame::default());
     game.insert_state(StateCameraPosition::default());

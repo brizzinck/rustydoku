@@ -1,7 +1,7 @@
 use crate::{
     components::map::Tile,
     constants::{figure::MAX_FIGURE_USIZE_SCALED, map::*},
-    resource::map::Map,
+    resource::{map::Map, square::SquaresToDespawn},
     states::gameplay::StateGame,
 };
 use bevy::{prelude::*, utils::HashMap};
@@ -44,11 +44,14 @@ impl Map {
         next_state.set(StateGame::Idle);
     }
 
-    pub(crate) fn reset_tiles(mut commands: Commands, mut tiles: Query<&mut Tile>) {
+    pub(crate) fn reset_tiles(
+        mut square_to_despawn: ResMut<SquaresToDespawn>,
+        mut tiles: Query<&mut Tile>,
+    ) {
         for mut tile in tiles.iter_mut() {
             if let Some(square) = tile.square {
+                square_to_despawn.add(square);
                 tile.square = None;
-                commands.entity(square).despawn();
             }
         }
     }
