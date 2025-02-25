@@ -10,12 +10,17 @@ use crate::{
 use bevy::prelude::*;
 
 impl FigureSpawner {
-    pub(crate) fn spawn_zone_figures(mut commands: Commands, assets: Res<AssetServer>) {
+    pub(crate) fn spawn_zone_figures(
+        mut commands: Commands,
+        assets: Res<AssetServer>,
+        mut next_state: ResMut<NextState<StatePlaceholderAnimation>>,
+    ) {
         let parent = commands
             .spawn((
                 Name::new(SPAWN_ZONE_NAME_HIERARCHY),
                 Transform::from_translation(Vec3::ZERO),
                 Visibility::Inherited,
+                FigureZone,
             ))
             .id();
 
@@ -44,9 +49,6 @@ impl FigureSpawner {
             );
         }
 
-        commands.entity(parent).insert(FigureZone {
-            placeholders,
-            placeholder_state_animation: StatePlaceholderAnimation::BouncingInit,
-        });
+        next_state.set(StatePlaceholderAnimation::BouncingInit);
     }
 }

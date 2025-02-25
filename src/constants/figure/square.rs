@@ -1,5 +1,7 @@
 use bevy::prelude::*;
 
+pub const SQUARE_NAME_HIERARCHY: &str = "square";
+
 pub const SQUARE_ALPHA_DEFAULT: f32 = 1.;
 pub const SQUARE_ALPHA_TARGET_WHEN_COMBO: f32 = 0.;
 pub const SQUARE_ALPHA_SPEED_ANIMATION: f32 = 1.;

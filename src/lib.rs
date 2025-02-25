@@ -16,6 +16,7 @@ use resource::figure_spawner::FigureSpawner;
 use resource::map::Map;
 use resource::score::Score;
 use resource::square::SquaresToDespawn;
+use states::figure::placeholder::StatePlaceholderAnimation;
 use states::gameplay::StateGame;
 use states::ui::game_over_panel::StateGameOverPanel;
 use states::world::camera::StateCameraPosition;
@@ -36,7 +37,6 @@ pub fn run() {
     game.add_event::<FigureTriggerDragging>();
     game.add_event::<FigureTriggerUp>();
     game.add_event::<FigureDeniedPlacing>();
-
     game.add_plugins(RustydokuDefault);
     game.add_plugins(MapPlugin);
     game.add_plugins(CameraPlugin);
@@ -57,6 +57,7 @@ pub fn run() {
     game.insert_state(StateGame::default());
     game.insert_state(StateCameraPosition::default());
     game.insert_state(StateGameOverPanel::default());
+    game.insert_state(StatePlaceholderAnimation::default());
 
     game.run();
 }
