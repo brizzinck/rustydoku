@@ -21,17 +21,16 @@ impl Plugin for RustydokuGameplay {
             (
                 Score::reset_score,
                 Map::reset_tiles,
-                set_hide_game_over_panel,
                 HeaderUI::show,
                 reset_state,
+                respawn_figures,
             )
                 .chain(),
         );
 
-        app.add_systems(
-            OnEnter(StateGameOverPanel::Hidden),
-            (show_figures, respawn_figures).chain(),
-        );
+        app.add_systems(OnExit(StateGame::GameOver), set_hide_game_over_panel);
+
+        app.add_systems(OnEnter(StateGameOverPanel::Hidden), show_figures);
 
         app.add_systems(
             OnEnter(StateGame::GameOver),
