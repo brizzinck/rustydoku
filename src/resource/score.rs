@@ -8,7 +8,6 @@ pub struct Score {
 
 impl Score {
     pub(crate) fn reset_score(mut score: ResMut<Score>) {
-        info!("Resetting score");
         score.current_value = 0;
     }
 

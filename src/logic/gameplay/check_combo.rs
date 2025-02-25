@@ -218,9 +218,9 @@ mod tests {
         update_score(&mut score, &tiles_to_clear);
 
         assert!(
-            score.get_max_score() > 0,
+            score.get_current_score() > 0,
             "Expected score to increase, but got {}",
-            score.get_max_score()
+            score.get_current_score()
         );
     }
 }
