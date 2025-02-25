@@ -25,7 +25,7 @@ pub fn show_game_over_panel(
         return;
     }
 
-    panel.speed += time.delta_secs();
+    panel.speed += time.delta_secs() * GAME_OVER_PANEL_SHOW_MUL_SPEED_ANIMATION;
 
     let speed = panel.speed;
     panel.timer.tick(time.delta().mul_f32(speed));
@@ -48,7 +48,7 @@ pub fn hide_game_over_panel(
         return;
     }
 
-    panel.speed += time.delta_secs();
+    panel.speed += time.delta_secs() * GAME_OVER_PANEL_HIDE_MUL_SPEED_ANIMATION;
 
     let speed = panel.speed;
     panel.timer.tick(time.delta().mul_f32(speed));

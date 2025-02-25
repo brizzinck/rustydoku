@@ -1,6 +1,9 @@
 use crate::{
     logic::animation::camera::{setting_camera_default, setting_camera_game_over},
-    states::{gameplay::StateGame, world::camera::StateCameraPosition},
+    states::{
+        gameplay::StateGame, ui::game_over_panel::StateGameOverPanel,
+        world::camera::StateCameraPosition,
+    },
 };
 use bevy::{
     app::{Plugin, Startup},
@@ -16,7 +19,7 @@ impl Plugin for CameraPlugin {
         });
 
         app.add_systems(OnEnter(StateGame::GameOver), set_camera_game_over);
-        app.add_systems(OnExit(StateGame::GameOver), set_camera_default);
+        app.add_systems(OnEnter(StateGameOverPanel::Hidded), set_camera_default);
 
         app.add_systems(
             Update,

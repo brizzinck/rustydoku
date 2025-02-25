@@ -2,6 +2,7 @@ use bevy::prelude::*;
 
 #[derive(States, Default, Debug, Clone, PartialEq, Eq, Hash)]
 pub enum StateGame {
+    #[default]
     GenerateWorld,
     Idle,
     Dragging(Entity),
@@ -9,7 +10,6 @@ pub enum StateGame {
     Placed(Entity),
     CheckCombo,
     CheckGameOver,
-    #[default]
     GameOver,
     Restart,
 }

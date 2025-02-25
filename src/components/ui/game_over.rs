@@ -44,7 +44,7 @@ fn create_panel() -> (Node, GameOverPanel) {
         },
         GameOverPanel {
             timer: Timer::from_seconds(GAME_OVER_PANEL_TIMER_ANIMATION, TimerMode::Once),
-            speed: GAME_OVER_PANEL_SPEED_ANIMATION,
+            speed: GAME_OVER_PANEL_DEFAULT_SPEED_ANIMATION,
         },
     )
 }
