@@ -1,3 +1,5 @@
+pub mod placeholder;
+
 #[derive(PartialEq, Copy, Clone, Debug, Default)]
 pub enum StateFigureAnimation {
     #[default]

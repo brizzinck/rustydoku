@@ -1,4 +1,4 @@
-use crate::states::figure::StateFigureAnimation;
+use crate::states::figure::{placeholder::StatePlaceholderAnimation, StateFigureAnimation};
 use bevy::prelude::*;
 #[cfg(feature = "debug-inspector")]
 use bevy_inspector_egui::prelude::*;
@@ -25,4 +25,10 @@ pub struct Figure {
 }
 
 #[derive(Component)]
-pub struct FigureZone;
+pub struct FigureZone {
+    pub placeholders: Vec<Entity>,
+    pub placeholder_state_animation: StatePlaceholderAnimation,
+}
+
+#[derive(Component)]
+pub struct Placeholder;

@@ -1,8 +1,8 @@
 use crate::{
-    components::figures::{square::Square, Figure},
+    components::figures::{square::Square, Figure, FigureZone, Placeholder},
     events::figure::FigureTriggerDragging,
     logic::{
-        animation::{figure::upscaling_dragging, square::fading_out},
+        animation::{figure::upscaling_dragging, placeholder::bouncing, square::fading_out},
         figure::{dragging::moving, placing::placing, trigger::stop_dragging},
         gameplay::figure_spawner::{
             animation::{adding_lerp_figures, lerping_figures, removig_lerp_figures},
@@ -12,7 +12,7 @@ use crate::{
         },
     },
     resource::{figure_spawner::FigureSpawner, square::SquaresToDespawn},
-    states::gameplay::StateGame,
+    states::{figure::placeholder::StatePlaceholderAnimation, gameplay::StateGame},
 };
 use bevy::prelude::*;
 
@@ -49,7 +49,7 @@ impl Plugin for FigurePlugin {
                 .chain(),
         );
 
-        app.add_systems(Update, call_squares_despawn);
+        app.add_systems(Update, (call_squares_despawn, call_placeholder_animation));
 
         app.add_systems(Update, despawn_figure.run_if(StateGame::when_placed));
 
@@ -99,4 +99,40 @@ fn call_squares_despawn(
             false
         }
     });
+}
+
+pub fn call_placeholder_animation(
+    mut placeholder_zones: Query<&mut Transform, With<Placeholder>>,
+    mut figure_zone: Query<&mut FigureZone>,
+    time: Res<Time>,
+) {
+    let mut figure_zone = figure_zone.single_mut();
+    let delta = time.delta_secs();
+    let mut all_done = true;
+
+    for entity in figure_zone.placeholders.clone().into_iter() {
+        if let Ok(mut transform) = placeholder_zones.get_mut(entity) {
+            let done = bouncing(
+                &mut transform,
+                delta,
+                &figure_zone.placeholder_state_animation,
+            );
+            if !done {
+                all_done = false;
+            }
+        }
+    }
+
+    if all_done {
+        figure_zone.placeholder_state_animation = match figure_zone.placeholder_state_animation {
+            StatePlaceholderAnimation::BouncingInit => StatePlaceholderAnimation::BouncingDefault,
+            StatePlaceholderAnimation::BouncingDefault => StatePlaceholderAnimation::BouncingPeak,
+            StatePlaceholderAnimation::BouncingPeak => StatePlaceholderAnimation::default(),
+            ref other => other.clone(),
+        };
+        info!(
+            "Bouncing phase complete. New state: {:?}",
+            figure_zone.placeholder_state_animation
+        );
+    }
 }

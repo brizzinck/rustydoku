@@ -1,6 +1,8 @@
 use crate::{
     components::figures::Figure,
-    constants::figure::placeholder::{FIGURE_SPEED_RETURN_TO_PLACEHOLDER, PLACEHOLDER_SCALE},
+    constants::figure::placeholder::{
+        FIGURE_SPEED_RETURN_TO_PLACEHOLDER, PLACEHOLDER_SCALE_DEFAULT,
+    },
     events::figure::{FigureDeniedPlacing, FigureTriggerUp},
     resource::figure_spawner::FigureSpawner,
     states::figure::StateFigureAnimation,
@@ -48,12 +50,12 @@ pub(crate) fn lerping_figures(
             }
 
             transform.scale = transform.scale.lerp(
-                Vec3::splat(PLACEHOLDER_SCALE),
+                PLACEHOLDER_SCALE_DEFAULT,
                 time.delta_secs() * FIGURE_SPEED_RETURN_TO_PLACEHOLDER,
             );
 
-            if transform.scale.distance(Vec3::splat(PLACEHOLDER_SCALE)) < 0.01 {
-                transform.scale = Vec3::splat(PLACEHOLDER_SCALE);
+            if transform.scale.distance(PLACEHOLDER_SCALE_DEFAULT) < 0.01 {
+                transform.scale = PLACEHOLDER_SCALE_DEFAULT;
                 figure.state_animation = StateFigureAnimation::default();
             } else {
                 remove = false;
