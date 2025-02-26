@@ -11,7 +11,8 @@ pub enum StateGame {
     CheckCombo,
     CheckGameOver,
     GameOver,
-    Restart,
+    DefaultRestart,
+    GameOverRestart,
 }
 
 impl StateGame {

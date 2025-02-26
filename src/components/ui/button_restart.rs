@@ -1,12 +1,21 @@
 use crate::constants::ui::assets::*;
 use crate::constants::ui::restart_button::*;
 use crate::states::gameplay::StateGame;
+use crate::states::ui::restart_button::RestartButtonType;
 use bevy::prelude::*;
 
 #[derive(Component)]
-pub struct RestartButton;
+pub struct RestartButton {
+    pub(crate) restart_type: RestartButtonType,
+}
 
 impl RestartButton {
+    pub(crate) fn new(_type: RestartButtonType) -> Self {
+        Self {
+            restart_type: _type,
+        }
+    }
+
     pub(crate) fn spawn_in_header(
         commands: &mut Commands,
         parent: Entity,
@@ -16,6 +25,7 @@ impl RestartButton {
             .spawn(RestartButton::create_button(
                 RestartButton::create_node_header(),
                 assets,
+                RestartButtonType::Default,
             ))
             .with_child(RestartButton::create_image(assets))
             .set_parent(parent);
@@ -26,19 +36,32 @@ impl RestartButton {
             .spawn(RestartButton::create_button(
                 RestartButton::create_node_game_over(),
                 assets,
+                RestartButtonType::GameOver,
             ))
             .with_child(RestartButton::create_image(assets));
     }
 
     pub(crate) fn handle(
-        mut interaction_query: Query<&Interaction, (Changed<Interaction>, With<RestartButton>)>,
+        mut interaction_query: Query<(&Interaction, &RestartButton), Changed<Interaction>>,
         mut state: ResMut<NextState<StateGame>>,
     ) {
-        for interaction in &mut interaction_query {
+        for (interaction, button) in &mut interaction_query {
             if *interaction == Interaction::Pressed {
-                info!("restart button pressed");
-                state.set(StateGame::Restart);
-                break;
+                info!(
+                    "Restart button pressed with type: {:?}",
+                    button.restart_type
+                );
+
+                match button.restart_type {
+                    RestartButtonType::Default => {
+                        state.set(StateGame::DefaultRestart);
+                        break;
+                    }
+                    RestartButtonType::GameOver => {
+                        state.set(StateGame::GameOverRestart);
+                        break;
+                    }
+                }
             }
         }
     }
@@ -64,6 +87,7 @@ impl RestartButton {
     fn create_button(
         node: Node,
         assets: &Res<AssetServer>,
+        _type: RestartButtonType,
     ) -> (Node, Button, ImageNode, RestartButton) {
         (
             node,
@@ -72,7 +96,7 @@ impl RestartButton {
                 image: assets.load(RESTART_BUTTON_BACK_IMAGE_PATH),
                 ..default()
             },
-            RestartButton,
+            RestartButton::new(_type),
         )
     }
 

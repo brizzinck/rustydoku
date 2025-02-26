@@ -3,22 +3,18 @@ use crate::{
     resource::{figure_spawner::FigureSpawner, map::Map, score::Score},
     states::{gameplay::StateGame, ui::game_over_panel::StateGameOverPanel},
 };
-use bevy::prelude::*;
+use bevy::{ecs::schedule::SystemConfigs, prelude::*};
 
 pub struct RustydokuGameplay;
 
 impl Plugin for RustydokuGameplay {
     fn build(&self, app: &mut App) {
         app.add_systems(
-            OnEnter(StateGame::Restart),
-            (
-                Map::reset_tiles,
-                HeaderUI::show,
-                StateGame::reset_state,
-                FigureSpawner::respawn_figures,
-            )
-                .chain(),
+            OnEnter(StateGame::DefaultRestart),
+            (general_restart(), Score::reset_score).chain(),
         );
+
+        app.add_systems(OnEnter(StateGame::GameOverRestart), general_restart());
 
         app.add_systems(
             OnExit(StateGame::GameOver),
@@ -35,4 +31,14 @@ impl Plugin for RustydokuGameplay {
             (FigureSpawner::clear_figures, FigureSpawner::hide_figures).chain(),
         );
     }
+}
+
+fn general_restart() -> SystemConfigs {
+    (
+        Map::reset_tiles,
+        HeaderUI::show,
+        StateGame::reset_state,
+        FigureSpawner::respawn_figures,
+    )
+        .chain()
 }
