@@ -5,6 +5,10 @@ use crate::{
 use bevy::prelude::*;
 
 impl Placeholder {
+    pub(crate) fn set_bounce_default(mut next_state: ResMut<NextState<StatePlaceholderAnimation>>) {
+        next_state.set(StatePlaceholderAnimation::BouncingDefault);
+    }
+
     pub(crate) fn bouncing_init(
         mut placeholder_zones: Query<&mut Transform, With<Placeholder>>,
         mut next_state: ResMut<NextState<StatePlaceholderAnimation>>,

@@ -1,5 +1,8 @@
 use crate::{
-    components::ui::{game_over_panel::panel::GameOverPanel, header::HeaderUI},
+    components::{
+        figures::Placeholder,
+        ui::{game_over_panel::panel::GameOverPanel, header::HeaderUI},
+    },
     resource::{figure_spawner::FigureSpawner, map::Map, score::Score},
     states::{gameplay::StateGame, ui::game_over_panel::StateGameOverPanel},
 };
@@ -11,7 +14,15 @@ impl Plugin for RustydokuGameplay {
     fn build(&self, app: &mut App) {
         app.add_systems(
             OnEnter(StateGame::DefaultRestart),
-            (general_restart(), Score::reset_score).chain(),
+            (
+                general_restart(),
+                (
+                    Score::reset_score,
+                    Placeholder::set_bounce_default,
+                    FigureSpawner::respawn_figures,
+                )
+                    .chain(),
+            ),
         );
 
         app.add_systems(OnEnter(StateGame::GameOverRestart), general_restart());
@@ -23,7 +34,11 @@ impl Plugin for RustydokuGameplay {
 
         app.add_systems(
             OnEnter(StateGameOverPanel::Hidden),
-            FigureSpawner::show_figures,
+            (
+                Placeholder::set_bounce_default,
+                FigureSpawner::show_figures,
+                FigureSpawner::respawn_figures,
+            ),
         );
 
         app.add_systems(
@@ -34,11 +49,5 @@ impl Plugin for RustydokuGameplay {
 }
 
 fn general_restart() -> SystemConfigs {
-    (
-        Map::reset_tiles,
-        HeaderUI::show,
-        StateGame::reset_state,
-        FigureSpawner::respawn_figures,
-    )
-        .chain()
+    (Map::reset_tiles, HeaderUI::show, StateGame::reset_state).chain()
 }

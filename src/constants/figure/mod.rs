@@ -1,6 +1,5 @@
-use bevy::prelude::*;
-
 use super::map::TILE_SIZE;
+use bevy::prelude::*;
 
 pub mod assets;
 pub mod placeholder;
