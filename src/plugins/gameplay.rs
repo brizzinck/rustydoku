@@ -33,7 +33,7 @@ impl Plugin for RustydokuGameplay {
         );
 
         app.add_systems(
-            OnEnter(StateGameOverPanel::Hidden),
+            OnExit(StateGameOverPanel::Hidding),
             (
                 Placeholder::set_bounce_default,
                 FigureSpawner::show_figures,

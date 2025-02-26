@@ -16,9 +16,8 @@ impl Plugin for FigurePlugin {
             OnEnter(StateGame::GenerateWorld),
             (
                 FigureSpawner::spawn_zone_figures,
-                FigureSpawner::spawn_figures,
-            )
-                .chain(),
+                FigureSpawner::spawn_figures.after(FigureSpawner::spawn_zone_figures),
+            ),
         );
 
         app.add_systems(

@@ -7,7 +7,7 @@ pub mod score_text;
 pub struct HeaderUI;
 
 impl HeaderUI {
-    pub(crate) fn create_header() -> (Node, Visibility, Name, HeaderUI) {
+    pub(crate) fn create_header() -> impl Bundle {
         (
             Node {
                 left: HEADER_LEFT,
