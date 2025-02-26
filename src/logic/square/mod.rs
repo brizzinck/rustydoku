@@ -5,7 +5,10 @@ use crate::{
         figures::{square::Square, Figure},
         map::Tile,
     },
-    constants::{figure::square::SQUARE_NAME_HIERARCHY, map::TILE_SIZE},
+    constants::{
+        figure::{assets::SQAURE_IMAGE_HIGHLIGHT, square::SQUARE_NAME_HIERARCHY},
+        map::TILE_SIZE,
+    },
     states::{figure::StateFigureAnimation, gameplay::StateGame},
 };
 use bevy::prelude::*;
@@ -15,6 +18,7 @@ impl Square {
         commands: &mut Commands,
         position: Vec2,
         assets: &Res<AssetServer>,
+        placeholder: Entity,
     ) -> Entity {
         let (parent, rotation) =
             Figure::spawn_empty_figure(commands, position, &[Vec2::new(0., 0.)]);
@@ -24,6 +28,7 @@ impl Square {
             squares_entity: vec![child],
             squares_position: vec![Vec2::new(0., 0.)],
             state_animation: StateFigureAnimation::default(),
+            placeholder,
         });
 
         commands
@@ -52,9 +57,10 @@ impl Square {
         figure_query: Query<&Figure>,
         mut square_query: Query<(Entity, &GlobalTransform, &mut Square)>,
         current_state: Res<State<StateGame>>,
+        assets: Res<AssetServer>,
     ) {
         for (tile, mut sprite, _, _) in tile_query.iter_mut() {
-            sprite.color = tile.default_color;
+            sprite.image = tile.default_image.clone();
         }
 
         if let StateGame::Dragging(figure) = current_state.get() {
@@ -80,8 +86,7 @@ impl Square {
                 if highlight_tiles.len() == figure.squares_entity.len() {
                     for tile_entity in highlight_tiles.into_iter() {
                         if let Ok((_, mut sprite, _, _)) = tile_query.get_mut(tile_entity) {
-                            sprite.color = Color::srgb(100., 100., 100.); // TODO: Change to image
-                                                                          // maybe
+                            sprite.image = assets.load(SQAURE_IMAGE_HIGHLIGHT);
                         }
                     }
                 }

@@ -1,5 +1,5 @@
 use crate::constants::figure::*;
-use assets::SQAURE_IMAGE_PATH;
+use assets::SQAURE_IMAGE_DEFAULT_PATH;
 use bevy::prelude::*;
 use square::*;
 
@@ -17,7 +17,7 @@ impl Square {
     ) -> impl Bundle {
         (
             Sprite {
-                image: assets.load(SQAURE_IMAGE_PATH),
+                image: assets.load(SQAURE_IMAGE_DEFAULT_PATH),
                 custom_size: Some(Vec2::new(SQUARE_SIZE, SQUARE_SIZE)),
                 color: SQUARE_COLOR_DEFAULT.into(),
                 ..default()

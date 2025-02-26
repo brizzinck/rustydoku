@@ -1,7 +1,12 @@
 use super::Figure;
 use bevy::prelude::*;
 
-pub(crate) fn spawn(commands: &mut Commands, position: Vec2, assets: &Res<AssetServer>) -> Entity {
+pub(crate) fn spawn(
+    commands: &mut Commands,
+    position: Vec2,
+    assets: &Res<AssetServer>,
+    placeholder: Entity,
+) -> Entity {
     Figure::spawn_figure(
         commands,
         position,
@@ -14,5 +19,6 @@ pub(crate) fn spawn(commands: &mut Commands, position: Vec2, assets: &Res<AssetS
         ],
         "big_t_shape",
         assets,
+        placeholder,
     )
 }

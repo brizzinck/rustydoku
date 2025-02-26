@@ -4,6 +4,7 @@ use crate::{
         map::Tile,
     },
     constants::map::{MAP_SPAWN_POSITIOM, TILE_SIZE},
+    events::figure::{FigureCanPlaced, FigureCantPlaced},
     resource::map::Map,
     states::gameplay::StateGame,
 };
@@ -14,16 +15,19 @@ pub(crate) fn check_game_over(
     map: Res<Map>,
     tiles: Query<&Tile>,
     mut next_state: ResMut<NextState<StateGame>>,
+    mut cant_place_writer: EventWriter<FigureCantPlaced>,
+    mut can_place_writer: EventWriter<FigureCanPlaced>,
 ) {
     let mut game_over = true;
 
-    'outer: for (transform, bounds, figure) in figures.iter() {
+    for (transform, bounds, figure) in figures.iter() {
         info!(
             "Checking figure {:?} with bounds.min={:?}, squares_offset={:?}",
             transform.translation, bounds.min, figure.squares_position
         );
 
-        for grid_x in MAP_SPAWN_POSITIOM {
+        let mut figure_cant_placed = true;
+        'outer: for grid_x in MAP_SPAWN_POSITIOM {
             for grid_y in MAP_SPAWN_POSITIOM {
                 let grid = Vec2::new(grid_x as f32, grid_y as f32);
 
@@ -39,10 +43,17 @@ pub(crate) fn check_game_over(
                         "Found a valid placement for figure at grid=({}, {}) => Game continues!",
                         grid_x, grid_y
                     );
+                    figure_cant_placed = false;
                     game_over = false;
                     break 'outer;
                 }
             }
+        }
+
+        if figure_cant_placed {
+            cant_place_writer.send(FigureCantPlaced(figure.placeholder));
+        } else {
+            can_place_writer.send(FigureCanPlaced(figure.placeholder));
         }
     }
 

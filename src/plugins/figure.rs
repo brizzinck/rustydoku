@@ -53,6 +53,11 @@ impl Plugin for FigurePlugin {
                 .chain(),
         );
 
+        app.add_systems(
+            OnExit(StateGame::CheckGameOver),
+            Placeholder::change_image_by_placed,
+        );
+
         app.add_systems(Update, Square::call_despawn);
 
         app.add_systems(

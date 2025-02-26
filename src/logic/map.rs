@@ -4,6 +4,7 @@ use crate::{
     resource::{map::Map, square::SquaresToDespawn},
     states::gameplay::StateGame,
 };
+use assets::{TILE_IMAGE_FIRST_DEACTIVE_PATH, TILE_IMAGE_SECOND_DEACTIVE_PATH};
 use bevy::{prelude::*, utils::HashMap};
 
 impl Map {
@@ -18,20 +19,20 @@ impl Map {
         let mut hash_titles = HashMap::with_capacity(MAP_SIZE as usize * MAP_SIZE as usize);
         for (zero_x, x) in MAP_SPAWN_POSITIOM.enumerate() {
             for (zero_y, y) in MAP_SPAWN_POSITIOM.enumerate() {
-                let color = if ((zero_x / MAX_FIGURE_USIZE_SCALED)
+                let image = if ((zero_x / MAX_FIGURE_USIZE_SCALED)
                     + (zero_y / MAX_FIGURE_USIZE_SCALED))
                     % 2
                     == 0
                 {
-                    COLOR_DARK
+                    assets.load(TILE_IMAGE_SECOND_DEACTIVE_PATH)
                 } else {
-                    COLOR_LIGHT
+                    assets.load(TILE_IMAGE_FIRST_DEACTIVE_PATH)
                 };
 
                 let position =
                     Vec3::new(x as f32 * TILE_SIZE, y as f32 * TILE_SIZE, TILE_POSITION_Z);
                 let tile = commands
-                    .spawn(Tile::create_tile(color, position, &assets))
+                    .spawn(Tile::create_tile(image, position))
                     .set_parent(parent)
                     .id();
 

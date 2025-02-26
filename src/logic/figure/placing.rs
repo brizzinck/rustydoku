@@ -57,7 +57,7 @@ impl Figure {
                                 tile_query.get_mut(tile_entity)
                             {
                                 tile.square = Some(square_entity);
-                                sprite.color = tile.default_color;
+                                sprite.image = tile.default_image.clone();
 
                                 commands.entity(square_entity).set_parent(tile_entity);
 

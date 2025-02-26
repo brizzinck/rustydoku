@@ -14,3 +14,9 @@ pub struct FigureDeniedPlacing(pub Entity);
 
 #[derive(Event)]
 pub struct FigureSpawned(pub Entity);
+
+#[derive(Event)]
+pub struct FigureCantPlaced(pub Entity);
+
+#[derive(Event)]
+pub struct FigureCanPlaced(pub Entity);

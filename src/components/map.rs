@@ -1,5 +1,5 @@
 use crate::{
-    constants::map::{assets::TILE_IMAGE_PATH, MAP_NAME_HIERARCHY, TILE_SIZE},
+    constants::map::{MAP_NAME_HIERARCHY, TILE_SIZE},
     resource::map::Map,
 };
 use bevy::prelude::*;
@@ -10,29 +10,24 @@ use bevy_inspector_egui::prelude::*;
 #[cfg_attr(feature = "debug-inspector", derive(Reflect, InspectorOptions))]
 #[cfg_attr(feature = "debug-inspector", reflect(Component, InspectorOptions))]
 pub struct Tile {
-    pub(crate) default_color: Color,
+    pub(crate) default_image: Handle<Image>,
     pub(crate) square: Option<Entity>,
 }
 
 impl Tile {
-    pub(crate) fn create_tile(
-        sprite_color: Color,
-        position: Vec3,
-        assets: &Res<AssetServer>,
-    ) -> impl Bundle {
+    pub(crate) fn create_tile(image: Handle<Image>, position: Vec3) -> impl Bundle {
         (
             Name::new(format!("Tile ({}, {})", position.x, position.y)),
             Sprite {
-                color: sprite_color,
                 custom_size: Some(Vec2::new(TILE_SIZE, TILE_SIZE)),
-                image: assets.load(TILE_IMAGE_PATH),
+                image: image.clone(),
                 ..default()
             },
             Transform::from_translation(position),
             GlobalTransform::default(),
             InheritedVisibility::default(),
             Tile {
-                default_color: sprite_color,
+                default_image: image,
                 square: None,
             },
         )

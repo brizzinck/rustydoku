@@ -15,14 +15,15 @@ impl Figure {
         commands: &mut Commands,
         absolute_position: Vec2,
         assets: &Res<AssetServer>,
+        placeholder: Entity,
     ) -> Entity {
         let mut rng = rand::thread_rng();
         match rng.gen_range(0..5) {
-            1 => square::Square::spawn(commands, absolute_position, assets),
-            2 => t_shape::spawn(commands, absolute_position, assets),
-            3 => big_t_shape::spawn(commands, absolute_position, assets),
-            4 => line::spawn(commands, absolute_position, assets),
-            _ => cube::spawn(commands, absolute_position, assets),
+            1 => square::Square::spawn(commands, absolute_position, assets, placeholder),
+            2 => t_shape::spawn(commands, absolute_position, assets, placeholder),
+            3 => big_t_shape::spawn(commands, absolute_position, assets, placeholder),
+            4 => line::spawn(commands, absolute_position, assets, placeholder),
+            _ => cube::spawn(commands, absolute_position, assets, placeholder),
         }
     }
 
@@ -84,6 +85,7 @@ impl Figure {
         squares_position: &[Vec2],
         name: &'static str,
         assets: &Res<AssetServer>,
+        placeholder: Entity,
     ) -> Entity {
         let (parent, rotation) =
             Figure::spawn_empty_figure(commands, absolute_position, squares_position);
@@ -92,6 +94,7 @@ impl Figure {
             squares_entity: Vec::with_capacity(squares_position.len()),
             squares_position: squares_position.to_vec(),
             state_animation: StateFigureAnimation::SpawnUpScaling,
+            placeholder,
         };
 
         for &offset in squares_position.iter() {

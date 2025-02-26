@@ -18,11 +18,12 @@ pub struct FigureBounds {
     pub max: Vec2,
 }
 
-#[derive(Clone, Component, Default, Debug)]
+#[derive(Clone, Component, Debug)]
 pub struct Figure {
     pub squares_entity: Vec<Entity>,
     pub squares_position: Vec<Vec2>,
     pub state_animation: StateFigureAnimation,
+    pub placeholder: Entity,
 }
 
 #[derive(Component)]

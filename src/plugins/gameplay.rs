@@ -20,6 +20,7 @@ impl Plugin for RustydokuGameplay {
                     Score::reset_score,
                     Placeholder::set_bounce_default,
                     FigureSpawner::respawn_figures,
+                    Placeholder::reset_image,
                 )
                     .chain(),
             ),
@@ -38,6 +39,7 @@ impl Plugin for RustydokuGameplay {
                 Placeholder::set_bounce_default,
                 FigureSpawner::show_figures,
                 FigureSpawner::respawn_figures,
+                Placeholder::reset_image,
             ),
         );
 
