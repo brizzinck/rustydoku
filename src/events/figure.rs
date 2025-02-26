@@ -11,3 +11,6 @@ pub struct FigureTriggerUp(pub Entity);
 
 #[derive(Event)]
 pub struct FigureDeniedPlacing(pub Entity);
+
+#[derive(Event)]
+pub struct FigureSpawned(pub Entity);

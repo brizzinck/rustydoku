@@ -1,3 +1,2 @@
 pub const ELAPSED_TIME: f32 = 0.00000001;
-pub const ELAPSED_SCALE_TO_ONE: f32 = 0.99;
-pub const ELAPSED_SCALE_TO_ZERO: f32 = 0.01;
+pub const ELAPSED_SCALE: f32 = 0.01;

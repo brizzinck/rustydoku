@@ -21,7 +21,15 @@ impl Plugin for FigurePlugin {
                 .chain(),
         );
 
-        app.add_systems(Update, FigureSpawner::lerping_figures);
+        app.add_systems(
+            Update,
+            (
+                FigureSpawner::adding_upscaling_figures,
+                FigureSpawner::lerping_figures,
+                FigureSpawner::upscaling_figures,
+            )
+                .chain(),
+        );
 
         app.add_systems(
             Update,

@@ -4,12 +4,17 @@ pub mod placeholder;
 pub enum StateFigureAnimation {
     #[default]
     Idle,
+    SpawnUpScaling,
     BackLerping,
-    UpScaling,
+    DragUpScaling,
 }
 
 impl StateFigureAnimation {
     pub fn is_default(&self) -> bool {
         matches!(self, StateFigureAnimation::Idle)
+    }
+
+    pub fn is_spawn_upscaling(&self) -> bool {
+        matches!(self, StateFigureAnimation::SpawnUpScaling)
     }
 }

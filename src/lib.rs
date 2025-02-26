@@ -5,7 +5,7 @@ use bevy_inspector_egui::quick::WorldInspectorPlugin;
 
 use constants::world::background::BACKGROUND_CLEAR_COLOR;
 use events::figure::{
-    FigureDeniedPlacing, FigureTriggerDragging, FigureTriggerEnter, FigureTriggerUp,
+    FigureDeniedPlacing, FigureSpawned, FigureTriggerDragging, FigureTriggerEnter, FigureTriggerUp,
 };
 use plugins::default::RustydokuDefault;
 use plugins::gameplay::RustydokuGameplay;
@@ -37,6 +37,8 @@ pub fn run() {
     game.add_event::<FigureTriggerDragging>();
     game.add_event::<FigureTriggerUp>();
     game.add_event::<FigureDeniedPlacing>();
+    game.add_event::<FigureSpawned>();
+
     game.add_plugins(RustydokuDefault);
     game.add_plugins(MapPlugin);
     game.add_plugins(CameraPlugin);

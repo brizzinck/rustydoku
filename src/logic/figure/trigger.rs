@@ -17,7 +17,7 @@ impl Figure {
             let entity = entity.0;
             let (mut transform, mut figure) = figures.get_mut(entity).unwrap();
 
-            Figure::upscaling_when_dragging(
+            Figure::upscaling_when_drag(
                 &mut transform,
                 time.delta_secs(),
                 &mut figure.state_animation,

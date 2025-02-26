@@ -58,7 +58,7 @@ impl Figure {
                     Transform {
                         translation: Vec3::new(position.x, position.y, FIGURE_POSITION_Z),
                         rotation,
-                        scale: Vec3::ONE * FIGURE_IDEL_SCALE,
+                        scale: Vec3::ZERO,
                     },
                     FigureBounds {
                         min: bounds_min,
@@ -91,7 +91,7 @@ impl Figure {
         let mut figure = Figure {
             squares_entity: Vec::with_capacity(squares_position.len()),
             squares_position: squares_position.to_vec(),
-            state_animation: StateFigureAnimation::default(),
+            state_animation: StateFigureAnimation::SpawnUpScaling,
         };
 
         for &offset in squares_position.iter() {
