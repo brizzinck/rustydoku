@@ -1,43 +1,13 @@
 pub mod trigger;
 
 use crate::{
-    components::{
-        figures::{square::Square, Figure},
-        map::Tile,
-    },
-    constants::{
-        map::TILE_SIZE,
-        square::{assets::SQAURE_IMAGE_HIGHLIGHT, SQUARE_NAME_HIERARCHY},
-    },
-    states::{figure::StateFigureAnimation, gameplay::StateGame},
+    components::{figure::Figure, map::Tile, square::Square},
+    constants::{map::TILE_SIZE, square::assets::SQAURE_IMAGE_HIGHLIGHT},
+    states::gameplay::StateGame,
 };
 use bevy::prelude::*;
 
 impl Square {
-    pub(crate) fn spawn(
-        commands: &mut Commands,
-        position: Vec2,
-        assets: &Res<AssetServer>,
-        placeholder: Entity,
-    ) -> Entity {
-        let (parent, rotation) =
-            Figure::spawn_empty_figure(commands, position, &[Vec2::new(0., 0.)]);
-        let child = Self::spawn_as_child(commands, parent, Vec2::new(0., 0.), rotation, assets);
-
-        commands.entity(parent).insert(Figure {
-            squares_entity: vec![child],
-            squares_position: vec![Vec2::new(0., 0.)],
-            state_animation: StateFigureAnimation::default(),
-            placeholder,
-        });
-
-        commands
-            .entity(parent)
-            .insert(Name::new(SQUARE_NAME_HIERARCHY));
-
-        parent
-    }
-
     pub(crate) fn spawn_as_child(
         commands: &mut Commands,
         parent: Entity,

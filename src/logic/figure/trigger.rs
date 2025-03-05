@@ -1,5 +1,5 @@
 use crate::{
-    components::figures::{square::Square, Figure},
+    components::{figure::Figure, square::Square},
     events::figure::{FigureTriggerDragging, FigureTriggerUp},
     resource::figure_spawner::FigureSpawner,
     states::gameplay::StateGame,

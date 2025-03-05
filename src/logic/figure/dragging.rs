@@ -1,14 +1,11 @@
 use crate::{
-    components::figures::{Figure, FigureBounds},
-    constants::figure::*,
+    components::figure::{Figure, FigureBounds},
+    constants::{figure::*, square::*},
     events::figure::FigureTriggerDragging,
     states::gameplay::StateGame,
     world::game_zone::GameZone,
 };
 use bevy::{prelude::*, window::PrimaryWindow};
-
-#[cfg(feature = "debug-inspector")]
-use bevy_inspector_egui::prelude::*;
 
 impl Figure {
     #[allow(clippy::too_many_arguments)]

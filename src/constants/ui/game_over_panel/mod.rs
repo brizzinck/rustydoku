@@ -1,10 +1,12 @@
 use bevy::prelude::*;
 
+pub mod animation;
 pub mod assets;
 pub mod background;
 pub mod header_title;
 pub mod score_text;
 
+pub use animation::*;
 pub use assets::*;
 pub use background::*;
 pub use header_title::*;
@@ -29,11 +31,3 @@ pub const GAME_OVER_PANEL_MARGIN: UiRect = UiRect {
 pub const GAME_OVER_PANEL_MAX_WIDTH: Val = Val::Px(500.);
 pub const GAME_OVER_PANEL_MAX_HEIGHT: Val = Val::Px(255.);
 pub const GAME_OVER_PANEL_JUSTIFY_SELF: JustifySelf = JustifySelf::Center;
-
-pub const GAME_OVER_PANEL_TIMER_ANIMATION: f32 = 1.;
-pub const GAME_OVER_PANEL_DEFAULT_SPEED_ANIMATION: f32 = 1.;
-pub const GAME_OVER_PANEL_SHOW_MUL_SPEED_ANIMATION: f32 = 1.;
-pub const GAME_OVER_PANEL_HIDE_MUL_SPEED_ANIMATION: f32 = 5.;
-pub const GAME_OVER_PANEL_TOP_END_FLOAT: f32 = GAME_OVER_PANEL_TOP_DEFAULT_FLOAT / 2. - 10.;
-pub const GAME_OVER_PANEL_TOP_REVERSE_END_FLOAT: f32 =
-    GAME_OVER_PANEL_TOP_DEFAULT_FLOAT - GAME_OVER_PANEL_TOP_END_FLOAT;

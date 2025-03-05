@@ -1,28 +1,9 @@
-use super::figure::*;
-use bevy::prelude::*;
-
+pub mod animation;
 pub mod assets;
+pub mod transform;
+
+pub use animation::*;
+pub use assets::*;
+pub use transform::*;
 
 pub const PLACEHOLDER_NAME_HIERARCHY: &str = "Placeholder";
-
-pub const PLACEHOLDER_SCALE_DEFAULT: Vec3 = Vec3::splat(1.);
-pub const PLACEHOLDER_SCALE_INITIAL: Vec3 = Vec3::splat(0.);
-pub const PLACEHOLDER_SCALE_PEAK: f32 = PLACEHOLDER_SCALE_DEFAULT.x + FIGURE_IDEL_SCALE * 0.2;
-pub const PLACEHOLDER_SCALE_SPEED_ANIMATION: f32 = 1.3;
-pub const PLACEHOLDER_SCALE_SPEED_UP_FACTOR: f32 = 0.4;
-
-pub const LERPED_FIGURE_SCALE: Vec3 = Vec3::splat(FIGURE_IDEL_SCALE);
-
-pub const FIGURE_SPEED_RETURN_TO_PLACEHOLDER: f32 = 8.;
-
-pub const PLACEHOLDER_COLOR: Srgba = Srgba::new(1., 1., 1., 0.45);
-
-pub const PLACEHOLDER_OFFSET: f32 = 10.;
-pub const PLACEHOLDER_SIZE: Vec2 =
-    Vec2::splat((MAX_FIGURE_SIZE + PLACEHOLDER_OFFSET) * FIGURE_IDEL_SCALE);
-pub const PLACEHOLDER_POSITION: [(f32, f32); 3] = [
-    (SQUARE_SIZE * 3.45, SQUARE_SIZE * -7.),
-    (0., SQUARE_SIZE * -7.),
-    (SQUARE_SIZE * -3.45, SQUARE_SIZE * -7.),
-];
-pub const PLACEHOLDER_POSITION_Z: f32 = 0.;

@@ -6,7 +6,7 @@ use bevy_inspector_egui::quick::WorldInspectorPlugin;
 use constants::world::background::BACKGROUND_CLEAR_COLOR;
 use events::figure::{
     FigureCanPlaced, FigureCantPlaced, FigureDeniedPlacing, FigureSpawned, FigureTriggerDragging,
-    FigureTriggerEnter, FigureTriggerUp,
+    FigureTriggerUp,
 };
 use plugins::default::RustydokuDefault;
 use plugins::gameplay::RustydokuGameplay;
@@ -34,7 +34,6 @@ pub mod world;
 pub fn run() {
     let mut game = App::new();
 
-    game.add_event::<FigureTriggerEnter>();
     game.add_event::<FigureTriggerDragging>();
     game.add_event::<FigureTriggerUp>();
     game.add_event::<FigureDeniedPlacing>();

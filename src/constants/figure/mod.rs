@@ -1,21 +1,47 @@
-use super::map::TILE_SIZE;
-use bevy::prelude::*;
+pub mod animation;
+pub mod interactive;
+pub mod transform;
 
-pub const SQUARE_SIZE: f32 = TILE_SIZE;
-pub const SQUARE_PLACED_POSITION: Vec3 = Vec3::new(0., 0., 0.5);
+pub use animation::*;
+use bevy::math::Vec2;
+pub use interactive::*;
+pub use transform::*;
 
-pub const MAX_FIGURE_SIZE: f32 = SQUARE_SIZE * 3.;
-pub const MAX_FIGURE_USIZE_SCALED: usize = 3;
+pub const FIGURES: [(&[Vec2], &str); 5] = [
+    (&SQUARE, SQUARE_NAME),
+    (&BIG_T_FIGURE, BIG_T_FIGURE_NAME),
+    (&CUBE, CUBE_NAME),
+    (&LINE, LINE_NAME),
+    (&T_FIGURE, T_FIGURE_NAME),
+];
 
-pub const FIGURE_POSITION_Z: f32 = 1.;
-pub const FIGURE_DRAGGING_SCALE: f32 = 1.;
-pub const FIGURE_IDEL_SCALE: f32 = 0.6;
-pub const FIGURE_IDEL_SCALE_VEC3: Vec3 = Vec3::splat(FIGURE_IDEL_SCALE);
-pub const FIGURE_SPEED_TO_UPSCALE: f32 = 8.;
-pub const FIGURE_UPSCALE_SPEED_INCREMENT_FACTOR_PER_FRAME: f32 = 1.;
-pub const FIGURE_SPEED_TO_UPSCALING_SPAWN: f32 = 5.;
+const SQUARE: [Vec2; 1] = [Vec2::new(0., 0.)];
+const SQUARE_NAME: &str = "Square";
 
-pub const FIGURE_OFFSET_DRAGGING_Y: f32 = 55.;
-pub const FIGURE_OFFSET_DRAGGING_Y_MULTIPLY: f32 = 10.;
+const BIG_T_FIGURE: [Vec2; 5] = [
+    Vec2::new(-1.0, 1.),
+    Vec2::new(0.0, 1.),
+    Vec2::new(1.0, 1.),
+    Vec2::new(0.0, -0.),
+    Vec2::new(0.0, -1.),
+];
+const BIG_T_FIGURE_NAME: &str = "Big T";
 
-pub const INTERACTIVE_ZONE_COLOR: Srgba = Srgba::new(0., 0., 0., 0.);
+const CUBE: [Vec2; 4] = [
+    Vec2::new(-0.5, -0.5),
+    Vec2::new(0.5, 0.5),
+    Vec2::new(-0.5, 0.5),
+    Vec2::new(0.5, -0.5),
+];
+const CUBE_NAME: &str = "Cube";
+
+const LINE: [Vec2; 3] = [Vec2::new(0., 0.), Vec2::new(1., 0.), Vec2::new(-1., 0.)];
+const LINE_NAME: &str = "Line";
+
+const T_FIGURE: [Vec2; 4] = [
+    Vec2::new(-1.0, 0.5),
+    Vec2::new(0.0, 0.5),
+    Vec2::new(1.0, 0.5),
+    Vec2::new(0.0, -0.5),
+];
+const T_FIGURE_NAME: &str = "T";

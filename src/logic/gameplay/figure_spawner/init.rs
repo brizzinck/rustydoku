@@ -1,9 +1,6 @@
 use crate::{
-    components::figures::{FigureZone, Placeholder},
-    constants::{
-        figure_zone::*,
-        placeholder::{assets::FIGURE_PLACEHOLDER_DEFAULT_IMAGE_PATH, *},
-    },
+    components::{figure_zone::FigureZone, placeholder::Placeholder},
+    constants::placeholder::PLACEHOLDER_POSITION,
     resource::figure_spawner::FigureSpawner,
     states::figure::placeholder::StatePlaceholderAnimation,
 };
@@ -15,32 +12,11 @@ impl FigureSpawner {
         assets: Res<AssetServer>,
         mut next_state: ResMut<NextState<StatePlaceholderAnimation>>,
     ) {
-        let parent = commands
-            .spawn((
-                Name::new(SPAWN_ZONE_NAME_HIERARCHY),
-                Transform::from_translation(Vec3::ZERO),
-                Visibility::Inherited,
-                FigureZone,
-            ))
-            .id();
+        let parent = commands.spawn(FigureZone::create()).id();
 
         for &position in PLACEHOLDER_POSITION.iter() {
             commands
-                .spawn((
-                    Sprite {
-                        image: assets.load(FIGURE_PLACEHOLDER_DEFAULT_IMAGE_PATH),
-                        custom_size: Some(PLACEHOLDER_SIZE),
-                        color: PLACEHOLDER_COLOR.into(),
-                        ..default()
-                    },
-                    Transform {
-                        translation: Vec3::new(position.0, position.1, PLACEHOLDER_POSITION_Z),
-                        scale: PLACEHOLDER_SCALE_INITIAL,
-                        ..default()
-                    },
-                    Name::new(PLACEHOLDER_NAME_HIERARCHY),
-                    Placeholder,
-                ))
+                .spawn(Placeholder::create(position, &assets))
                 .set_parent(parent);
         }
 

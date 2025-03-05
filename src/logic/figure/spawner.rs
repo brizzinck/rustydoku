@@ -1,8 +1,7 @@
 use crate::{
-    components::figures::{
-        big_t_shape, cube, line,
-        square::{self, Square},
-        t_shape, Figure, FigureBounds,
+    components::{
+        figure::{Figure, FigureBounds},
+        square::Square,
     },
     constants::figure::*,
     states::figure::StateFigureAnimation,
@@ -11,23 +10,25 @@ use bevy::prelude::*;
 use rand::Rng;
 
 impl Figure {
-    pub(crate) fn random_spawn_figure(
+    pub(crate) fn random_spawn(
         commands: &mut Commands,
         absolute_position: Vec2,
         assets: &Res<AssetServer>,
         placeholder: Entity,
     ) -> Entity {
-        let mut rng = rand::thread_rng();
-        match rng.gen_range(0..5) {
-            1 => square::Square::spawn(commands, absolute_position, assets, placeholder),
-            2 => t_shape::spawn(commands, absolute_position, assets, placeholder),
-            3 => big_t_shape::spawn(commands, absolute_position, assets, placeholder),
-            4 => line::spawn(commands, absolute_position, assets, placeholder),
-            _ => cube::spawn(commands, absolute_position, assets, placeholder),
-        }
+        let figure = rand::thread_rng().gen_range(0..FIGURES.len());
+
+        Self::spawn_figure(
+            commands,
+            absolute_position,
+            FIGURES[figure].0,
+            FIGURES[figure].1,
+            assets,
+            placeholder,
+        )
     }
 
-    pub(crate) fn spawn_empty_figure(
+    pub(crate) fn spawn_empty(
         commands: &mut Commands,
         position: Vec2,
         squares_position: &[Vec2],
@@ -55,23 +56,10 @@ impl Figure {
 
         (
             commands
-                .spawn((
-                    Transform {
-                        translation: Vec3::new(position.x, position.y, FIGURE_POSITION_Z),
-                        rotation,
-                        scale: Vec3::ZERO,
-                    },
-                    FigureBounds {
-                        min: bounds_min,
-                        max: bounds_max,
-                    },
-                    PickingBehavior::default(),
-                    InheritedVisibility::default(),
-                    Sprite {
-                        custom_size: Some(Vec2::new(MAX_FIGURE_SIZE, MAX_FIGURE_SIZE)),
-                        color: INTERACTIVE_ZONE_COLOR.into(),
-                        ..default()
-                    },
+                .spawn(Figure::create(
+                    position,
+                    rotation,
+                    FigureBounds::new(bounds_min, bounds_min),
                 ))
                 .observe(Figure::start_dragging)
                 .id(),
@@ -87,8 +75,7 @@ impl Figure {
         assets: &Res<AssetServer>,
         placeholder: Entity,
     ) -> Entity {
-        let (parent, rotation) =
-            Figure::spawn_empty_figure(commands, absolute_position, squares_position);
+        let (parent, rotation) = Figure::spawn_empty(commands, absolute_position, squares_position);
 
         let mut figure = Figure {
             squares_entity: Vec::with_capacity(squares_position.len()),

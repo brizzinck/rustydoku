@@ -1,4 +1,4 @@
-use crate::{components::figures::square::Square, resource::square::SquaresToDespawn};
+use crate::{components::square::Square, resource::square::SquaresToDespawn};
 use bevy::prelude::*;
 
 impl Square {

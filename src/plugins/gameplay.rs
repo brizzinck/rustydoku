@@ -1,6 +1,6 @@
 use crate::{
     components::{
-        figures::Placeholder,
+        placeholder::Placeholder,
         ui::{game_over_panel::panel::GameOverPanel, header::HeaderUI},
     },
     resource::{figure_spawner::FigureSpawner, map::Map, score::Score},

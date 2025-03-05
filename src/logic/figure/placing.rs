@@ -1,9 +1,6 @@
 use crate::{
-    components::{
-        figures::{square::Square, Figure},
-        map::Tile,
-    },
-    constants::figure::*,
+    components::{figure::Figure, map::Tile, square::Square},
+    constants::square::*,
     events::figure::FigureDeniedPlacing,
     states::gameplay::StateGame,
 };

@@ -1,5 +1,5 @@
 use crate::{
-    components::figures::{square::Square, Figure, Placeholder},
+    components::{figure::Figure, placeholder::Placeholder, square::Square},
     resource::figure_spawner::FigureSpawner,
     states::{figure::placeholder::StatePlaceholderAnimation, gameplay::StateGame},
 };
@@ -53,10 +53,7 @@ impl Plugin for FigurePlugin {
                 .chain(),
         );
 
-        app.add_systems(
-            OnExit(StateGame::CheckGameOver),
-            Placeholder::change_image_by_placed,
-        );
+        app.add_systems(OnExit(StateGame::CheckGameOver), Placeholder::update_image);
 
         app.add_systems(Update, Square::call_despawn);
 
@@ -82,7 +79,7 @@ impl Plugin for FigurePlugin {
 
         #[cfg(feature = "debug-inspector")]
         {
-            use crate::components::figures::FigureBounds;
+            use crate::components::figure::FigureBounds;
             app.register_type::<FigureBounds>();
         }
     }

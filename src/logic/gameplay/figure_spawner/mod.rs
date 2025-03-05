@@ -2,8 +2,7 @@ use bevy::prelude::*;
 
 use crate::{
     components::{
-        figures::{Figure, FigureZone, Placeholder},
-        ui::header::HeaderUI,
+        figure::Figure, figure_zone::FigureZone, placeholder::Placeholder, ui::header::HeaderUI,
     },
     constants::figure::FIGURE_POSITION_Z,
     events::figure::FigureSpawned,
@@ -24,12 +23,13 @@ impl FigureSpawner {
     ) {
         if figure_spawner.figures.is_empty() {
             for (entity, &transform) in placeholder.iter() {
-                let entity = Figure::random_spawn_figure(
+                let entity = Figure::random_spawn(
                     &mut commands,
                     Vec2::new(transform.translation.x, transform.translation.y),
                     &assets,
                     entity,
                 );
+
                 commands.entity(entity).set_parent(figure_zone.single());
 
                 figure_spawner.figures.insert(

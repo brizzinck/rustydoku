@@ -1,13 +1,13 @@
 use bevy::prelude::*;
 
 use crate::{
-    components::figures::Placeholder,
+    components::placeholder::Placeholder,
     constants::placeholder::assets::*,
     events::figure::{FigureCanPlaced, FigureCantPlaced},
 };
 
 impl Placeholder {
-    pub(crate) fn change_image_by_placed(
+    pub(crate) fn update_image(
         mut placeholders: Query<&mut Sprite, With<Placeholder>>,
         mut cant_place: EventReader<FigureCantPlaced>,
         mut can_place: EventReader<FigureCanPlaced>,

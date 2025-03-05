@@ -1,7 +1,4 @@
-use crate::constants::{
-    figure::*,
-    square::{assets::SQAURE_IMAGE_DEFAULT_PATH, SQUARE_COLOR_DEFAULT},
-};
+use crate::constants::{figure::*, square::*};
 use bevy::prelude::*;
 
 #[derive(Component, Default)]

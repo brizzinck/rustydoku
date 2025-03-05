@@ -1,6 +1,6 @@
 use crate::{
     components::{
-        figures::{Figure, FigureBounds},
+        figure::{Figure, FigureBounds},
         map::Tile,
     },
     constants::map::{MAP_SPAWN_POSITIOM, TILE_SIZE},

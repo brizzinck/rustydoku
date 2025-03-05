@@ -1,5 +1,5 @@
 use crate::{
-    components::figures::Figure,
+    components::figure::Figure,
     constants::{animation::ELAPSED_SCALE, figure::*},
     states::figure::StateFigureAnimation,
 };

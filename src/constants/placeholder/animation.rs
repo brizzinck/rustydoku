@@ -1,0 +1,10 @@
+use crate::constants::figure::animation::FIGURE_IDEL_SCALE;
+use bevy::math::Vec3;
+
+pub const LERPED_FIGURE_SCALE: Vec3 = Vec3::splat(FIGURE_IDEL_SCALE);
+pub const PLACEHOLDER_SCALE_DEFAULT: Vec3 = Vec3::splat(1.);
+pub const PLACEHOLDER_SCALE_INITIAL: Vec3 = Vec3::splat(0.);
+pub const PLACEHOLDER_SCALE_PEAK: f32 = PLACEHOLDER_SCALE_DEFAULT.x + FIGURE_IDEL_SCALE * 0.2;
+pub const PLACEHOLDER_SCALE_SPEED_ANIMATION: f32 = 1.3;
+pub const PLACEHOLDER_SCALE_SPEED_UP_FACTOR: f32 = 0.4;
+pub const FIGURE_SPEED_RETURN_TO_PLACEHOLDER: f32 = 8.;
