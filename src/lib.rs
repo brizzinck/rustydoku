@@ -10,8 +10,10 @@ use events::figure::{
 };
 use events::figure_spawner::SpawnFigure;
 use plugins::default::RustydokuDefault;
+use plugins::firure_spawner::FigureSpawnerPlugin;
 use plugins::gameplay::RustydokuGameplay;
 use plugins::logic::RustydokuLogicPlugin;
+use plugins::placeholer::PlaceholderPlugin;
 use plugins::ui::RustydokuUIPlugin;
 use plugins::{camera::CameraPlugin, figure::FigurePlugin, map::MapPlugin};
 use resource::figure_spawner::FigureSpawner;
@@ -47,6 +49,8 @@ pub fn run() {
     game.add_plugins(MapPlugin);
     game.add_plugins(CameraPlugin);
     game.add_plugins(FigurePlugin);
+    game.add_plugins(FigureSpawnerPlugin);
+    game.add_plugins(PlaceholderPlugin);
     game.add_plugins(RustydokuUIPlugin);
     game.add_plugins(RustydokuLogicPlugin);
     game.add_plugins(RustydokuGameplay);

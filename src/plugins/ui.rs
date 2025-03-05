@@ -17,16 +17,6 @@ pub struct RustydokuUIPlugin;
 impl Plugin for RustydokuUIPlugin {
     fn build(&self, app: &mut App) {
         app.add_systems(Startup, (HeaderUI::spawn, GameOverPanel::spawn));
-        app.add_systems(
-            Update,
-            (
-                HeaderCurrentScoreText::update,
-                RestartButton::handle,
-                GameOverCurrentScoreText::update,
-                GameOverMaxScoreText::update,
-            )
-                .chain(),
-        );
 
         app.add_systems(
             OnEnter(StateGame::GameOver),
@@ -34,6 +24,17 @@ impl Plugin for RustydokuUIPlugin {
                 Score::update_max_score,
                 HeaderUI::hide,
                 GameOverPanel::set_show,
+            )
+                .chain(),
+        );
+
+        app.add_systems(
+            Update,
+            (
+                HeaderCurrentScoreText::update,
+                RestartButton::handle,
+                GameOverCurrentScoreText::update,
+                GameOverMaxScoreText::update,
             )
                 .chain(),
         );

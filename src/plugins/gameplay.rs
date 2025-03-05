@@ -10,12 +10,18 @@ use bevy::{ecs::schedule::SystemConfigs, prelude::*};
 
 pub struct RustydokuGameplay;
 
+impl RustydokuGameplay {
+    fn general_restart() -> SystemConfigs {
+        (Map::reset_tiles, HeaderUI::show, StateGame::reset_state).chain()
+    }
+}
+
 impl Plugin for RustydokuGameplay {
     fn build(&self, app: &mut App) {
         app.add_systems(
             OnEnter(StateGame::DefaultRestart),
             (
-                general_restart(),
+                Self::general_restart(),
                 (
                     Score::reset_score,
                     Placeholder::set_bounce_default,
@@ -26,7 +32,12 @@ impl Plugin for RustydokuGameplay {
             ),
         );
 
-        app.add_systems(OnEnter(StateGame::GameOverRestart), general_restart());
+        app.add_systems(
+            OnEnter(StateGame::GameOver),
+            (FigureSpawner::clear_figures, FigureSpawner::hide_figures).chain(),
+        );
+
+        app.add_systems(OnEnter(StateGame::GameOverRestart), Self::general_restart());
 
         app.add_systems(
             OnExit(StateGame::GameOver),
@@ -42,14 +53,5 @@ impl Plugin for RustydokuGameplay {
                 Placeholder::reset_image,
             ),
         );
-
-        app.add_systems(
-            OnEnter(StateGame::GameOver),
-            (FigureSpawner::clear_figures, FigureSpawner::hide_figures).chain(),
-        );
     }
-}
-
-fn general_restart() -> SystemConfigs {
-    (Map::reset_tiles, HeaderUI::show, StateGame::reset_state).chain()
 }
