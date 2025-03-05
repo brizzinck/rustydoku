@@ -1,0 +1,1 @@
+pub const DUMP_DOWN_SCALED_FACTOR: f32 = 5.;

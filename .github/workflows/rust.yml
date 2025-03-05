@@ -1,0 +1,54 @@
+name: Rust CI Check
+
+on:
+  push:
+    branches: [ "main", "master", "dev", "develop" ]
+  pull_request:
+    branches: ["main", "master", "dev", "develop"]
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        rust: [stable]
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          rust-version: ${{ matrix.rust }}
+          default: true
+          tools: clippy, rustfmt
+
+      - name: Cache Cargo Registry
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+          key: ${{ runner.os }}-cargo-registry-${{ hashFiles('**/Cargo.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-cargo-registry-
+
+      - name: Install System Dependencies
+        run: sudo apt-get update && sudo apt-get install -y libsqlite3-dev libpq-dev libasound2-dev libudev-dev pkg-config
+
+      - name: Install Rust Dependencies
+        run: cargo fetch
+
+      - name: Run Rustfmt
+        run: cargo fmt -- --check
+
+      - name: Run Clippy
+        run: cargo clippy -- -D warnings
+
+      - name: Run Tests
+        run: cargo test --verbose
