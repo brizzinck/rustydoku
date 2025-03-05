@@ -17,11 +17,10 @@ impl Plugin for FigurePlugin {
     fn build(&self, app: &mut App) {
         app.add_systems(
             OnEnter(StateGame::GenerateWorld),
-            (
-                FigureSpawner::spawn_zone_figures,
-                FigureSpawner::spawn_figures.after(FigureSpawner::spawn_zone_figures),
-            ),
+            FigureSpawner::spawn_zone_figures,
         );
+
+        app.add_systems(Update, FigureSpawner::spawn_figures);
 
         app.add_systems(
             Update,

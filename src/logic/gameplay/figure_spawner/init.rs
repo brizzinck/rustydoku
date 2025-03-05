@@ -1,6 +1,7 @@
 use crate::{
     components::world::{figure_zone::FigureZone, placeholder::Placeholder},
     constants::placeholder::PLACEHOLDER_POSITION,
+    events::figure_spawner::SpawnFigure,
     resource::figure_spawner::FigureSpawner,
     states::figure::placeholder::StatePlaceholderAnimation,
 };
@@ -11,6 +12,7 @@ impl FigureSpawner {
         mut commands: Commands,
         assets: Res<AssetServer>,
         mut next_state: ResMut<NextState<StatePlaceholderAnimation>>,
+        mut event_writer: EventWriter<SpawnFigure>,
     ) {
         let parent = commands.spawn(FigureZone::create()).id();
 
@@ -21,5 +23,6 @@ impl FigureSpawner {
         }
 
         next_state.set(StatePlaceholderAnimation::BouncingInit);
+        event_writer.send(SpawnFigure);
     }
 }

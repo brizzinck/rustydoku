@@ -8,6 +8,7 @@ use events::figure::{
     FigureCanPlaced, FigureCantPlaced, FigureDeniedPlacing, FigureSpawned, FigureTriggerDragging,
     FigureTriggerUp,
 };
+use events::figure_spawner::SpawnFigure;
 use plugins::default::RustydokuDefault;
 use plugins::gameplay::RustydokuGameplay;
 use plugins::logic::RustydokuLogicPlugin;
@@ -40,6 +41,7 @@ pub fn run() {
     game.add_event::<FigureSpawned>();
     game.add_event::<FigureCantPlaced>();
     game.add_event::<FigureCanPlaced>();
+    game.add_event::<SpawnFigure>();
 
     game.add_plugins(RustydokuDefault);
     game.add_plugins(MapPlugin);

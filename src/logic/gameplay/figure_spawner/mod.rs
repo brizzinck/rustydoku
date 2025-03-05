@@ -7,7 +7,7 @@ use crate::{
         world::{figure_zone::FigureZone, placeholder::Placeholder},
     },
     constants::figure::FIGURE_POSITION_Z,
-    events::figure::FigureSpawned,
+    events::{figure::FigureSpawned, figure_spawner::SpawnFigure},
     resource::figure_spawner::FigureSpawner,
     states::gameplay::StateGame,
 };
@@ -22,8 +22,9 @@ impl FigureSpawner {
         figure_zone: Query<Entity, With<FigureZone>>,
         placeholder: Query<(Entity, &Transform), With<Placeholder>>,
         mut event_writer: EventWriter<FigureSpawned>,
+        mut event_reader: EventReader<SpawnFigure>,
     ) {
-        if figure_spawner.figures.is_empty() {
+        if figure_spawner.figures.is_empty() && event_reader.read().last().is_some() {
             for (entity, &transform) in placeholder.iter() {
                 let entity = Figure::random_spawn(
                     &mut commands,
@@ -48,28 +49,17 @@ impl FigureSpawner {
         }
     }
 
-    #[allow(clippy::too_many_arguments)]
     pub(crate) fn despawn_figure(
         mut commands: Commands,
         mut figure_spawner: ResMut<FigureSpawner>,
         state: Res<State<StateGame>>,
         mut next_state: ResMut<NextState<StateGame>>,
-        assets: Res<AssetServer>,
-        figure_zone: Query<Entity, With<FigureZone>>,
-        event_writer: EventWriter<FigureSpawned>,
-        placeholder: Query<(Entity, &Transform), With<Placeholder>>,
+        mut event_writer: EventWriter<SpawnFigure>,
     ) {
         if let StateGame::Placed(entity) = state.get() {
             commands.entity(*entity).despawn();
             figure_spawner.figures.remove(entity);
-            FigureSpawner::spawn_figures(
-                commands,
-                figure_spawner,
-                assets,
-                figure_zone,
-                placeholder,
-                event_writer,
-            );
+            event_writer.send(SpawnFigure);
             next_state.set(StateGame::CheckCombo);
         }
     }
@@ -77,24 +67,14 @@ impl FigureSpawner {
     pub(crate) fn respawn_figures(
         mut commands: Commands,
         mut figure_spawner: ResMut<FigureSpawner>,
-        assets: Res<AssetServer>,
-        figure_zone: Query<Entity, With<FigureZone>>,
-        placeholder: Query<(Entity, &Transform), With<Placeholder>>,
-        event_writer: EventWriter<FigureSpawned>,
+        mut event_writer: EventWriter<SpawnFigure>,
     ) {
         for (entity, _) in figure_spawner.figures.iter() {
             commands.entity(*entity).despawn_recursive();
         }
 
         figure_spawner.figures.clear();
-        FigureSpawner::spawn_figures(
-            commands.reborrow(),
-            figure_spawner,
-            assets,
-            figure_zone,
-            placeholder,
-            event_writer,
-        );
+        event_writer.send(SpawnFigure);
     }
 
     pub(crate) fn clear_figures(mut commands: Commands, mut figure_spawner: ResMut<FigureSpawner>) {
