@@ -1,5 +1,7 @@
-use super::{FIGURE_IDEL_SCALE, MAX_FIGURE_SIZE, SQUARE_SIZE};
+use super::figure::*;
 use bevy::prelude::*;
+
+pub mod assets;
 
 pub const PLACEHOLDER_NAME_HIERARCHY: &str = "Placeholder";
 

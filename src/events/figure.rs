@@ -7,6 +7,9 @@ pub struct FigureTriggerEnter;
 pub struct FigureTriggerDragging(pub Entity);
 
 #[derive(Event)]
+pub struct FigureMoving(pub Entity);
+
+#[derive(Event)]
 pub struct FigureTriggerUp(pub Entity);
 
 #[derive(Event)]

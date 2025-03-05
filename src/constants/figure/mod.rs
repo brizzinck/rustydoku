@@ -1,11 +1,6 @@
 use super::map::TILE_SIZE;
 use bevy::prelude::*;
 
-pub mod assets;
-pub mod placeholder;
-pub mod spawn_zone;
-pub mod square;
-
 pub const SQUARE_SIZE: f32 = TILE_SIZE;
 pub const SQUARE_PLACED_POSITION: Vec3 = Vec3::new(0., 0., 0.5);
 
@@ -22,4 +17,5 @@ pub const FIGURE_SPEED_TO_UPSCALING_SPAWN: f32 = 5.;
 
 pub const FIGURE_OFFSET_DRAGGING_Y: f32 = 55.;
 pub const FIGURE_OFFSET_DRAGGING_Y_MULTIPLY: f32 = 10.;
+
 pub const INTERACTIVE_ZONE_COLOR: Srgba = Srgba::new(0., 0., 0., 0.);

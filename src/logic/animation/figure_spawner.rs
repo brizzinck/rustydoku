@@ -2,10 +2,8 @@ use crate::{
     components::figures::Figure,
     constants::{
         animation::ELAPSED_SCALE,
-        figure::{
-            placeholder::*, FIGURE_IDEL_SCALE_VEC3, FIGURE_SPEED_TO_UPSCALING_SPAWN,
-            FIGURE_UPSCALE_SPEED_INCREMENT_FACTOR_PER_FRAME,
-        },
+        figure::*,
+        placeholder::{FIGURE_SPEED_RETURN_TO_PLACEHOLDER, LERPED_FIGURE_SCALE},
     },
     events::figure::{FigureDeniedPlacing, FigureSpawned, FigureTriggerUp},
     resource::figure_spawner::FigureSpawner,

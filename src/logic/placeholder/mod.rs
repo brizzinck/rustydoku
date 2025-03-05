@@ -2,9 +2,7 @@ use bevy::prelude::*;
 
 use crate::{
     components::figures::Placeholder,
-    constants::figure::assets::{
-        FIGURE_PLACEHOLDER_DEFAULT_IMAGE_PATH, FIGURE_PLACEHOLDER_RED_IMAGE_PATH,
-    },
+    constants::placeholder::assets::*,
     events::figure::{FigureCanPlaced, FigureCantPlaced},
 };
 

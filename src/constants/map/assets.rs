@@ -1,4 +1,4 @@
-use crate::constants::figure::assets::{
+use crate::constants::square::assets::{
     SQAURE_IMAGE_FIRST_DEACTIVE_PATH, SQAURE_IMAGE_SECOND_DEACTIVE_PATH,
 };
 

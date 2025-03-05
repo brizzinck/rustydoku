@@ -1,8 +1,8 @@
 use crate::{
     components::figures::{FigureZone, Placeholder},
-    constants::figure::{
-        assets::FIGURE_PLACEHOLDER_DEFAULT_IMAGE_PATH, placeholder::*,
-        spawn_zone::SPAWN_ZONE_NAME_HIERARCHY,
+    constants::{
+        figure_zone::*,
+        placeholder::{assets::FIGURE_PLACEHOLDER_DEFAULT_IMAGE_PATH, *},
     },
     resource::figure_spawner::FigureSpawner,
     states::figure::placeholder::StatePlaceholderAnimation,

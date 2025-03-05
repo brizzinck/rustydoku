@@ -1,7 +1,8 @@
-use crate::constants::figure::*;
-use assets::SQAURE_IMAGE_DEFAULT_PATH;
+use crate::constants::{
+    figure::*,
+    square::{assets::SQAURE_IMAGE_DEFAULT_PATH, SQUARE_COLOR_DEFAULT},
+};
 use bevy::prelude::*;
-use square::*;
 
 #[derive(Component, Default)]
 pub struct Square {

@@ -1,4 +1,4 @@
-use crate::{components::figures::square::Square, constants::figure::square::*};
+use crate::{components::figures::square::Square, constants::square::*};
 use bevy::prelude::*;
 
 impl Square {

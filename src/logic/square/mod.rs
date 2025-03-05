@@ -6,8 +6,8 @@ use crate::{
         map::Tile,
     },
     constants::{
-        figure::{assets::SQAURE_IMAGE_HIGHLIGHT, square::SQUARE_NAME_HIERARCHY},
         map::TILE_SIZE,
+        square::{assets::SQAURE_IMAGE_HIGHLIGHT, SQUARE_NAME_HIERARCHY},
     },
     states::{figure::StateFigureAnimation, gameplay::StateGame},
 };

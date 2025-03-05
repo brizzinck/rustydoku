@@ -12,7 +12,7 @@ use bevy_inspector_egui::prelude::*;
 
 impl Figure {
     #[allow(clippy::too_many_arguments)]
-    pub(crate) fn moving(
+    pub(crate) fn dragging(
         mut figure_query: Query<(&mut Transform, &Figure, &FigureBounds)>,
         mouse_input: Res<ButtonInput<MouseButton>>,
         touch_input: Res<Touches>,
