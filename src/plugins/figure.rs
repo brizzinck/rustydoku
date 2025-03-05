@@ -34,7 +34,7 @@ impl Plugin for FigurePlugin {
             Update,
             (
                 Figure::stop_dragging,
-                Figure::moving,
+                Figure::dragging,
                 Square::highlight,
                 Figure::call_dragging_events,
             )

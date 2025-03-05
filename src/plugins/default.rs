@@ -2,7 +2,7 @@ use crate::constants::world::assets::BACKGROUND_IMAGE_PATH;
 use crate::constants::world::background::BACKGROUND_DEFAULT_POSITION;
 use crate::constants::world::window::{WINDOW_HEIGHT_SCALED_FACTOR, WINDOW_WIDTH_SCALED_FACTOR};
 use bevy::prelude::*;
-use bevy::window::{WindowPlugin, WindowResized};
+use bevy::window::WindowPlugin;
 
 #[derive(Component)]
 struct Background;
@@ -20,7 +20,7 @@ impl Plugin for RustydokuDefault {
         }));
 
         app.add_systems(Startup, spawn_background);
-        app.add_systems(Update, set_correct_resolution);
+        app.add_systems(Update, fit_window_to_viewport);
     }
 }
 
@@ -28,27 +28,25 @@ fn spawn_background(mut commands: Commands, assets: Res<AssetServer>) {
     commands.spawn(create_background(&assets));
 }
 
-fn set_correct_resolution(
-    mut resizes: EventReader<WindowResized>,
+fn fit_window_to_viewport(
     mut windows: Query<&mut bevy::window::Window>,
     mut cameras: Query<&mut OrthographicProjection, With<Camera2d>>,
 ) {
-    for event in resizes.read() {
-        if let Ok(mut window) = windows.get_single_mut() {
-            let (width, height) = (event.width, event.height);
+    if let Ok(mut window) = windows.get_single_mut() {
+        let width = window.resolution.width();
+        let height = window.resolution.height();
 
-            let (effective_width, effective_height) = if width > height {
-                (height, height)
-            } else {
-                (width, height)
-            };
+        let (effective_width, effective_height) = if width > height {
+            (height, height)
+        } else {
+            (width, height)
+        };
 
-            window.resolution.set(effective_width, effective_height);
-            if let Ok(mut projection) = cameras.get_single_mut() {
-                let scale_width = WINDOW_WIDTH_SCALED_FACTOR / effective_width;
-                let scale_height = WINDOW_HEIGHT_SCALED_FACTOR / effective_height;
-                projection.scale = scale_width.max(scale_height);
-            }
+        window.resolution.set(effective_width, effective_height);
+        if let Ok(mut projection) = cameras.get_single_mut() {
+            let scale_width = WINDOW_WIDTH_SCALED_FACTOR / effective_width;
+            let scale_height = WINDOW_HEIGHT_SCALED_FACTOR / effective_height;
+            projection.scale = scale_width.max(scale_height);
         }
     }
 }
