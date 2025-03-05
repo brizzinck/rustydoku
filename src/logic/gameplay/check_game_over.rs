@@ -1,7 +1,7 @@
 use crate::{
     components::{
         figure::{Figure, FigureBounds},
-        map::Tile,
+        world::map::Tile,
     },
     constants::map::{MAP_SPAWN_POSITIOM, TILE_SIZE},
     events::figure::{FigureCanPlaced, FigureCantPlaced},

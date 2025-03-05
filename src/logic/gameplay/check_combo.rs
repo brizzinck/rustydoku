@@ -1,5 +1,5 @@
 use crate::{
-    components::map::Tile,
+    components::world::map::Tile,
     constants::{figure::MAX_FIGURE_USIZE_SCALED, map::*},
     resource::{score::Score, square::SquaresToDespawn},
     states::gameplay::StateGame,

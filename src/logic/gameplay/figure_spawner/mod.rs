@@ -2,7 +2,9 @@ use bevy::prelude::*;
 
 use crate::{
     components::{
-        figure::Figure, figure_zone::FigureZone, placeholder::Placeholder, ui::header::HeaderUI,
+        figure::Figure,
+        ui::header::HeaderUI,
+        world::{figure_zone::FigureZone, placeholder::Placeholder},
     },
     constants::figure::FIGURE_POSITION_Z,
     events::figure::FigureSpawned,

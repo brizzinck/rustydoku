@@ -1,5 +1,8 @@
 use crate::{
-    components::{figure::Figure, placeholder::Placeholder, square::Square},
+    components::{
+        figure::{square::Square, Figure},
+        world::placeholder::Placeholder,
+    },
     resource::figure_spawner::FigureSpawner,
     states::{figure::placeholder::StatePlaceholderAnimation, gameplay::StateGame},
 };

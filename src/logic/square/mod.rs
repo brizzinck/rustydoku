@@ -1,7 +1,10 @@
 pub mod trigger;
 
 use crate::{
-    components::{figure::Figure, map::Tile, square::Square},
+    components::{
+        figure::{square::Square, Figure},
+        world::map::Tile,
+    },
     constants::{map::TILE_SIZE, square::assets::SQAURE_IMAGE_HIGHLIGHT},
     states::gameplay::StateGame,
 };

@@ -1,5 +1,5 @@
 use crate::{
-    components::camera::RustyCamera2D,
+    components::world::camera::RustyCamera2D,
     states::{
         gameplay::StateGame, ui::game_over_panel::StateGameOverPanel,
         world::camera::StateCameraPosition,

@@ -1,5 +1,5 @@
 use crate::{
-    components::camera::RustyCamera2D,
+    components::world::camera::RustyCamera2D,
     constants::{animation::ELAPSED_TIME, world::camera::*},
     states::world::camera::StateCameraPosition,
 };

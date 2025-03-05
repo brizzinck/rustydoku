@@ -1,5 +1,8 @@
 use crate::{
-    components::{figure::Figure, map::Tile, square::Square},
+    components::{
+        figure::{square::Square, Figure},
+        world::map::Tile,
+    },
     constants::square::*,
     events::figure::FigureDeniedPlacing,
     states::gameplay::StateGame,

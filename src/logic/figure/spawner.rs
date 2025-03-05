@@ -1,8 +1,5 @@
 use crate::{
-    components::{
-        figure::{Figure, FigureBounds},
-        square::Square,
-    },
+    components::figure::{square::Square, Figure, FigureBounds},
     constants::figure::*,
     states::figure::StateFigureAnimation,
 };

@@ -1,7 +1,7 @@
 use crate::{
     components::{
-        placeholder::Placeholder,
         ui::{game_over_panel::panel::GameOverPanel, header::HeaderUI},
+        world::placeholder::Placeholder,
     },
     resource::{figure_spawner::FigureSpawner, map::Map, score::Score},
     states::{gameplay::StateGame, ui::game_over_panel::StateGameOverPanel},

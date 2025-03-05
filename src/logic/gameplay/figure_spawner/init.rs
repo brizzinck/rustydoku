@@ -1,5 +1,5 @@
 use crate::{
-    components::{figure_zone::FigureZone, placeholder::Placeholder},
+    components::world::{figure_zone::FigureZone, placeholder::Placeholder},
     constants::placeholder::PLACEHOLDER_POSITION,
     resource::figure_spawner::FigureSpawner,
     states::figure::placeholder::StatePlaceholderAnimation,

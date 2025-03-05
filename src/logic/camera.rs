@@ -1,4 +1,4 @@
-use crate::{components::camera::RustyCamera2D, states::world::camera::StateCameraPosition};
+use crate::{components::world::camera::RustyCamera2D, states::world::camera::StateCameraPosition};
 use bevy::prelude::*;
 
 impl RustyCamera2D {

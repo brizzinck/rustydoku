@@ -1,7 +1,7 @@
 use bevy::prelude::*;
 
 use crate::{
-    components::placeholder::Placeholder,
+    components::world::placeholder::Placeholder,
     constants::placeholder::assets::*,
     events::figure::{FigureCanPlaced, FigureCantPlaced},
 };

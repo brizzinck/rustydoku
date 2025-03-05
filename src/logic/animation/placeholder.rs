@@ -1,5 +1,5 @@
 use crate::{
-    components::placeholder::Placeholder, constants::placeholder::*,
+    components::world::placeholder::Placeholder, constants::placeholder::*,
     states::figure::placeholder::StatePlaceholderAnimation,
 };
 use bevy::prelude::*;
