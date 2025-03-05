@@ -15,7 +15,7 @@ impl HeaderCurrentScoreText {
 
     pub fn update(score: Res<Score>, mut query: Query<&mut Text, With<HeaderCurrentScoreText>>) {
         for mut span in &mut query {
-            **span = format!("{SCORE_TEXT_CONTENT}: {}", score.get_current_score());
+            **span = format!("{HEADER_SCORE_TEXT_CONTENT}: {}", score.get_current_score());
         }
     }
 }

@@ -50,7 +50,7 @@ impl Figure {
         let mut desired = world_pos;
         desired.x = desired.x.clamp(min_x, max_x);
         desired.y = (desired.y
-            + (FIGURE_OFFSET_DRAGGING_Y - bounds.min.y * FIGURE_OFFSET_DRAGGING_Y_MULTIPLY))
+            + (FIGURE_DRAG_OFFSET_Y - bounds.min.y * FIGURE_DRAG_OFFSET_Y_MULTIPLIER))
             .clamp(min_y, max_y);
 
         desired

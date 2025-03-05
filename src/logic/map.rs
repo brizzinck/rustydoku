@@ -4,7 +4,7 @@ use crate::{
     resource::{map::Map, square::SquaresToDespawn},
     states::gameplay::StateGame,
 };
-use assets::{TILE_IMAGE_FIRST_DEACTIVE_PATH, TILE_IMAGE_SECOND_DEACTIVE_PATH};
+use assets::{TILE_IMAGE_FIRST_DEACTIVATED_PATH, TILE_IMAGE_SECOND_DEACTIVATED_PATH};
 use bevy::{prelude::*, utils::HashMap};
 
 impl Map {
@@ -24,13 +24,13 @@ impl Map {
                     % 2
                     == 0
                 {
-                    assets.load(TILE_IMAGE_SECOND_DEACTIVE_PATH)
+                    assets.load(TILE_IMAGE_SECOND_DEACTIVATED_PATH)
                 } else {
-                    assets.load(TILE_IMAGE_FIRST_DEACTIVE_PATH)
+                    assets.load(TILE_IMAGE_FIRST_DEACTIVATED_PATH)
                 };
 
                 let position =
-                    Vec3::new(x as f32 * TILE_SIZE, y as f32 * TILE_SIZE, TILE_POSITION_Z);
+                    Vec3::new(x as f32 * TILE_SIZE, y as f32 * TILE_SIZE, TILE_Z_POSITION);
                 let tile = commands
                     .spawn(Tile::create_tile(image, position))
                     .set_parent(parent)

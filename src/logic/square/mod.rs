@@ -5,7 +5,7 @@ use crate::{
         figure::{square::Square, Figure},
         world::map::Tile,
     },
-    constants::{map::TILE_SIZE, square::assets::SQAURE_IMAGE_HIGHLIGHT},
+    constants::{map::TILE_SIZE, square::assets::SQUARE_IMAGE_HIGHLIGHT_PATH},
     states::gameplay::StateGame,
 };
 use bevy::prelude::*;
@@ -59,7 +59,7 @@ impl Square {
                 if highlight_tiles.len() == figure.squares_entity.len() {
                     for tile_entity in highlight_tiles.into_iter() {
                         if let Ok((_, mut sprite, _, _)) = tile_query.get_mut(tile_entity) {
-                            sprite.image = assets.load(SQAURE_IMAGE_HIGHLIGHT);
+                            sprite.image = assets.load(SQUARE_IMAGE_HIGHLIGHT_PATH);
                         }
                     }
                 }

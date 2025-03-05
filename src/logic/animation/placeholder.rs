@@ -23,8 +23,8 @@ impl Placeholder {
 
                 transform.scale = Vec3::splat(
                     (current_scale
-                        + time.delta_secs() * PLACEHOLDER_SCALE_SPEED_ANIMATION
-                        + time.delta_secs() * PLACEHOLDER_SCALE_SPEED_UP_FACTOR * current_scale)
+                        + time.delta_secs() * PLACEHOLDER_ANIMATION_SPEED
+                        + time.delta_secs() * PLACEHOLDER_SCALE_UP_FACTOR * current_scale)
                         .min(PLACEHOLDER_SCALE_DEFAULT.x),
                 );
             } else {
@@ -51,8 +51,8 @@ impl Placeholder {
 
                 transform.scale = Vec3::splat(
                     (current_scale
-                        + time.delta_secs() * PLACEHOLDER_SCALE_SPEED_ANIMATION
-                        + time.delta_secs() * PLACEHOLDER_SCALE_SPEED_UP_FACTOR * current_scale)
+                        + time.delta_secs() * PLACEHOLDER_ANIMATION_SPEED
+                        + time.delta_secs() * PLACEHOLDER_SCALE_UP_FACTOR * current_scale)
                         .min(PLACEHOLDER_SCALE_PEAK),
                 );
             } else {
@@ -78,8 +78,8 @@ impl Placeholder {
                 all_done = false;
                 transform.scale = Vec3::splat(
                     (current_scale
-                        - time.delta_secs() * PLACEHOLDER_SCALE_SPEED_ANIMATION
-                        - time.delta_secs() * PLACEHOLDER_SCALE_SPEED_UP_FACTOR * current_scale)
+                        - time.delta_secs() * PLACEHOLDER_ANIMATION_SPEED
+                        - time.delta_secs() * PLACEHOLDER_SCALE_UP_FACTOR * current_scale)
                         .max(PLACEHOLDER_SCALE_DEFAULT.x),
                 );
             } else {

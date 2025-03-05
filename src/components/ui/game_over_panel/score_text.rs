@@ -11,7 +11,7 @@ impl GameOverCurrentScoreText {
             Text::new(format!("{SCORE_TEXT_CONTENT}: 0")),
             TextFont {
                 font_size: SCORE_TEXT_FONT_SIZE,
-                font: assets.load(SCORE_TEXT_FONT_PATH),
+                font: assets.load(GAME_OVER_SCORE_FONT_PATH),
                 ..default()
             },
             TextColor(SCORE_TEXT_COLOR),
@@ -30,7 +30,7 @@ impl GameOverMaxScoreText {
             Text::new(format!("{MAX_SCORE_TEXT_CONTENT}: 0")),
             TextFont {
                 font_size: MAX_SCORE_TEXT_FONT_SIZE,
-                font: assets.load(MAX_SCORE_TEXT_FONT_PATH),
+                font: assets.load(GAME_OVER_MAX_SCORE_FONT_PATH),
                 ..default()
             },
             TextColor(MAX_SCORE_TEXT_COLOR),

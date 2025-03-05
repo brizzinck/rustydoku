@@ -4,10 +4,10 @@ use bevy::prelude::*;
 impl Square {
     pub(crate) fn fading_out(color: &mut Color, delta: f32) -> bool {
         let srgb = color.to_srgba().with_alpha(color.alpha().lerp(
-            SQUARE_ALPHA_TARGET_WHEN_COMBO,
+            SQUARE_ALPHA_TARGET_COMBO,
             delta
-                * SQUARE_ALPHA_SPEED_ANIMATION
-                * (SQUARE_FADE_OUT_SPEED_INCREMENT_FACTOR_PER_FRAME + color.alpha()),
+                * SQUARE_ANIMATION_ALPHA_SPEED
+                * (SQUARE_FADE_OUT_SPEED_INCREMENT_PER_FRAME + color.alpha()),
         ));
 
         if color.alpha() <= 0.01 {

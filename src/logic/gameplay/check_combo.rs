@@ -28,17 +28,17 @@ pub(crate) fn check_combination(
 }
 
 /// Builds a 9x9 grid representation from the tile states
-fn build_grid<'a, I>(tiles: I) -> [[bool; MAP_USIZE]; MAP_USIZE]
+fn build_grid<'a, I>(tiles: I) -> [[bool; MAP_SIZE_USIZE]; MAP_SIZE_USIZE]
 where
     I: Iterator<Item = (&'a Tile, &'a Transform)>,
 {
-    let mut grid = [[false; MAP_USIZE]; MAP_USIZE];
+    let mut grid = [[false; MAP_SIZE_USIZE]; MAP_SIZE_USIZE];
 
     for (tile, transform) in tiles {
         let x = ((transform.translation.x + HALF_MAP_SIZE) / TILE_SIZE).floor() as isize;
         let y = ((transform.translation.y + HALF_MAP_SIZE) / TILE_SIZE).floor() as isize;
 
-        if x >= 0 && x < MAP_USIZE as isize && y >= 0 && y < MAP_USIZE as isize {
+        if x >= 0 && x < MAP_SIZE_USIZE as isize && y >= 0 && y < MAP_SIZE_USIZE as isize {
             grid[y as usize][x as usize] = tile.square.is_some();
         } else {
             error!("Tile position out of bounds: ({}, {})", x, y);
@@ -50,12 +50,12 @@ where
 
 /// Checks for full horizontal rows and marks them for clearing
 fn check_horizontal(
-    grid: &[[bool; MAP_USIZE]; MAP_USIZE],
+    grid: &[[bool; MAP_SIZE_USIZE]; MAP_SIZE_USIZE],
     tiles_to_clear: &mut Vec<(usize, usize)>,
 ) {
-    for (y, data) in grid.iter().enumerate().take(MAP_USIZE) {
+    for (y, data) in grid.iter().enumerate().take(MAP_SIZE_USIZE) {
         if data.iter().all(|&occupied| occupied) {
-            for x in 0..MAP_USIZE {
+            for x in 0..MAP_SIZE_USIZE {
                 tiles_to_clear.push((x, y));
             }
         }
@@ -63,10 +63,13 @@ fn check_horizontal(
 }
 
 /// Checks for full vertical columns and marks them for clearing
-fn check_vertical(grid: &[[bool; MAP_USIZE]; MAP_USIZE], tiles_to_clear: &mut Vec<(usize, usize)>) {
-    for x in 0..MAP_USIZE {
-        if (0..MAP_USIZE).all(|y| grid[y][x]) {
-            for y in 0..MAP_USIZE {
+fn check_vertical(
+    grid: &[[bool; MAP_SIZE_USIZE]; MAP_SIZE_USIZE],
+    tiles_to_clear: &mut Vec<(usize, usize)>,
+) {
+    for x in 0..MAP_SIZE_USIZE {
+        if (0..MAP_SIZE_USIZE).all(|y| grid[y][x]) {
+            for y in 0..MAP_SIZE_USIZE {
                 tiles_to_clear.push((x, y));
             }
         }
@@ -74,8 +77,11 @@ fn check_vertical(grid: &[[bool; MAP_USIZE]; MAP_USIZE], tiles_to_clear: &mut Ve
 }
 
 /// Checks for full 3x3 blocks and marks them for clearing
-fn check_blocks(grid: &[[bool; MAP_USIZE]; MAP_USIZE], tiles_to_clear: &mut Vec<(usize, usize)>) {
-    let local_size = MAP_USIZE / MAX_FIGURE_USIZE_SCALED;
+fn check_blocks(
+    grid: &[[bool; MAP_SIZE_USIZE]; MAP_SIZE_USIZE],
+    tiles_to_clear: &mut Vec<(usize, usize)>,
+) {
+    let local_size = MAP_SIZE_USIZE / MAX_FIGURE_USIZE_SCALED;
     for i in 0..local_size {
         for j in 0..local_size {
             let mut is_full = true;
@@ -121,9 +127,9 @@ fn clear_tiles(
             let tile_y = ((transform.translation.y + HALF_MAP_SIZE) / TILE_SIZE).floor() as isize;
 
             if tile_x >= 0
-                && tile_x < MAP_USIZE as isize
+                && tile_x < MAP_SIZE_USIZE as isize
                 && tile_y >= 0
-                && tile_y < MAP_USIZE as isize
+                && tile_y < MAP_SIZE_USIZE as isize
                 && tiles_to_clear.contains(&(tile_x as usize, tile_y as usize))
             {
                 squares_to_despawn.add(square);
@@ -164,35 +170,35 @@ mod tests {
 
     #[test]
     fn combo_vertical_works() {
-        let mut grid = [[false; MAP_USIZE]; MAP_USIZE];
+        let mut grid = [[false; MAP_SIZE_USIZE]; MAP_SIZE_USIZE];
 
-        for data in grid.iter_mut().take(MAP_USIZE) {
+        for data in grid.iter_mut().take(MAP_SIZE_USIZE) {
             data[2] = true;
         }
 
         let mut tiles_to_clear = Vec::new();
         check_vertical(&grid, &mut tiles_to_clear);
 
-        assert_eq!(tiles_to_clear.len(), MAP_USIZE);
+        assert_eq!(tiles_to_clear.len(), MAP_SIZE_USIZE);
     }
 
     #[test]
     fn combo_horizontal_works() {
-        let mut grid = [[false; MAP_USIZE]; MAP_USIZE];
+        let mut grid = [[false; MAP_SIZE_USIZE]; MAP_SIZE_USIZE];
 
-        for x in 0..MAP_USIZE {
+        for x in 0..MAP_SIZE_USIZE {
             grid[3][x] = true;
         }
 
         let mut tiles_to_clear = Vec::new();
         check_horizontal(&grid, &mut tiles_to_clear);
 
-        assert_eq!(tiles_to_clear.len(), MAP_USIZE);
+        assert_eq!(tiles_to_clear.len(), MAP_SIZE_USIZE);
     }
 
     #[test]
     fn combo_blocks_works() {
-        let mut grid = [[false; MAP_USIZE]; MAP_USIZE];
+        let mut grid = [[false; MAP_SIZE_USIZE]; MAP_SIZE_USIZE];
 
         for x in 0..3 {
             for data in grid.iter_mut().take(3) {

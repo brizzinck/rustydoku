@@ -1,6 +1,6 @@
 use crate::{
     components::world::{figure_zone::FigureZone, placeholder::Placeholder},
-    constants::placeholder::PLACEHOLDER_POSITION,
+    constants::placeholder::PLACEHOLDER_POSITIONS,
     events::figure_spawner::SpawnFigure,
     resource::figure_spawner::FigureSpawner,
     states::figure::placeholder::StatePlaceholderAnimation,
@@ -16,7 +16,7 @@ impl FigureSpawner {
     ) {
         let parent = commands.spawn(FigureZone::create()).id();
 
-        for &position in PLACEHOLDER_POSITION.iter() {
+        for &position in PLACEHOLDER_POSITIONS.iter() {
             commands
                 .spawn(Placeholder::create(position, &assets))
                 .set_parent(parent);

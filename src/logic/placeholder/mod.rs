@@ -15,13 +15,13 @@ impl Placeholder {
     ) {
         for FigureCantPlaced(placeholder) in cant_place.read() {
             if let Ok(mut sprite) = placeholders.get_mut(*placeholder) {
-                sprite.image = assets.load(FIGURE_PLACEHOLDER_RED_IMAGE_PATH);
+                sprite.image = assets.load(FIGURE_PLACEHOLDER_IMAGE_RED);
             }
         }
 
         for FigureCanPlaced(placeholder) in can_place.read() {
             if let Ok(mut sprite) = placeholders.get_mut(*placeholder) {
-                sprite.image = assets.load(FIGURE_PLACEHOLDER_DEFAULT_IMAGE_PATH);
+                sprite.image = assets.load(FIGURE_PLACEHOLDER_IMAGE_DEFAULT);
             }
         }
     }
@@ -31,7 +31,7 @@ impl Placeholder {
         assets: Res<AssetServer>,
     ) {
         for mut sprite in placeholders.iter_mut() {
-            sprite.image = assets.load(FIGURE_PLACEHOLDER_DEFAULT_IMAGE_PATH);
+            sprite.image = assets.load(FIGURE_PLACEHOLDER_IMAGE_DEFAULT);
         }
     }
 }

@@ -34,19 +34,19 @@ impl GameOverPanel {
                 left: GAME_OVER_PANEL_LEFT,
                 right: GAME_OVER_PANEL_RIGHT,
                 bottom: GAME_OVER_PANEL_BOTTOM,
-                position_type: GAME_OVER_PANEL_POSITION_TYPE,
+                position_type: GAME_OVER_PANEL_POSITION,
                 top: GAME_OVER_PANEL_TOP_DEFAULT,
                 width: GAME_OVER_PANEL_WIDTH,
                 height: GAME_OVER_PANEL_HEIGHT,
                 margin: GAME_OVER_PANEL_MARGIN,
                 max_width: GAME_OVER_PANEL_MAX_WIDTH,
                 max_height: GAME_OVER_PANEL_MAX_HEIGHT,
-                justify_self: GAME_OVER_PANEL_JUSTIFY_SELF,
+                justify_self: GAME_OVER_PANEL_JUSTIFY,
                 ..default()
             },
             GameOverPanel {
-                timer: Timer::from_seconds(GAME_OVER_PANEL_TIMER_ANIMATION, TimerMode::Once),
-                speed: GAME_OVER_PANEL_DEFAULT_SPEED_ANIMATION,
+                timer: Timer::from_seconds(GAME_OVER_PANEL_ANIMATION_TIMER, TimerMode::Once),
+                speed: GAME_OVER_PANEL_ANIMATION_SPEED_DEFAULT,
             },
         )
     }
@@ -58,14 +58,14 @@ impl GameOverPanel {
                 width: GAME_OVER_BACKGROUND_WIDTH,
                 height: GAME_OVER_BACKGROUND_HEIGHT,
                 flex_direction: GAME_OVER_BACKGROUND_FLEX_DIRECTION,
-                justify_content: GAME_OVER_BACKGROUND_JUSTIFY_CONTENT,
-                align_items: GAME_OVER_BACKGROUND_ALIGN_ITEMS,
+                justify_content: GAME_OVER_BACKGROUND_JUSTIFY,
+                align_items: GAME_OVER_BACKGROUND_ALIGN,
                 margin: GAME_OVER_BACKGROUND_MARGIN,
                 row_gap: GAME_OVER_BACKGROUND_ROW_GAP,
                 ..default()
             },
             ImageNode {
-                image: assets.load(GAME_OVER_BACKGROUND_IMAGE_PATH),
+                image: assets.load(GAME_OVER_BACKGROUND_PATH),
                 color: GAME_OVER_BACKGROUND_COLOR.into(),
                 ..default()
             },
@@ -74,10 +74,10 @@ impl GameOverPanel {
 
     fn create_header_title(assets: &Res<AssetServer>) -> (Text, TextFont, TextColor) {
         (
-            Text::new(HEADER_TITLE_CONTENT),
+            Text::new(HEADER_TITLE_TEXT),
             TextFont {
                 font_size: HEADER_TITLE_FONT_SIZE,
-                font: assets.load(HEADER_TITLE_FONT_PATH),
+                font: assets.load(GAME_OVER_HEADER_FONT_PATH),
                 ..default()
             },
             TextColor(HEADER_TITLE_COLOR),

@@ -79,7 +79,7 @@ impl RestartButton {
         Node {
             max_width: GAME_OVER_RESTART_BUTTON_WIDTH,
             max_height: GAME_OVER_RESTART_BUTTON_HEIGHT,
-            justify_content: GAME_OVER_RESTART_BUTTON_JUSTIFY_CONTENT,
+            justify_content: GAME_OVER_RESTART_BUTTON_JUSTIFY,
             ..default()
         }
     }
@@ -93,7 +93,7 @@ impl RestartButton {
             node,
             Button,
             ImageNode {
-                image: assets.load(RESTART_BUTTON_BACK_IMAGE_PATH),
+                image: assets.load(RESTART_BUTTON_BACKGROUND_PATH),
                 ..default()
             },
             RestartButton::new(_type),

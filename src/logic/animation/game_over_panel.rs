@@ -22,21 +22,20 @@ impl GameOverPanel {
 
         if panel.timer.finished() {
             panel.timer.reset();
-            panel.speed = GAME_OVER_PANEL_DEFAULT_SPEED_ANIMATION;
+            panel.speed = GAME_OVER_PANEL_ANIMATION_SPEED_DEFAULT;
             next_state.set(StateGameOverPanel::Showed);
             return;
         }
 
-        panel.speed += time.delta_secs() * GAME_OVER_PANEL_SHOW_MUL_SPEED_ANIMATION;
+        panel.speed += time.delta_secs() * GAME_OVER_PANEL_ANIMATION_SPEED_SHOW_MULTIPLIER;
 
         let speed = panel.speed;
         panel.timer.tick(time.delta().mul_f32(speed));
 
         let progress = panel.timer.elapsed_secs() / panel.timer.duration().as_secs_f32();
 
-        style.top = Val::Percent(
-            GAME_OVER_PANEL_TOP_DEFAULT_FLOAT - GAME_OVER_PANEL_TOP_END_FLOAT * progress,
-        );
+        style.top =
+            Val::Percent(GAME_OVER_PANEL_TOP_DEFAULT_VALUE - GAME_OVER_PANEL_TOP_END * progress);
     }
 
     pub(crate) fn hide(
@@ -48,20 +47,19 @@ impl GameOverPanel {
 
         if panel.timer.finished() {
             panel.timer.reset();
-            panel.speed = GAME_OVER_PANEL_DEFAULT_SPEED_ANIMATION;
+            panel.speed = GAME_OVER_PANEL_ANIMATION_SPEED_DEFAULT;
             next_state.set(StateGameOverPanel::Hidden);
             return;
         }
 
-        panel.speed += time.delta_secs() * GAME_OVER_PANEL_HIDE_MUL_SPEED_ANIMATION;
+        panel.speed += time.delta_secs() * GAME_OVER_PANEL_ANIMATION_SPEED_HIDE_MULTIPLIER;
 
         let speed = panel.speed;
         panel.timer.tick(time.delta().mul_f32(speed));
 
         let progress = panel.timer.elapsed_secs() / panel.timer.duration().as_secs_f32();
 
-        style.top = Val::Percent(
-            GAME_OVER_PANEL_TOP_REVERSE_END_FLOAT + GAME_OVER_PANEL_TOP_END_FLOAT * progress,
-        );
+        style.top =
+            Val::Percent(GAME_OVER_PANEL_TOP_END_REVERSED + GAME_OVER_PANEL_TOP_END * progress);
     }
 }

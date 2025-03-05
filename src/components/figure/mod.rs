@@ -38,7 +38,7 @@ impl Figure {
     pub(crate) fn create(position: Vec2, rotation: Quat, bounds: FigureBounds) -> impl Bundle {
         (
             Transform {
-                translation: Vec3::new(position.x, position.y, FIGURE_POSITION_Z),
+                translation: Vec3::new(position.x, position.y, FIGURE_Z_POSITION),
                 rotation,
                 scale: Vec3::ZERO,
             },

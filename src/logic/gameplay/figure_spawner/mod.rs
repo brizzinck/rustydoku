@@ -6,7 +6,7 @@ use crate::{
         ui::header::HeaderUI,
         world::{figure_zone::FigureZone, placeholder::Placeholder},
     },
-    constants::figure::FIGURE_POSITION_Z,
+    constants::figure::FIGURE_Z_POSITION,
     events::{figure::FigureSpawned, figure_spawner::SpawnFigure},
     resource::figure_spawner::FigureSpawner,
     states::gameplay::StateGame,
@@ -40,7 +40,7 @@ impl FigureSpawner {
                     Vec3::new(
                         transform.translation.x,
                         transform.translation.y,
-                        FIGURE_POSITION_Z,
+                        FIGURE_Z_POSITION,
                     ),
                 );
 

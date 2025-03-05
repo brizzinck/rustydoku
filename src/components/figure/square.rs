@@ -24,7 +24,7 @@ impl Square {
                 translation: Vec3::new(
                     position.x * SQUARE_SIZE,
                     position.y * SQUARE_SIZE,
-                    FIGURE_POSITION_Z,
+                    FIGURE_Z_POSITION,
                 ),
                 rotation: rotation.inverse(),
                 ..Default::default()

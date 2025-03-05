@@ -14,8 +14,8 @@ impl Figure {
         transform.scale = transform.scale.lerp(
             Vec3::splat(FIGURE_DRAGGING_SCALE),
             delta
-                * FIGURE_SPEED_TO_UPSCALE
-                * (FIGURE_UPSCALE_SPEED_INCREMENT_FACTOR_PER_FRAME + transform.scale.x),
+                * FIGURE_SPEED_UPSCALE
+                * (FIGURE_UPSCALE_SPEED_INCREMENT_PER_FRAME + transform.scale.x),
         );
 
         if transform.scale.x >= FIGURE_DRAGGING_SCALE - ELAPSED_SCALE {

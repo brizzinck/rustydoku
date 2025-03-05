@@ -3,7 +3,7 @@ use crate::{
     constants::{
         animation::ELAPSED_SCALE,
         figure::*,
-        placeholder::{FIGURE_SPEED_RETURN_TO_PLACEHOLDER, LERPED_FIGURE_SCALE},
+        placeholder::{FIGURE_RETURN_SPEED_TO_PLACEHOLDER, FIGURE_SCALE_LERPED},
     },
     events::figure::{FigureDeniedPlacing, FigureSpawned, FigureTriggerUp},
     resource::figure_spawner::FigureSpawner,
@@ -50,7 +50,7 @@ impl FigureSpawner {
                 if let Some(position) = figure_spawner.figures.get(entity) {
                     transform.translation = transform.translation.lerp(
                         *position,
-                        time.delta_secs() * FIGURE_SPEED_RETURN_TO_PLACEHOLDER,
+                        time.delta_secs() * FIGURE_RETURN_SPEED_TO_PLACEHOLDER,
                     );
 
                     if transform.translation.distance(*position) < ELAPSED_SCALE {
@@ -61,12 +61,12 @@ impl FigureSpawner {
                 }
 
                 transform.scale = transform.scale.lerp(
-                    LERPED_FIGURE_SCALE,
-                    time.delta_secs() * FIGURE_SPEED_RETURN_TO_PLACEHOLDER,
+                    FIGURE_SCALE_LERPED,
+                    time.delta_secs() * FIGURE_RETURN_SPEED_TO_PLACEHOLDER,
                 );
 
-                if transform.scale.distance(LERPED_FIGURE_SCALE) < ELAPSED_SCALE {
-                    transform.scale = LERPED_FIGURE_SCALE;
+                if transform.scale.distance(FIGURE_SCALE_LERPED) < ELAPSED_SCALE {
+                    transform.scale = FIGURE_SCALE_LERPED;
                     figure.state_animation = StateFigureAnimation::default();
                 } else {
                     remove = false;
@@ -102,14 +102,14 @@ impl FigureSpawner {
 
                 let mut remove = true;
                 transform.scale = transform.scale.lerp(
-                    FIGURE_IDEL_SCALE_VEC3,
+                    FIGURE_IDLE_SCALE_VEC3,
                     time.delta_secs()
-                        * FIGURE_SPEED_TO_UPSCALING_SPAWN
-                        * (FIGURE_UPSCALE_SPEED_INCREMENT_FACTOR_PER_FRAME + transform.scale.x),
+                        * FIGURE_SPAWN_UPSCALE_SPEED
+                        * (FIGURE_UPSCALE_SPEED_INCREMENT_PER_FRAME + transform.scale.x),
                 );
 
-                if transform.scale.distance(FIGURE_IDEL_SCALE_VEC3) < ELAPSED_SCALE {
-                    transform.scale = FIGURE_IDEL_SCALE_VEC3;
+                if transform.scale.distance(FIGURE_IDLE_SCALE_VEC3) < ELAPSED_SCALE {
+                    transform.scale = FIGURE_IDLE_SCALE_VEC3;
                     figure.state_animation = StateFigureAnimation::default();
                 } else {
                     remove = false;
