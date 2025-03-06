@@ -10,7 +10,7 @@ impl Plugin for MapPlugin {
         app.add_systems(OnEnter(StateGame::GenerateWorld), Map::generate_map);
         #[cfg(feature = "debug-inspector")]
         {
-            use crate::components::map::Tile;
+            use crate::components::world::map::Tile;
             app.register_type::<Tile>();
         }
     }
