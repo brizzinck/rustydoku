@@ -4,7 +4,7 @@ use crate::{
     states::figure::StateFigureAnimation,
 };
 use bevy::prelude::*;
-use rand::Rng;
+use rand::{distributions::WeightedIndex, prelude::Distribution, thread_rng, Rng};
 
 impl Figure {
     pub(crate) fn random_spawn(
@@ -13,13 +13,25 @@ impl Figure {
         assets: &Res<AssetServer>,
         placeholder: Entity,
     ) -> Entity {
-        let figure = rand::thread_rng().gen_range(0..FIGURES.len());
+        let mut rng = thread_rng();
+
+        let weights: Vec<u32> = FIGURES.iter().map(|figure| figure.weight).collect();
+
+        let figure_index = match WeightedIndex::new(&weights) {
+            Ok(dist) => dist.sample(&mut rng),
+            Err(_) => {
+                warn!("WeightedIndex failed! Using random instead");
+                rand::random::<usize>() % FIGURES.len()
+            }
+        };
+
+        let selected_figure = &FIGURES[figure_index];
 
         Self::spawn_figure(
             commands,
             absolute_position,
-            FIGURES[figure].0,
-            FIGURES[figure].1,
+            selected_figure.shape,
+            selected_figure.name,
             assets,
             placeholder,
         )
