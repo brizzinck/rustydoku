@@ -1,10 +1,12 @@
 pub mod animation;
 pub mod interactive;
+pub mod music;
 pub mod transform;
 
 pub use animation::*;
 use bevy::math::Vec2;
 pub use interactive::*;
+pub use music::*;
 pub use transform::*;
 
 pub struct FigureData {

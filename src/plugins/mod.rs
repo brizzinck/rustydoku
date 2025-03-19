@@ -5,5 +5,6 @@ pub mod firure_spawner;
 pub mod gameplay;
 pub mod logic;
 pub mod map;
+pub mod music;
 pub mod placeholer;
 pub mod ui;

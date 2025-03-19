@@ -17,7 +17,7 @@ impl Figure {
         mut square_query: Query<(Entity, &GlobalTransform, &mut Transform)>,
         mut tile_query: Query<(&mut Tile, &GlobalTransform, Entity, &mut Sprite)>,
         figure_query: Query<&mut Figure>,
-        mut event_writer: EventWriter<FigureDeniedPlacing>,
+        mut event_denied: EventWriter<FigureDeniedPlacing>,
     ) {
         if let StateGame::Placing(figure) = current_state.get() {
             let placed = figure;
@@ -41,7 +41,7 @@ impl Figure {
                     || !figure.state_animation.is_default()
                 {
                     next_state.set(StateGame::Idle);
-                    event_writer.send(FigureDeniedPlacing(*placed));
+                    event_denied.send(FigureDeniedPlacing(*placed));
                     info!("Invalid placement, returning to idle state.");
                     return;
                 }

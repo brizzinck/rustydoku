@@ -3,6 +3,7 @@ pub mod camera;
 pub mod figure;
 pub mod gameplay;
 pub mod map;
+pub mod music;
 pub mod placeholder;
 pub mod square;
 pub mod states;

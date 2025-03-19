@@ -48,7 +48,7 @@ impl Figure {
             0 => 90.0_f32.to_radians(),
             1 => 180.0_f32.to_radians(),
             2 => 270.0_f32.to_radians(),
-            _ => 0.0,
+            _ => 0.,
         };
 
         let rotation = Quat::from_rotation_z(rotation_angle);

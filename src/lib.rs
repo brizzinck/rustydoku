@@ -13,11 +13,13 @@ use plugins::default::RustydokuDefault;
 use plugins::firure_spawner::FigureSpawnerPlugin;
 use plugins::gameplay::RustydokuGameplay;
 use plugins::logic::RustydokuLogicPlugin;
+use plugins::music::MusicPlugin;
 use plugins::placeholer::PlaceholderPlugin;
 use plugins::ui::RustydokuUIPlugin;
 use plugins::{camera::CameraPlugin, figure::FigurePlugin, map::MapPlugin};
 use resource::figure_spawner::FigureSpawner;
 use resource::map::Map;
+// use resource::music::Music;
 use resource::score::Score;
 use resource::square::SquaresToDespawn;
 use states::figure::placeholder::StatePlaceholderAnimation;
@@ -54,6 +56,7 @@ pub fn run() {
     game.add_plugins(RustydokuUIPlugin);
     game.add_plugins(RustydokuLogicPlugin);
     game.add_plugins(RustydokuGameplay);
+    game.add_plugins(MusicPlugin);
 
     #[cfg(feature = "debug-inspector")]
     game.add_plugins(WorldInspectorPlugin::new());
@@ -63,6 +66,7 @@ pub fn run() {
     game.insert_resource(FigureSpawner::default());
     game.insert_resource(Map::default());
     game.insert_resource(SquaresToDespawn::default());
+    // game.insert_resource(Music::default());
 
     game.insert_state(StateGame::default());
     game.insert_state(StateCameraPosition::default());
