@@ -4,8 +4,7 @@ pub const BUTTONS_PANEL_NAME_HIERARCHY: &str = "ButtonsPanel";
 
 pub const BUTTONS_PANEL_LEFT: Val = Val::Auto;
 pub const BUTTONS_PANEL_RIGHT: Val = Val::Auto;
-pub const BUTTONS_PANEL_BOTTOM_HEADER: Val = Val::Auto;
-pub const BUTTONS_PANEL_BOTTOM_GAME_OVER: Val = Val::Px(5.);
+pub const BUTTONS_PANEL_BOTTOM: Val = Val::Auto;
 pub const BUTTONS_PANEL_POSITION: PositionType = PositionType::Relative;
 pub const BUTTONS_PANEL_TOP: Val = Val::Auto;
 
@@ -26,8 +25,11 @@ pub const BUTTONS_PANEL_MARGIN_GAME_OVER: UiRect = UiRect {
 pub const BUTTONS_PANEL_WIDTH: Val = Val::Auto;
 pub const BUTTONS_PANEL_HEIGHT: Val = Val::Auto;
 
-pub const BUTTONS_PANEL_MAX_WIDTH: Val = Val::Vw(25.);
-pub const BUTTONS_PANEL_MAX_HEIGHT: Val = Val::Vh(8.);
+pub const BUTTONS_PANEL_MAX_WIDTH_HEADER: Val = Val::Vw(25.);
+pub const BUTTONS_PANEL_MAX_HEIGHT_HEADER: Val = Val::Vh(8.);
+
+pub const BUTTONS_PANEL_MAX_WIDTH_GAME_OVER: Val = Val::Auto;
+pub const BUTTONS_PANEL_MAX_HEIGHT_GAME_OVER: Val = Val::Percent(20.);
 
 pub const BUTTONS_PANEL_JUSTIFY: JustifySelf = JustifySelf::End;
 

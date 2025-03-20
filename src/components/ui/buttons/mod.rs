@@ -14,7 +14,8 @@ impl ButtonsPanel {
         child_builder
             .spawn(ButtonsPanel::create_panel(
                 BUTTONS_PANEL_MARGIN_HEADER,
-                BUTTONS_PANEL_BOTTOM_HEADER,
+                BUTTONS_PANEL_MAX_WIDTH_HEADER,
+                BUTTONS_PANEL_MAX_HEIGHT_HEADER,
             ))
             .with_children(|panel| {
                 RestartButton::spawn_in_header(panel, assets);
@@ -27,7 +28,8 @@ impl ButtonsPanel {
         child_builder
             .spawn(ButtonsPanel::create_panel(
                 BUTTONS_PANEL_MARGIN_GAME_OVER,
-                BUTTONS_PANEL_BOTTOM_GAME_OVER,
+                BUTTONS_PANEL_MAX_WIDTH_GAME_OVER,
+                BUTTONS_PANEL_MAX_HEIGHT_GAME_OVER,
             ))
             .with_children(|panel| {
                 RestartButton::spawn_in_game_over(panel, assets);
@@ -36,20 +38,20 @@ impl ButtonsPanel {
             });
     }
 
-    fn create_panel(margin: UiRect, bottom: Val) -> impl Bundle {
+    fn create_panel(margin: UiRect, max_width: Val, max_height: Val) -> impl Bundle {
         (
             Name::new(BUTTONS_PANEL_NAME_HIERARCHY),
             Node {
                 left: BUTTONS_PANEL_LEFT,
                 right: BUTTONS_PANEL_RIGHT,
-                bottom,
+                bottom: BUTTONS_PANEL_BOTTOM,
                 position_type: BUTTONS_PANEL_POSITION,
                 top: BUTTONS_PANEL_TOP,
                 width: BUTTONS_PANEL_WIDTH,
                 height: BUTTONS_PANEL_HEIGHT,
                 margin,
-                max_width: BUTTONS_PANEL_MAX_WIDTH,
-                max_height: BUTTONS_PANEL_MAX_HEIGHT,
+                max_width,
+                max_height,
                 justify_self: BUTTONS_PANEL_JUSTIFY,
                 column_gap: BUTTONS_PANEL_COLUMN_GAP,
                 ..default()
