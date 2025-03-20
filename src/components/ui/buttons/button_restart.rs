@@ -15,41 +15,27 @@ impl RestartButton {
         }
     }
 
-    pub(crate) fn spawn_in_header(
-        commands: &mut Commands,
-        parent: Entity,
-        assets: &Res<AssetServer>,
-    ) {
+    pub(crate) fn spawn_in_header(commands: &mut ChildBuilder, assets: &AssetServer) {
         commands
             .spawn(RestartButton::create_button(
-                RestartButton::create_node_header(),
+                RestartButton::create_node(),
                 assets,
                 RestartButtonType::Default,
             ))
-            .with_child(RestartButton::create_image(assets))
-            .set_parent(parent);
+            .with_child(RestartButton::create_image(assets));
     }
 
-    pub(crate) fn spawn_in_game_over(commands: &mut ChildBuilder, assets: &Res<AssetServer>) {
+    pub(crate) fn spawn_in_game_over(commands: &mut ChildBuilder, assets: &AssetServer) {
         commands
             .spawn(RestartButton::create_button(
-                RestartButton::create_node_game_over(),
+                RestartButton::create_node(),
                 assets,
                 RestartButtonType::GameOver,
             ))
             .with_child(RestartButton::create_image(assets));
     }
 
-    fn create_node_header() -> Node {
-        Node {
-            width: HEADER_RESTART_BUTTON_WIDTH,
-            height: HEADER_RESTART_BUTTON_HEIGHT,
-            margin: HEADER_RESTART_BUTTON_MARGIN,
-            ..default()
-        }
-    }
-
-    fn create_node_game_over() -> Node {
+    fn create_node() -> Node {
         Node {
             max_width: GAME_OVER_RESTART_BUTTON_WIDTH,
             max_height: GAME_OVER_RESTART_BUTTON_HEIGHT,
@@ -58,23 +44,19 @@ impl RestartButton {
         }
     }
 
-    fn create_button(
-        node: Node,
-        assets: &Res<AssetServer>,
-        _type: RestartButtonType,
-    ) -> (Node, Button, ImageNode, RestartButton) {
+    fn create_button(node: Node, assets: &AssetServer, _type: RestartButtonType) -> impl Bundle {
         (
             node,
             Button,
             ImageNode {
-                image: assets.load(RESTART_BUTTON_BACKGROUND_PATH),
+                image: assets.load(BUTTON_BACKGROUND_PATH),
                 ..default()
             },
             RestartButton::new(_type),
         )
     }
 
-    fn create_image(assets: &Res<AssetServer>) -> ImageNode {
+    fn create_image(assets: &AssetServer) -> ImageNode {
         ImageNode {
             image: assets.load(RESTART_BUTTON_IMAGE_PATH),
             ..default()

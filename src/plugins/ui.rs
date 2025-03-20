@@ -1,6 +1,7 @@
 use crate::{
     components::ui::{
-        button_restart::RestartButton,
+        buttons::button_audio::AudioButton,
+        buttons::button_restart::RestartButton,
         game_over_panel::{
             panel::GameOverPanel,
             score_text::{GameOverCurrentScoreText, GameOverMaxScoreText},
@@ -33,6 +34,8 @@ impl Plugin for RustydokuUIPlugin {
             (
                 HeaderCurrentScoreText::update,
                 RestartButton::handle,
+                AudioButton::handle,
+                AudioButton::read_muted,
                 GameOverCurrentScoreText::update,
                 GameOverMaxScoreText::update,
             )

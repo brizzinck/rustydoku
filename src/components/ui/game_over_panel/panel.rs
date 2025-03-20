@@ -1,5 +1,5 @@
-use super::{super::button_restart::RestartButton, score_text::*};
-use crate::constants::ui::game_over_panel::*;
+use super::score_text::*;
+use crate::{components::ui::buttons::ButtonsPanel, constants::ui::game_over_panel::*};
 use bevy::prelude::*;
 
 #[derive(Component)]
@@ -22,7 +22,7 @@ impl GameOverPanel {
 
                         panel.spawn(GameOverCurrentScoreText::create_current_score(&assets));
 
-                        RestartButton::spawn_in_game_over(panel, &assets);
+                        ButtonsPanel::spawn_game_over(panel, &assets);
                     });
             });
     }
@@ -72,8 +72,12 @@ impl GameOverPanel {
         )
     }
 
-    fn create_header_title(assets: &Res<AssetServer>) -> (Text, TextFont, TextColor) {
+    fn create_header_title(assets: &Res<AssetServer>) -> impl Bundle {
         (
+            Node {
+                margin: HEADER_TITLE_MARGIN,
+                ..default()
+            },
             Text::new(HEADER_TITLE_TEXT),
             TextFont {
                 font_size: HEADER_TITLE_FONT_SIZE,

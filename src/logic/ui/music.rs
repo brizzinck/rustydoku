@@ -6,7 +6,7 @@ use bevy::prelude::*;
 use bevy_kira_audio::{AudioChannel, AudioControl};
 
 impl MusicComponent {
-    pub fn click(music: Res<MusicResource>, sound_channel: Res<AudioChannel<SoundChannel>>) {
+    pub fn click(music: &MusicResource, sound_channel: Res<AudioChannel<SoundChannel>>) {
         sound_channel.play(music.get_click_sound());
     }
 }

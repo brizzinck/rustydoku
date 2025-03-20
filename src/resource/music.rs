@@ -10,9 +10,23 @@ use crate::{
     events::music::ChangeVolume,
 };
 
+pub(crate) enum Volume {
+    Mute(f64),
+    Play(f64),
+}
+
+impl Volume {
+    pub(crate) fn get_volume(&self) -> f64 {
+        match self {
+            Volume::Mute(volume) => *volume,
+            Volume::Play(volume) => *volume,
+        }
+    }
+}
+
 #[derive(Resource)]
 pub struct MusicResource {
-    volume: f64,
+    volume: Volume,
     idle_music: Handle<AudioSource>,
     lose_music: Handle<AudioSource>,
     place_sound: Handle<AudioSource>,
@@ -29,7 +43,7 @@ impl MusicResource {
         click_sound: Handle<AudioSource>,
     ) -> Self {
         Self {
-            volume: 0.3,
+            volume: Volume::Play(0.3),
             idle_music,
             lose_music,
             place_sound,
@@ -39,19 +53,29 @@ impl MusicResource {
     }
 
     pub(crate) fn set_volume(&mut self, volume: f64, event_writer: EventWriter<ChangeVolume>) {
-        self.volume = volume;
+        self.volume = Volume::Play(volume);
 
         self.send_change_volume(event_writer);
     }
 
     pub(crate) fn up_volume(&mut self, event_writer: EventWriter<ChangeVolume>) {
-        self.volume = 1.0_f64.min(self.volume + 0.01);
+        if self.volume.get_volume() == 1.0 {
+            return;
+        }
+
+        let volume = self.volume.get_volume();
+        self.volume = Volume::Play(1.0_f64.min(volume + 0.01));
 
         self.send_change_volume(event_writer);
     }
 
     pub(crate) fn down_volume(&mut self, event_writer: EventWriter<ChangeVolume>) {
-        self.volume = 0.0_f64.max(self.volume - 0.01);
+        if self.volume.get_volume() == 0.0 {
+            return;
+        }
+
+        let volume = self.volume.get_volume();
+        self.volume = Volume::Play(0.0_f64.max(volume - 0.01));
 
         self.send_change_volume(event_writer);
     }
@@ -64,19 +88,38 @@ impl MusicResource {
     }
 
     pub(crate) fn get_volume_sound(&self) -> f64 {
-        if self.volume < 0.25 {
-            0.0
-        } else {
-            self.volume
+        match self.volume {
+            Volume::Mute(_) => 0.0,
+            Volume::Play(volume) => {
+                if volume < 0.25 {
+                    0.0
+                } else {
+                    volume
+                }
+            }
         }
     }
 
     pub(crate) fn get_volume_music(&self) -> f64 {
-        if self.volume < 0.25 {
-            0.0
-        } else {
-            self.volume - 0.25
+        match self.volume {
+            Volume::Mute(_) => 0.0,
+            Volume::Play(volume) => {
+                if volume < 0.25 {
+                    0.0
+                } else {
+                    volume - 0.25
+                }
+            }
         }
+    }
+
+    pub(crate) fn toggle_mute(&mut self, event_writer: EventWriter<ChangeVolume>) {
+        match self.volume {
+            Volume::Mute(volume) => self.volume = Volume::Play(volume),
+            Volume::Play(volume) => self.volume = Volume::Mute(volume),
+        }
+
+        self.send_change_volume(event_writer);
     }
 
     pub(crate) fn get_idle_music(&self) -> Handle<AudioSource> {

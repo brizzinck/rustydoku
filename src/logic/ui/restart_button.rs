@@ -1,5 +1,5 @@
 use crate::{
-    components::{music::MusicComponent, ui::button_restart::RestartButton},
+    components::{music::MusicComponent, ui::buttons::button_restart::RestartButton},
     resource::music::{MusicResource, SoundChannel},
     states::{gameplay::StateGame, ui::restart_button::RestartButtonType},
 };
@@ -15,7 +15,7 @@ impl RestartButton {
     ) {
         for (interaction, button) in &mut interaction_query {
             if *interaction == Interaction::Pressed {
-                MusicComponent::click(music, sound_channel);
+                MusicComponent::click(&music, sound_channel);
 
                 match button.restart_type {
                     RestartButtonType::Default => {

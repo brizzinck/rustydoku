@@ -1,5 +1,5 @@
 use crate::components::ui::{
-    button_restart::RestartButton,
+    buttons::ButtonsPanel,
     header::{score_text::HeaderCurrentScoreText, HeaderUI},
 };
 use bevy::prelude::*;
@@ -8,9 +8,12 @@ pub mod score_text;
 
 impl HeaderUI {
     pub fn spawn(mut commands: Commands, assets: Res<AssetServer>) {
-        let parent = commands.spawn(Self::create_header()).id();
-        HeaderCurrentScoreText::spawn(&mut commands, parent, &assets);
-        RestartButton::spawn_in_header(&mut commands, parent, &assets);
+        commands
+            .spawn(Self::create_header())
+            .with_children(|header| {
+                HeaderCurrentScoreText::spawn(header, &assets);
+                ButtonsPanel::spawn_header(header, &assets);
+            });
     }
 
     pub fn hide(mut query: Query<&mut Visibility, With<HeaderUI>>) {

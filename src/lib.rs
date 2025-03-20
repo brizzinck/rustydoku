@@ -49,6 +49,7 @@ pub fn run() {
 
     game.add_plugins(RustydokuDefault);
     game.add_plugins(MapPlugin);
+    game.add_plugins(MusicPlugin);
     game.add_plugins(CameraPlugin);
     game.add_plugins(FigurePlugin);
     game.add_plugins(FigureSpawnerPlugin);
@@ -56,7 +57,6 @@ pub fn run() {
     game.add_plugins(RustydokuUIPlugin);
     game.add_plugins(RustydokuLogicPlugin);
     game.add_plugins(RustydokuGameplay);
-    game.add_plugins(MusicPlugin);
 
     #[cfg(feature = "debug-inspector")]
     game.add_plugins(WorldInspectorPlugin::new());
@@ -66,7 +66,6 @@ pub fn run() {
     game.insert_resource(FigureSpawner::default());
     game.insert_resource(Map::default());
     game.insert_resource(SquaresToDespawn::default());
-    // game.insert_resource(Music::default());
 
     game.insert_state(StateGame::default());
     game.insert_state(StateCameraPosition::default());
