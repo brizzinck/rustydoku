@@ -30,6 +30,7 @@ impl Plugin for MusicPlugin {
                 MusicComponent::change_volume_by_button,
                 MusicComponent::denied_place,
                 MusicComponent::read_change_volume,
+                MusicComponent::read_combo,
             ),
         );
 

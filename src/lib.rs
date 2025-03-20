@@ -9,6 +9,7 @@ use events::figure::{
     FigureTriggerUp,
 };
 use events::figure_spawner::SpawnFigure;
+use events::gameplay::Combo;
 use plugins::default::RustydokuDefault;
 use plugins::firure_spawner::FigureSpawnerPlugin;
 use plugins::gameplay::RustydokuGameplay;
@@ -19,7 +20,6 @@ use plugins::ui::RustydokuUIPlugin;
 use plugins::{camera::CameraPlugin, figure::FigurePlugin, map::MapPlugin};
 use resource::figure_spawner::FigureSpawner;
 use resource::map::Map;
-// use resource::music::Music;
 use resource::score::Score;
 use resource::square::SquaresToDespawn;
 use states::figure::placeholder::StatePlaceholderAnimation;
@@ -46,6 +46,7 @@ pub fn run() {
     game.add_event::<FigureCantPlaced>();
     game.add_event::<FigureCanPlaced>();
     game.add_event::<SpawnFigure>();
+    game.add_event::<Combo>();
 
     game.add_plugins(RustydokuDefault);
     game.add_plugins(MapPlugin);

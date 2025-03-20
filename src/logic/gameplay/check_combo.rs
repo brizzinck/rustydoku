@@ -1,6 +1,7 @@
 use crate::{
     components::world::map::Tile,
     constants::{figure::MAX_FIGURE_USIZE_SCALED, map::*},
+    events::gameplay::Combo,
     resource::{score::Score, square::SquaresToDespawn},
     states::gameplay::StateGame,
 };
@@ -12,6 +13,7 @@ pub(crate) fn check_combination(
     mut score: ResMut<Score>,
     mut next_game_state: ResMut<NextState<StateGame>>,
     mut squares_to_despawn: ResMut<SquaresToDespawn>,
+    mut evemt_writer: EventWriter<Combo>,
 ) {
     let grid = build_grid(tiles.iter());
     let mut tiles_to_clear = Vec::new();
@@ -21,6 +23,10 @@ pub(crate) fn check_combination(
     check_blocks(&grid, &mut tiles_to_clear);
 
     update_score(score.as_mut(), &tiles_to_clear);
+
+    if !tiles_to_clear.is_empty() {
+        evemt_writer.send(Combo);
+    }
 
     clear_tiles(&mut tiles, &tiles_to_clear, &mut squares_to_despawn);
 

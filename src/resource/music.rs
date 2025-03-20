@@ -4,8 +4,8 @@ use bevy_kira_audio::AudioSource;
 use crate::{
     constants::{
         figure::{FIGURE_DENIED_PLACE_SOUND, FIGURE_PLACE_SOUND},
-        music::assets::{BACKGROUND_MUSIC, LOSS_MUSIC},
-        ui::music::BUTTON_CLICK_SOUND,
+        music::assets::*,
+        ui::music::*,
     },
     events::music::ChangeVolume,
 };
@@ -29,6 +29,7 @@ pub struct MusicResource {
     volume: Volume,
     idle_music: Handle<AudioSource>,
     lose_music: Handle<AudioSource>,
+    combo_sound: Handle<AudioSource>,
     place_sound: Handle<AudioSource>,
     denied_sound: Handle<AudioSource>,
     click_sound: Handle<AudioSource>,
@@ -41,6 +42,7 @@ impl MusicResource {
         place_sound: Handle<AudioSource>,
         denied_sound: Handle<AudioSource>,
         click_sound: Handle<AudioSource>,
+        combo_sound: Handle<AudioSource>,
     ) -> Self {
         Self {
             volume: Volume::Play(0.3),
@@ -49,6 +51,7 @@ impl MusicResource {
             place_sound,
             denied_sound,
             click_sound,
+            combo_sound,
         }
     }
 
@@ -130,6 +133,10 @@ impl MusicResource {
         self.lose_music.clone()
     }
 
+    pub(crate) fn get_combo_sound(&self) -> Handle<AudioSource> {
+        self.combo_sound.clone()
+    }
+
     pub(crate) fn get_place_sound(&self) -> Handle<AudioSource> {
         self.place_sound.clone()
     }
@@ -148,6 +155,7 @@ impl MusicResource {
         let place_sound = asset_server.load(FIGURE_PLACE_SOUND);
         let denied_place_sound = asset_server.load(FIGURE_DENIED_PLACE_SOUND);
         let click_sound = asset_server.load(BUTTON_CLICK_SOUND);
+        let combo_sound = asset_server.load(COMBO_SOUND);
 
         commands.insert_resource(MusicResource::new(
             background_handle,
@@ -155,6 +163,7 @@ impl MusicResource {
             place_sound,
             denied_place_sound,
             click_sound,
+            combo_sound,
         ));
     }
 }
