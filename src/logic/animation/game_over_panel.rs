@@ -130,12 +130,9 @@ mod tests {
             GAME_OVER_PANEL_ANIMATION_TIMER / 2.0,
         ));
 
-        let elapsed_before = panel.timer.elapsed_secs();
-
         GameOverPanel::show_logic(&mut node, &mut panel, &mut next_state, &time);
 
-        let progress = elapsed_before / panel.timer.duration().as_secs_f32();
-        let expected_top = GAME_OVER_PANEL_TOP_DEFAULT_VALUE - GAME_OVER_PANEL_TOP_END * progress;
+        let expected_top = 95.;
 
         assert_eq!(node.top, Val::Percent(expected_top));
     }
@@ -161,12 +158,9 @@ mod tests {
             GAME_OVER_PANEL_ANIMATION_TIMER / 2.0,
         ));
 
-        let elapsed_before = panel.timer.elapsed_secs();
-
         GameOverPanel::hide_logic(&mut node, &mut panel, &mut next_state, &time);
 
-        let progress = elapsed_before / panel.timer.duration().as_secs_f32();
-        let expected_top = GAME_OVER_PANEL_TOP_END_REVERSED + GAME_OVER_PANEL_TOP_END * progress;
+        let expected_top = 95.;
 
         assert_eq!(node.top, Val::Percent(expected_top));
     }
