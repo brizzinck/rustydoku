@@ -1,5 +1,5 @@
 use crate::constants::ui::assets::*;
-use crate::constants::ui::buttons::button_restart::*;
+use crate::constants::ui::buttons::{button_restart::*, BACKGROUND_BUTTON_COLOR};
 use crate::states::ui::button_restart::RestartButtonType;
 use bevy::prelude::*;
 
@@ -94,6 +94,7 @@ impl ButtonRestart {
             Button,
             ImageNode {
                 image: assets.load(BUTTON_BACKGROUND_PATH),
+                color: BACKGROUND_BUTTON_COLOR,
                 ..default()
             },
             ButtonRestart::new(_type),

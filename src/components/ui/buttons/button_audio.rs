@@ -1,5 +1,5 @@
 use crate::constants::ui::assets::*;
-use crate::constants::ui::buttons::button_audio::*;
+use crate::constants::ui::buttons::{button_audio::*, BACKGROUND_BUTTON_COLOR};
 use bevy::prelude::*;
 
 /// Component for the audio toggle button.
@@ -55,6 +55,7 @@ impl ButtonAudio {
             ButtonAudio,
             ImageNode {
                 image: assets.load(BUTTON_BACKGROUND_PATH),
+                color: BACKGROUND_BUTTON_COLOR,
                 ..default()
             },
         )
