@@ -102,3 +102,72 @@ impl Square {
         None
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn check_for_place_found_works() {
+        let square_translation = Vec3::new(TILE_SIZE, TILE_SIZE, 0.0);
+        let square_transform = GlobalTransform::from_translation(square_translation);
+
+        let tile_translation = Vec3::new(TILE_SIZE, TILE_SIZE, 0.0);
+        let tile_transform = GlobalTransform::from_translation(tile_translation);
+
+        let tile = Tile {
+            square: None,
+            default_image: Handle::default(),
+        };
+
+        let tile_entity = Entity::from_raw(42);
+
+        let tiles = vec![(&tile, &tile_transform, tile_entity)];
+
+        let result = Square::check_for_place(&square_transform, &tiles);
+
+        assert_eq!(result, Some(tile_entity));
+    }
+
+    #[test]
+    fn check_for_place_not_found_works() {
+        let square_translation = Vec3::new(TILE_SIZE * 2.0, TILE_SIZE * 2.0, 0.0);
+        let square_transform = GlobalTransform::from_translation(square_translation);
+
+        let tile_translation = Vec3::new(TILE_SIZE, TILE_SIZE, 0.0);
+        let tile_transform = GlobalTransform::from_translation(tile_translation);
+
+        let tile = Tile {
+            square: None,
+            default_image: Handle::default(),
+        };
+
+        let tile_entity = Entity::from_raw(42);
+        let tiles = vec![(&tile, &tile_transform, tile_entity)];
+
+        let result = Square::check_for_place(&square_transform, &tiles);
+
+        assert_eq!(result, None);
+    }
+
+    #[test]
+    fn check_for_place_occupied_tile_works() {
+        let square_translation = Vec3::new(TILE_SIZE, TILE_SIZE, 0.0);
+        let square_transform = GlobalTransform::from_translation(square_translation);
+
+        let tile_translation = Vec3::new(TILE_SIZE, TILE_SIZE, 0.0);
+        let tile_transform = GlobalTransform::from_translation(tile_translation);
+
+        let tile = Tile {
+            square: Some(Entity::from_raw(100)),
+            default_image: Handle::default(),
+        };
+
+        let tile_entity = Entity::from_raw(42);
+        let tiles = vec![(&tile, &tile_transform, tile_entity)];
+
+        let result = Square::check_for_place(&square_transform, &tiles);
+
+        assert_eq!(result, None);
+    }
+}
