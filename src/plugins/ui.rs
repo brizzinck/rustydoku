@@ -13,6 +13,7 @@ use crate::{
 };
 use bevy::prelude::*;
 
+/// The plugin for the UI
 pub struct RustydokuUIPlugin;
 
 impl Plugin for RustydokuUIPlugin {

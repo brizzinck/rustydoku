@@ -6,11 +6,19 @@ use button_restart::ButtonRestart;
 pub mod button_audio;
 pub mod button_restart;
 
+/// Component marker for the UI panel that holds control buttons (audio, restart)
 #[derive(Component)]
 pub(crate) struct ButtonsPanel;
 
 impl ButtonsPanel {
-    pub fn spawn_header(child_builder: &mut ChildBuilder, assets: &AssetServer) {
+    /// Spawns the buttons panel in the header section.
+    ///
+    /// This panel includes the restart and audio buttons, placed in the game UI header.
+    ///
+    /// # Parameters
+    /// - `child_builder`: Bevy's child entity builder.
+    /// - `assets`: Asset server reference for loading UI resources.
+    pub(crate) fn spawn_header(child_builder: &mut ChildBuilder, assets: &AssetServer) {
         child_builder
             .spawn(ButtonsPanel::create_panel(
                 BUTTONS_PANEL_MARGIN_HEADER,
@@ -24,7 +32,14 @@ impl ButtonsPanel {
             });
     }
 
-    pub fn spawn_game_over(child_builder: &mut ChildBuilder, assets: &AssetServer) {
+    /// Spawns the buttons panel in the game over screen.
+    ///
+    /// Used when the game ends and the UI shows game over options.
+    ///
+    /// # Parameters
+    /// - `child_builder`: Bevy's child entity builder.
+    /// - `assets`: Asset server reference for loading UI resources.
+    pub(crate) fn spawn_game_over(child_builder: &mut ChildBuilder, assets: &AssetServer) {
         child_builder
             .spawn(ButtonsPanel::create_panel(
                 BUTTONS_PANEL_MARGIN_GAME_OVER,
@@ -38,6 +53,15 @@ impl ButtonsPanel {
             });
     }
 
+    /// Creates a generic buttons panel node with configurable sizing and layout.
+    ///
+    /// # Parameters
+    /// - `margin`: Margin around the panel.
+    /// - `max_width`: Maximum width for the panel.
+    /// - `max_height`: Maximum height for the panel.
+    ///
+    /// # Returns
+    /// A Bevy node bundle for the buttons panel.
     fn create_panel(margin: UiRect, max_width: Val, max_height: Val) -> impl Bundle {
         (
             Name::new(BUTTONS_PANEL_NAME_HIERARCHY),
@@ -56,6 +80,7 @@ impl ButtonsPanel {
                 column_gap: BUTTONS_PANEL_COLUMN_GAP,
                 ..default()
             },
+            ButtonsPanel,
         )
     }
 }

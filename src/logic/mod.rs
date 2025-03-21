@@ -1,9 +1,9 @@
 pub mod animation;
+pub mod audio;
 pub mod camera;
 pub mod figure;
 pub mod gameplay;
 pub mod map;
-pub mod music;
 pub mod placeholder;
 pub mod resource;
 pub mod square;

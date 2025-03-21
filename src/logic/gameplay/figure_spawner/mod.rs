@@ -15,6 +15,19 @@ use crate::{
 pub mod init;
 
 impl FigureSpawnerResource {
+    /// Spawns a new set of figures if the figure list is currently empty and a spawn event is received.
+    ///
+    /// For each placeholder, a new figure is generated and positioned using the placeholder's transform.
+    /// The spawned figures are parented to the `FigureZoneComponent` entity and stored in the resource.
+    /// A [`FigureSpawnedEvent`] is emitted for each new figure.
+    ///
+    /// # Parameters
+    /// - `commands`: Used to spawn new entities and attach components.
+    /// - `figure_spawner`: Mutable access to the resource tracking spawned figures.
+    /// - `figure_zone`: Query to get the entity representing the figure zone.
+    /// - `placeholder`: Query to get each placeholder entity and its position.
+    /// - `event_writer`: Event writer to emit `FigureSpawnedEvent`s.
+    /// - `event_reader`: Event reader to check for the presence of a `SpawnFigureEvent`.
     pub(crate) fn spawn_figures(
         mut commands: Commands,
         mut figure_spawner: ResMut<FigureSpawnerResource>,
@@ -48,6 +61,17 @@ impl FigureSpawnerResource {
         }
     }
 
+    /// Despawns a figure after it has been placed on the map.
+    ///
+    /// Called when the [`GameState`] is `Placed`. Removes the figure from the scene and the resource.
+    /// Triggers a new [`SpawnFigureEvent`] and transitions to `CheckCombo` state.
+    ///
+    /// # Parameters
+    /// - `commands`: Used to despawn the placed figure.
+    /// - `figure_spawner`: Resource storing currently active figures.
+    /// - `state`: Current game state.
+    /// - `next_state`: Used to update the game state.
+    /// - `event_writer`: Used to emit a new `SpawnFigureEvent`.
     pub(crate) fn despawn_figure(
         mut commands: Commands,
         mut figure_spawner: ResMut<FigureSpawnerResource>,
@@ -63,6 +87,14 @@ impl FigureSpawnerResource {
         }
     }
 
+    /// Despawns all existing figures and requests a respawn after game over.
+    ///
+    /// Called when restarting the game after a game over.
+    ///
+    /// # Parameters
+    /// - `commands`: Used to recursively despawn each figure.
+    /// - `figure_spawner`: Resource storing currently active figures.
+    /// - `event_writer`: Used to emit a new `SpawnFigureEvent`.
     pub(crate) fn respawn_figures(
         mut commands: Commands,
         mut figure_spawner: ResMut<FigureSpawnerResource>,
@@ -76,6 +108,13 @@ impl FigureSpawnerResource {
         event_writer.send(SpawnFigureEvent);
     }
 
+    /// Clears all currently active figures without requesting a respawn.
+    ///
+    /// Used during cleanup phases such as returning to the main menu or full reset.
+    ///
+    /// # Parameters
+    /// - `commands`: Used to recursively despawn figure entities.
+    /// - `figure_spawner`: Resource tracking active figures.
     pub(crate) fn clear_figures(
         mut commands: Commands,
         mut figure_spawner: ResMut<FigureSpawnerResource>,
@@ -86,6 +125,12 @@ impl FigureSpawnerResource {
         figure_spawner.figures.clear();
     }
 
+    /// Hides all figure-related UI and elements by setting visibility to `Hidden`.
+    ///
+    /// Typically called when the game is over to hide the figure zone.
+    ///
+    /// # Parameters
+    /// - `visibility`: Query to access figure zone UI entities and hide them.
     pub(crate) fn hide_figures(
         mut visibility: Query<&mut Visibility, (With<FigureZoneComponent>, Without<HeaderUI>)>,
     ) {
@@ -94,6 +139,12 @@ impl FigureSpawnerResource {
         }
     }
 
+    /// Shows all figure-related UI and elements by setting visibility to `Visible`.
+    ///
+    /// Typically called when resuming the game after a game over or returning to gameplay view.
+    ///
+    /// # Parameters
+    /// - `visibility`: Query to access figure zone UI entities and show them.
     pub(crate) fn show_figures(
         mut visibility: Query<&mut Visibility, (With<FigureZoneComponent>, Without<HeaderUI>)>,
     ) {

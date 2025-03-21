@@ -4,12 +4,24 @@ use crate::{
 };
 use bevy::prelude::*;
 
+/// Component representing an individual square belonging to a figure.
 #[derive(Component, Default)]
 pub struct SquareComponent {
+    /// Optional reference to the parent entity (usually the figure).
     pub(crate) parent: Option<Entity>,
 }
 
 impl SquareComponent {
+    /// Creates a child square component as part of a figure.
+    ///
+    /// # Arguments
+    /// - `parent`: The parent figure entity to which this square belongs.
+    /// - `position`: The relative 2D position of the square within the figure.
+    /// - `rotation`: The rotation of the square, typically the inverse of the figure's rotation.
+    /// - `resource`: Reference to the figure spawner resource, used to access the square image.
+    ///
+    /// # Returns
+    /// A `Bundle` representing the square with a sprite, transform, and component marker.
     pub(crate) fn create_child(
         parent: Entity,
         position: Vec2,

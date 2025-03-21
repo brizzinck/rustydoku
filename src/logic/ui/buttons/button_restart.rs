@@ -1,5 +1,5 @@
 use crate::{
-    components::{music::AudioComponent, ui::buttons::button_restart::ButtonRestart},
+    components::{audio::AudioComponent, ui::buttons::button_restart::ButtonRestart},
     resource::audio::{RustydokuAudioResource, SoundChannel},
     states::{gameplay::GameState, ui::button_restart::RestartButtonType},
 };
@@ -7,6 +7,7 @@ use bevy::prelude::*;
 use bevy_kira_audio::AudioChannel;
 
 impl ButtonRestart {
+    /// Handle the restart button interaction, change the state to restart the game
     pub(crate) fn handle(
         mut interaction_query: Query<(&Interaction, &ButtonRestart), Changed<Interaction>>,
         mut state: ResMut<NextState<GameState>>,

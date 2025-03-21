@@ -7,7 +7,7 @@ use plugins::default::RustydokuDefaultPlugin;
 use plugins::firure_spawner::RustydokuFigureSpawnerPlugin;
 use plugins::gameplay::RustydokuGameplayPlugin;
 use plugins::logic::RustydokuLogicPlugin;
-use plugins::music::RustydokuMusicPlugin;
+use plugins::music::RustydokuAudioPlugin;
 use plugins::placeholer::RustydokuPlaceholderPlugin;
 use plugins::resource::RustydokuResourcePlugin;
 use plugins::ui::RustydokuUIPlugin;
@@ -24,12 +24,13 @@ pub mod resource;
 pub mod states;
 pub mod world;
 
+/// The main entry point for the game
 pub fn run() {
     let mut game = App::new();
 
     game.add_plugins(RustydokuDefaultPlugin);
     game.add_plugins(RustydokuMapPlugin);
-    game.add_plugins(RustydokuMusicPlugin);
+    game.add_plugins(RustydokuAudioPlugin);
     game.add_plugins(RustydokuCameraPlugin);
     game.add_plugins(RustydokuFigurePlugin);
     game.add_plugins(RustydokuFigureSpawnerPlugin);

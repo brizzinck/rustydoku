@@ -10,6 +10,7 @@ use bevy::{
     prelude::*,
 };
 
+/// Plugin for the camera 2d
 pub struct RustydokuCameraPlugin;
 
 impl Plugin for RustydokuCameraPlugin {

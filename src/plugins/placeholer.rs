@@ -4,6 +4,7 @@ use crate::{
 };
 use bevy::prelude::*;
 
+/// The update system for the placeholder component
 pub struct RustydokuPlaceholderPlugin;
 
 impl Plugin for RustydokuPlaceholderPlugin {

@@ -5,16 +5,22 @@ use crate::{
 use bevy::prelude::*;
 
 impl GameOverPanelComponent {
+    /// Sets the panel state to [`GameOverPanelState::Showing`], triggering the show animation.
     pub(crate) fn set_show(mut next_state: ResMut<NextState<GameOverPanelState>>) {
         next_state.set(GameOverPanelState::Showing);
         debug!("Next state set to StateGameOverPanel::Showing");
     }
 
+    /// Sets the panel state to [`GameOverPanelState::Hidding`], triggering the hide animation.
     pub(crate) fn set_hide(mut next_state: ResMut<NextState<GameOverPanelState>>) {
         next_state.set(GameOverPanelState::Hidding);
         debug!("Next state set to StateGameOverPanel::Hidding");
     }
 
+    /// Handles showing the game over panel with smooth animation.
+    ///
+    /// This function progresses the panel's position from off-screen to its final position.
+    /// Once the animation finishes, the state transitions to [`GameOverPanelState::Showed`].
     pub(crate) fn show(
         time: Res<Time>,
         mut query: Query<(&mut Node, &mut GameOverPanelComponent)>,
@@ -27,6 +33,10 @@ impl GameOverPanelComponent {
         Self::show_logic(&mut style, &mut panel, &mut next_state, &time);
     }
 
+    /// Handles hiding the game over panel with smooth animation.
+    ///
+    /// This function progresses the panel's position from visible to off-screen.
+    /// Once the animation finishes, the state transitions to [`GameOverPanelState::Hidden`].
     pub(crate) fn hide(
         time: Res<Time>,
         mut query: Query<(&mut Node, &mut GameOverPanelComponent)>,
@@ -39,6 +49,9 @@ impl GameOverPanelComponent {
         Self::hide_logic(&mut style, &mut panel, &mut next_state, &time);
     }
 
+    /// Internal logic to animate the panel moving down (show).
+    ///
+    /// Increases speed over time for a natural ease-in animation.
     fn show_logic(
         style: &mut Node,
         panel: &mut GameOverPanelComponent,
@@ -71,6 +84,9 @@ impl GameOverPanelComponent {
         );
     }
 
+    /// Internal logic to animate the panel moving up (hide).
+    ///
+    /// Increases speed over time for a natural ease-out animation.
     fn hide_logic(
         style: &mut Node,
         panel: &mut GameOverPanelComponent,

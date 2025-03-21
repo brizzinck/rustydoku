@@ -3,6 +3,7 @@ use bevy::prelude::*;
 #[cfg(feature = "debug-inspector")]
 use bevy_inspector_egui::prelude::*;
 
+/// A plugin that adds the map to the game
 pub struct RustydokuMapPlugin;
 
 impl Plugin for RustydokuMapPlugin {

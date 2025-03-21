@@ -8,6 +8,29 @@ use crate::{
 use bevy::{prelude::*, window::PrimaryWindow};
 
 impl FigureComponent {
+    /// Handles dragging of a figure when the game is in the `Dragging` state.
+    ///
+    /// This system performs the following steps:
+    /// - Checks if the current game state is `GameState::Dragging` and retrieves the figure to be dragged.
+    /// - Sends a `FigureTriggerDraggingEvent` for additional processing.
+    /// - Retrieves the primary camera and its transform.
+    /// - Determines the current cursor position, prioritizing mouse input (if the left button is pressed)
+    ///   and falling back to touch input.
+    /// - Converts the cursor's viewport position to world coordinates.
+    /// - Clamps the calculated world position within the allowed bounds for the figure using
+    ///   the helper function [`clamp_position`].
+    /// - Updates the figure's transform with the clamped position.
+    ///
+    /// # Parameters
+    ///
+    /// - `figure_query`: A query for mutable references to a figure’s [`Transform`], [`FigureComponent`],
+    ///   and [`FigureBoundsComponent`].
+    /// - `mouse_input`: A resource providing the current state of mouse buttons.
+    /// - `touch_input`: A resource providing the current touch input data.
+    /// - `cursor`: A query for the primary window, used to obtain the current cursor position.
+    /// - `cameras`: A query to access the active camera and its global transform.
+    /// - `game_state`: A resource representing the current state of the game.
+    /// - `event_writer`: An event writer to dispatch a [`FigureTriggerDraggingEvent`] when dragging occurs.
     #[allow(clippy::too_many_arguments)]
     pub(crate) fn dragging(
         mut figure_query: Query<(&mut Transform, &FigureComponent, &FigureBoundsComponent)>,
@@ -23,6 +46,8 @@ impl FigureComponent {
             event_writer.send(FigureTriggerDraggingEvent(*figure));
             let (camera, camera_transform) = cameras.single();
 
+            // Determine the input position: use mouse input if the left button is pressed,
+            // otherwise fall back to touch input.
             let position = if mouse_input.pressed(MouseButton::Left) {
                 trace!("Mouse pressed");
                 cursor.single().cursor_position()
@@ -46,6 +71,22 @@ impl FigureComponent {
         }
     }
 
+    /// Clamps a given world position to ensure it stays within the allowed bounds of the game zone.
+    ///
+    /// This helper function calculates the minimum and maximum allowable offsets based on the figure's bounds
+    /// (scaled by `SQUARE_SIZE`) and the boundaries of the current game zone (retrieved via [`GameZone::get`]).
+    /// It then clamps the `x` coordinate between the computed `min_x` and `max_x`, and similarly for the `y` coordinate,
+    /// while also applying an additional vertical offset calculated from `FIGURE_DRAG_OFFSET_Y` and
+    /// `FIGURE_DRAG_OFFSET_Y_MULTIPLIER`.
+    ///
+    /// # Parameters
+    ///
+    /// - `world_pos`: The original position in world coordinates.
+    /// - `bounds`: A reference to the figure's [`FigureBoundsComponent`] that defines its constaints border figure.
+    ///
+    /// # Returns
+    ///
+    /// A new [`Vec3`] representing the clamped position within the allowed boundaries.
     fn clamp_position(world_pos: Vec3, bounds: &FigureBoundsComponent) -> Vec3 {
         let min_offset = bounds.min * SQUARE_SIZE;
         let max_offset = bounds.max * SQUARE_SIZE;
@@ -72,6 +113,7 @@ mod tests {
     use super::*;
     use crate::components::figure::FigureBoundsComponent;
 
+    /// Tests that the `clamp_position` function correctly clamps a world position within the given bounds.
     #[test]
     fn clamp_position_works() {
         let bounds = FigureBoundsComponent {

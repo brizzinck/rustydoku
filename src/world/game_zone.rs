@@ -7,12 +7,16 @@ use once_cell::sync::OnceCell;
 
 static GAME_ZONE_LAZY: OnceCell<GameZone> = OnceCell::new();
 
+/// The game zone, which contains the left-up and right-down corners
 pub struct GameZone {
+    /// The left-up corner of the game zone
     pub left_up: Vec2,
+    /// The right-down corner of the game zone
     pub right_down: Vec2,
 }
 
 impl GameZone {
+    /// Get the game zone instance
     pub fn get() -> &'static GameZone {
         GAME_ZONE_LAZY.get_or_init(|| GameZone {
             left_up: Vec2::new(

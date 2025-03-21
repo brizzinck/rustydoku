@@ -1,9 +1,14 @@
 use super::*;
 
+/// Component for displaying the current score in the game header.
 #[derive(Component)]
 pub struct HeaderCurrentScoreTextComponent;
 
 impl HeaderCurrentScoreTextComponent {
+    /// Creates the background node for the score display.
+    ///
+    /// # Returns
+    /// A node with the margin set to the score background margin.
     pub(crate) fn create_background() -> Node {
         Node {
             margin: HEADER_SCORE_BACKGROUND_MARGIN,
@@ -11,6 +16,13 @@ impl HeaderCurrentScoreTextComponent {
         }
     }
 
+    /// Creates the text bundle to display the current score.
+    ///
+    /// # Parameters
+    /// - `assets`: Reference to Bevy's `AssetServer` to load the score font.
+    ///
+    /// # Returns
+    /// A bundle containing the node, text, font, color, and this component.
     pub(crate) fn create_score_text(assets: &Res<AssetServer>) -> impl Bundle {
         (
             Node {

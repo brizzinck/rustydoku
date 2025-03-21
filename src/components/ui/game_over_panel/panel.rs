@@ -2,13 +2,25 @@ use super::score_text::*;
 use crate::{components::ui::buttons::ButtonsPanel, constants::ui::game_over_panel::*};
 use bevy::prelude::*;
 
+/// UI component for the game over panel.
+///
+/// This component holds the animation state and logic for displaying
+/// the game over screen, including the header, score display, and control buttons.
 #[derive(Component)]
 pub struct GameOverPanelComponent {
+    /// Timer for managing show/hide animations.
     pub timer: Timer,
+
+    /// Speed factor for animation transitions.
     pub speed: f32,
 }
 
 impl GameOverPanelComponent {
+    /// Spawns the complete game over panel UI hierarchy into the scene.
+    ///
+    /// # Parameters
+    /// - `commands`: Bevy command buffer used for spawning entities.
+    /// - `assets`: Handle to the `AssetServer` used to load textures and fonts.
     pub fn spawn(mut commands: Commands, assets: Res<AssetServer>) {
         commands
             .spawn(GameOverPanelComponent::create_panel())
@@ -29,6 +41,10 @@ impl GameOverPanelComponent {
             });
     }
 
+    /// Creates the outer UI node container for the panel, including animation config.
+    ///
+    /// # Returns
+    /// A bundle representing the root container of the game over UI.
     fn create_panel() -> impl Bundle {
         (
             Name::new(GAME_OVER_PANEL_NAME_HIERARCHY),
@@ -53,6 +69,13 @@ impl GameOverPanelComponent {
         )
     }
 
+    /// Creates the background visual node for the game over panel.
+    ///
+    /// # Parameters
+    /// - `assets`: AssetServer handle for loading images.
+    ///
+    /// # Returns
+    /// A bundle including the panel background.
     fn create_background(assets: &Res<AssetServer>) -> impl Bundle {
         (
             Name::new(GAME_OVER_BACKGROUND_NAME_HIERARCHY),
@@ -74,6 +97,13 @@ impl GameOverPanelComponent {
         )
     }
 
+    /// Creates the header title (e.g., "LOSS") displayed at the top of the panel.
+    ///
+    /// # Parameters
+    /// - `assets`: AssetServer handle to load the font.
+    ///
+    /// # Returns
+    /// A bundle representing the stylized header title.
     fn create_header_title(assets: &Res<AssetServer>) -> impl Bundle {
         (
             Node {

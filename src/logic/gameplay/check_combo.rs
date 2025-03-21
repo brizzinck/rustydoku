@@ -9,7 +9,16 @@ use crate::{
 use bevy::prelude::*;
 
 impl Gameplay {
-    /// Runs all checks combination and updates the score
+    /// Checks for completed combinations (rows(9), columns(9), 3x3 blocks) and handles scoring and clearing.
+    ///
+    /// This method:
+    /// - Builds a 2D grid representing the current tile occupancy.
+    /// - Checks for any full rows, columns, or 3x3 blocks.
+    /// - Marks all filled tile positions for clearing.
+    /// - Updates the player's score.
+    /// - Sends a [`ComboEvent`] if any lines/blocks were cleared.
+    /// - Despawns affected squares.
+    /// - Advances the game state to [`GameState::CheckGameOver`].
     pub(crate) fn check_combination(
         mut tiles: Query<(&mut TileComponent, &Transform)>,
         mut score: ResMut<ScoreResource>,
@@ -35,7 +44,15 @@ impl Gameplay {
         next_game_state.set(GameState::CheckGameOver);
     }
 
-    /// Builds a 9x9 grid representation from the tile states
+    /// Builds a 2D boolean grid (9x9) from the current tile positions and occupancy.
+    ///
+    /// Each grid cell represents whether a tile contains a square (`true`) or is empty (`false`).
+    ///
+    /// # Parameters
+    /// - `tiles`: Iterator over tile components and their transforms.
+    ///
+    /// # Returns
+    /// A 9x9 grid of booleans.
     fn build_grid<'a, I>(tiles: I) -> [[bool; MAP_SIZE_USIZE]; MAP_SIZE_USIZE]
     where
         I: Iterator<Item = (&'a TileComponent, &'a Transform)>,
@@ -114,7 +131,11 @@ impl Gameplay {
         }
     }
 
-    /// Updates the score based on cleared tiles
+    /// Adds score based on the number of cleared tiles.
+    ///
+    /// # Parameters
+    /// - `score`: Mutable reference to the score resource.
+    /// - `tiles_to_clear`: List of tiles that will be cleared.
     fn update_score(score: &mut ScoreResource, tiles_to_clear: &[(usize, usize)]) {
         if !tiles_to_clear.is_empty() {
             let combinations = tiles_to_clear.len();
@@ -123,7 +144,12 @@ impl Gameplay {
         }
     }
 
-    /// Clears marked tiles and sets them to free
+    /// Clears the marked tiles and queues their squares for despawning.
+    ///
+    /// # Parameters
+    /// - `tiles`: Query of tile components and transforms.
+    /// - `tiles_to_clear`: Positions of tiles to clear.
+    /// - `squares_to_despawn`: Resource holding square entities to be removed.
     fn clear_tiles(
         tiles: &mut Query<(&mut TileComponent, &Transform)>,
         tiles_to_clear: &[(usize, usize)],
@@ -156,6 +182,7 @@ impl Gameplay {
 mod tests {
     use super::*;
 
+    /// Verifies grid generation from tile transform positions.
     #[test]
     fn build_grid_works() {
         let mut world = World::new();
@@ -182,6 +209,7 @@ mod tests {
         assert!(!grid[0][0], "Expected tile at ({},{}) to be free", 0, 0);
     }
 
+    /// Verifies detection of full vertical columns.
     #[test]
     fn combo_vertical_works() {
         let mut grid = [[false; MAP_SIZE_USIZE]; MAP_SIZE_USIZE];
@@ -196,6 +224,7 @@ mod tests {
         assert_eq!(tiles_to_clear.len(), MAP_SIZE_USIZE);
     }
 
+    /// Verifies detection of full horizontal rows.
     #[test]
     fn combo_horizontal_works() {
         let mut grid = [[false; MAP_SIZE_USIZE]; MAP_SIZE_USIZE];
@@ -210,6 +239,7 @@ mod tests {
         assert_eq!(tiles_to_clear.len(), MAP_SIZE_USIZE);
     }
 
+    /// Verifies detection of full 3x3 blocks.
     #[test]
     fn combo_blocks_works() {
         let mut grid = [[false; MAP_SIZE_USIZE]; MAP_SIZE_USIZE];
@@ -226,6 +256,7 @@ mod tests {
         assert_eq!(tiles_to_clear.len(), 9);
     }
 
+    /// Verifies that score increases based on the number of cleared tiles.
     #[test]
     fn update_score_works() {
         let mut world = World::new();

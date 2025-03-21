@@ -5,11 +5,18 @@ use crate::{
 use bevy::prelude::*;
 
 impl PlaceholderComponent {
+    /// Sets the placeholder animation state to [`BouncingDefault`].
+    ///
+    /// This is a helper method to transition directly to the default bouncing phase.
     pub(crate) fn set_bounce_default(mut next_state: ResMut<NextState<PlaceholderAnimationState>>) {
         next_state.set(PlaceholderAnimationState::BouncingDefault);
         trace!("Placeholder animation set to BouncingDefault");
     }
 
+    /// Executes the initial bounce animation for all placeholders.
+    ///
+    /// Smoothly scales each placeholder from `0.0` to the default scale.
+    /// Once all animations are complete, transitions to [`BouncingDefault`] state.
     pub(crate) fn bouncing_init(
         mut placeholder_zones: Query<&mut Transform, With<PlaceholderComponent>>,
         mut next_state: ResMut<NextState<PlaceholderAnimationState>>,
@@ -27,6 +34,10 @@ impl PlaceholderComponent {
         }
     }
 
+    /// Executes the bounce-up phase of the animation for all placeholders.
+    ///
+    /// Scales each placeholder up to a peak value for a "pop" effect.
+    /// Once all have reached the peak, transitions to [`BouncingPeak`] state.
     pub(crate) fn bouncing_default(
         mut placeholder_zones: Query<&mut Transform, With<PlaceholderComponent>>,
         mut next_state: ResMut<NextState<PlaceholderAnimationState>>,
@@ -44,6 +55,10 @@ impl PlaceholderComponent {
         }
     }
 
+    /// Executes the bounce-down phase of the animation for all placeholders.
+    ///
+    /// Returns each placeholder’s scale from peak back to default.
+    /// Once all placeholders are restored, transitions to [`Idle`] state.
     pub(crate) fn bouncing_peak(
         mut placeholder_zones: Query<&mut Transform, With<PlaceholderComponent>>,
         mut next_state: ResMut<NextState<PlaceholderAnimationState>>,
@@ -61,6 +76,7 @@ impl PlaceholderComponent {
         }
     }
 
+    /// Core logic for the `bouncing_default` phase (scale up to peak).
     fn bouncing_default_logic(delta: f32, all_done: &mut bool, transform: &mut Transform) {
         let current_scale = transform.scale.x;
         if current_scale < PLACEHOLDER_SCALE_PEAK {
@@ -77,6 +93,7 @@ impl PlaceholderComponent {
         }
     }
 
+    /// Core logic for the `bouncing_peak` phase (scale down to default).
     fn bouncing_peak_logic(delta: f32, all_done: &mut bool, transform: &mut Transform) {
         let current_scale = transform.scale.x;
         if current_scale > PLACEHOLDER_SCALE_DEFAULT.x {
@@ -92,6 +109,7 @@ impl PlaceholderComponent {
         }
     }
 
+    /// Core logic for the `bouncing_init` phase (scale up from 0 to default).
     fn bouncing_init_logic(delta: f32, all_done: &mut bool, transform: &mut Transform) {
         let current_scale = transform.scale.x;
         if current_scale < PLACEHOLDER_SCALE_DEFAULT.x {

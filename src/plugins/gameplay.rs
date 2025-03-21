@@ -8,6 +8,7 @@ use crate::{
 };
 use bevy::{ecs::schedule::SystemConfigs, prelude::*};
 
+/// Plugin for the gameplay logic
 pub struct RustydokuGameplayPlugin;
 
 impl RustydokuGameplayPlugin {

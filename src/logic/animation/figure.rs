@@ -6,6 +6,22 @@ use crate::{
 use bevy::prelude::*;
 
 impl FigureComponent {
+    /// Interpolates the figure's scale when it is being dragged.
+    ///
+    /// This function gradually scales the figure toward the target dragging scale,
+    /// defined by [`FIGURE_DRAGGING_SCALE`]. The interpolation uses the frame delta time
+    /// (`delta`) multiplied by a speed factor and an incremental adjustment based on the
+    /// current scale.
+    ///
+    /// Once the figure's scale is sufficiently close (within [`ELAPSED_SCALE`]) to the target,
+    /// the scale is snapped to [`FIGURE_DRAGGING_SCALE`] and the animation state is reset to
+    /// the default state (commonly representing an idle state). Otherwise, the state is set to
+    /// [`FigureAnimationState::DragUpScaling`] to indicate that the scaling animation is in progress.
+    ///
+    /// # Parameters
+    /// - `transform`: Mutable reference to the figure's [`Transform`] component, which contains the current scale.
+    /// - `delta`: Time delta (in seconds) for the current frame, used to ensure frame rate–independent animation.
+    /// - `state`: Mutable reference to the figure's animation state, which will be updated based on progress.
     pub(crate) fn upscaling_when_drag(
         transform: &mut Transform,
         delta: f32,

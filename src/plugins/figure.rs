@@ -8,6 +8,7 @@ use bevy::prelude::*;
 #[cfg(feature = "debug-inspector")]
 use bevy_inspector_egui::prelude::*;
 
+/// The plugin for the figure logic
 pub struct RustydokuFigurePlugin;
 
 impl Plugin for RustydokuFigurePlugin {

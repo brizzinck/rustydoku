@@ -11,6 +11,14 @@ use crate::{
 };
 use bevy::prelude::*;
 impl FigureSpawnerResource {
+    /// Adds figure entities to the lerp queue when placement is denied.
+    ///
+    /// This function listens for [`FigureDeniedPlacingEvent`] events and adds the associated figure entity
+    /// to the lerp queue so that it can be animated back to its placeholder position.
+    ///
+    /// # Parameters
+    /// - `event_reader`: An event reader for [`FigureDeniedPlacingEvent`] events.
+    /// - `figure_spawner`: A mutable reference to the figure spawner resource.
     pub(crate) fn adding_lerp_figures(
         mut event_reader: EventReader<FigureDeniedPlacingEvent>,
         mut figure_spawner: ResMut<FigureSpawnerResource>,
@@ -21,6 +29,14 @@ impl FigureSpawnerResource {
         }
     }
 
+    /// Removes figure entities from the lerp queue when a trigger-up event occurs.
+    ///
+    /// This function listens for [`FigureTriggerUpEvent`] events and removes the corresponding figure entity
+    /// from the lerp queue, indicating that the figure no longer needs to be animated back to its placeholder.
+    ///
+    /// # Parameters
+    /// - `event_reader`: An event reader for [`FigureTriggerUpEvent`] events.
+    /// - `figure_spawner`: A mutable reference to the figure spawner resource.
     pub(crate) fn removig_lerp_figures(
         mut event_reader: EventReader<FigureTriggerUpEvent>,
         mut figure_spawner: ResMut<FigureSpawnerResource>,
@@ -31,6 +47,14 @@ impl FigureSpawnerResource {
         }
     }
 
+    /// Adds figure entities to the upscaling queue upon spawning.
+    ///
+    /// This function listens for [`FigureSpawnedEvent`] events and adds the spawned figure entity
+    /// to the upscaling queue so that it can be animated (scaled) during its spawn-up phase.
+    ///
+    /// # Parameters
+    /// - `event_reader`: An event reader for [`FigureSpawnedEvent`] events.
+    /// - `figure_spawner`: A mutable reference to the figure spawner resource.
     pub(crate) fn adding_upscaling_figures(
         mut event_reader: EventReader<FigureSpawnedEvent>,
         mut figure_spawner: ResMut<FigureSpawnerResource>,
@@ -41,6 +65,17 @@ impl FigureSpawnerResource {
         }
     }
 
+    /// Animates figures in the lerp queue towards their placeholder positions and scales.
+    ///
+    /// This function interpolates each figure's current position and scale toward its placeholder.
+    /// When a figure is sufficiently close (determined by [`ELAPSED_SCALE`]), it snaps to the target,
+    /// and its state is updated. Once complete, the figure is removed from the lerp queue.
+    ///
+    /// # Parameters
+    /// - `figure_spawner`: A mutable reference to the figure spawner resource.
+    /// - `figures`: `A query providing mutable access to both the [`FigureComponent`] and [`Transform`]
+    ///    of each figure.`
+    /// - `time`: The time resource, providing the delta seconds used for animation interpolation.
     pub(crate) fn lerping_figures(
         mut figure_spawner: ResMut<FigureSpawnerResource>,
         mut figures: Query<(&mut FigureComponent, &mut Transform)>,
@@ -87,6 +122,17 @@ impl FigureSpawnerResource {
             .retain(|entity| !to_remove.contains(entity));
     }
 
+    /// Animates figures in the upscaling queue during their spawn-up phase.
+    ///
+    /// This function interpolates the figure's scale toward the idle scale.
+    /// When the figure's scale is sufficiently close to the target (determined by [`ELAPSED_SCALE`]),
+    /// its state is set to the default, and the figure is removed from the upscaling queue.
+    ///
+    /// # Parameters
+    /// - `figure_spawner`: A mutable reference to the figure spawner resource.
+    /// - `figures`: `A query providing mutable access to both the [`FigureComponent`] and [`Transform`]
+    ///    of each figure.`
+    /// - `time`: The time resource, used to determine the frame delta for smooth animation.
     pub(crate) fn upscaling_figures(
         mut figure_spawner: ResMut<FigureSpawnerResource>,
         mut figures: Query<(&mut FigureComponent, &mut Transform)>,
@@ -94,7 +140,7 @@ impl FigureSpawnerResource {
     ) {
         let mut to_remove = Vec::new();
 
-        for entity in figure_spawner.bounce_figures.iter() {
+        for entity in figure_spawner.upscaling_figures.iter() {
             if let Ok((mut figure, mut transform)) = figures.get_mut(*entity) {
                 if !figure.state_animation.is_spawn_upscaling()
                     && !figure.state_animation.is_default()
@@ -126,7 +172,7 @@ impl FigureSpawnerResource {
         }
 
         figure_spawner
-            .bounce_figures
+            .upscaling_figures
             .retain(|entity| !to_remove.contains(entity));
     }
 }

@@ -6,6 +6,7 @@ use crate::{
 };
 use bevy::prelude::*;
 
+/// Plugin for the figure spawner
 pub struct RustydokuFigureSpawnerPlugin;
 
 impl Plugin for RustydokuFigureSpawnerPlugin {

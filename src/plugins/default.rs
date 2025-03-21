@@ -2,9 +2,11 @@ use crate::constants::world::window::{WINDOW_HEIGHT_SCALED_FACTOR, WINDOW_WIDTH_
 use bevy::prelude::*;
 use bevy::window::WindowPlugin;
 
+/// The default plugin window app for Rustydoku
 pub struct RustydokuDefaultPlugin;
 
 impl RustydokuDefaultPlugin {
+    /// Fit the window to the viewport of all resolutions
     fn fit_window_to_viewport(
         mut windows: Query<&mut bevy::window::Window>,
         mut cameras: Query<&mut OrthographicProjection, With<Camera2d>>,

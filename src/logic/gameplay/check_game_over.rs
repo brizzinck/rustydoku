@@ -12,6 +12,23 @@ use crate::{
 use bevy::prelude::*;
 
 impl Gameplay {
+    /// Checks whether the game is over by validating if any figure can be placed on the board.
+    ///
+    /// This function iterates over all figures and simulates their placement on every possible grid position.
+    /// If **no figure** can be placed anywhere, the game transitions to the [`GameState::GameOver`] state.
+    /// If **at least one** placement is valid, the state remains [`GameState::Idle`].
+    ///
+    /// Additionally, it emits:
+    /// - [`FigureCantPlacedEvent`] for placeholders where figures can't be placed.
+    /// - [`FigureCanPlacedEvent`] for placeholders where valid placement exists.
+    ///
+    /// # Parameters
+    /// - `figures`: Query of all figures with their transform, bounds, and shape data.
+    /// - `map`: The current game map with tile occupancy info.
+    /// - `tiles`: Query for accessing each tile's state.
+    /// - `next_state`: Resource used to update the [`GameState`].
+    /// - `cant_place_writer`: Writer to emit events when placement is invalid.
+    /// - `can_place_writer`: Writer to emit events when placement is valid.
     pub(crate) fn check_game_over(
         figures: Query<(&Transform, &FigureBoundsComponent, &FigureComponent)>,
         map: Res<MapComponent>,
@@ -73,6 +90,21 @@ impl Gameplay {
         }
     }
 
+    /// Checks whether a figure can be placed at a given grid position.
+    ///
+    /// Simulates figure placement by calculating each square's final position
+    /// and verifying that each target tile is available.
+    ///
+    /// # Parameters
+    /// - `grid`: Target grid coordinates for placement.
+    /// - `bounds_min`: Minimum bounds of the figure (used for alignment).
+    /// - `offsets`: Square offsets within the figure.
+    /// - `figure_transform`: Transform of the figure (used for rotation).
+    /// - `map`: The logical map structure holding tile references.
+    /// - `tiles`: Query for accessing individual tile states.
+    ///
+    /// # Returns
+    /// - `true` if the figure can be placed fully on unoccupied tiles.
     fn can_place_figure_at_grid(
         grid: Vec2,
         bounds_min: Vec2,
@@ -114,14 +146,28 @@ impl Gameplay {
         true
     }
 
+    /// Validates whether a single square can be placed at the given position.
+    ///
+    /// This checks if:
+    /// - The tile at the calculated position exists on the map.
+    /// - The tile is unoccupied (i.e., `square.is_none()`).
+    ///
+    /// # Parameters
+    /// - `position`: The world position to test.
+    /// - `map`: The logical map containing tile coordinates.
+    /// - `tiles`: Query for accessing tile states.
+    ///
+    /// # Returns
+    /// - `Some(tile_coords)` if placement is allowed.
+    /// - `None` if the tile is missing or already occupied.
     fn correct_to_place(
-        pos: Vec3,
+        position: Vec3,
         map: &MapComponent,
         tiles: &Query<&TileComponent>,
     ) -> Option<(i32, i32)> {
         let tile_coords = (
-            (pos.x / TILE_SIZE).round() as i32,
-            (pos.y / TILE_SIZE).round() as i32,
+            (position.x / TILE_SIZE).round() as i32,
+            (position.y / TILE_SIZE).round() as i32,
         );
 
         if let Some(tile_entity) = map.get(tile_coords) {
@@ -145,9 +191,11 @@ impl Gameplay {
 mod tests {
     use super::*;
 
+    /// A test resource used to capture the result of `can_place_figure_at_grid` for validation.
     #[derive(Default, Resource)]
     struct CanPlaceResult(bool);
 
+    /// Test system that invokes `can_place_figure_at_grid` and stores the result.
     fn call_can_place(
         tiles: Query<&TileComponent>,
         map: Res<MapComponent>,

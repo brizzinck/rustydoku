@@ -1,5 +1,5 @@
 use crate::{
-    components::music::AudioComponent,
+    components::audio::AudioComponent,
     events::audio::ChangeVolumeEvent,
     resource::audio::{MusicChannel, SoundChannel},
     states::gameplay::GameState,
@@ -7,9 +7,10 @@ use crate::{
 use bevy::prelude::*;
 use bevy_kira_audio::{AudioApp, AudioPlugin};
 
-pub struct RustydokuMusicPlugin;
+/// The plugin for the audio system
+pub struct RustydokuAudioPlugin;
 
-impl Plugin for RustydokuMusicPlugin {
+impl Plugin for RustydokuAudioPlugin {
     fn build(&self, app: &mut App) {
         debug!("Building RustydokuMusicPlugin");
 
@@ -32,7 +33,7 @@ impl Plugin for RustydokuMusicPlugin {
         app.add_systems(
             Update,
             (
-                AudioComponent::pause,
+                AudioComponent::mute,
                 AudioComponent::change_volume_by_button,
                 AudioComponent::denied_place,
                 AudioComponent::read_change_volume,

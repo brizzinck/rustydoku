@@ -8,6 +8,30 @@ use bevy::prelude::*;
 use rand::{distributions::WeightedIndex, prelude::Distribution, thread_rng, Rng};
 
 impl FigureComponent {
+    /// Spawns a random figure at the specified absolute position.
+    ///
+    /// This function selects a figure at random from the available figures defined in the `FIGURES` constant,
+    /// using a weighted probability distribution based on each figure's `weight` field.
+    ///
+    /// The steps performed are:
+    /// 1. **Weight Calculation:**  
+    ///    It gathers all figure weights from `FIGURES` and constructs a [`WeightedIndex`] distribution.
+    ///    If the distribution cannot be created, it falls back to a simple random index.
+    ///
+    /// 2. **Figure Selection:**  
+    ///    The selected figure's shape and name are then used to spawn the actual figure by calling
+    ///    [`spawn_figure`].
+    ///
+    /// # Parameters
+    ///
+    /// - `commands`: A mutable reference to Bevy's `Commands`.
+    /// - `absolute_position`: A [`Vec2`] representing the absolute position where the figure will be spawned.
+    /// - `resource`: A reference to the [`FigureSpawnerResource`] that provides assets data.
+    /// - `placeholder`: An [`Entity`] parent for the spawned figure.
+    ///
+    /// # Returns
+    ///
+    /// Returns an [`Entity`] corresponding to the spawned figure.
     pub(crate) fn random_spawn(
         commands: &mut Commands,
         absolute_position: Vec2,
@@ -18,6 +42,7 @@ impl FigureComponent {
 
         let weights: Vec<u32> = FIGURES.iter().map(|figure| figure.weight).collect();
 
+        // Attempt to create a weighted index; fall back to a simple random index on error.
         let figure_index = match WeightedIndex::new(&weights) {
             Ok(dist) => dist.sample(&mut rng),
             Err(_) => {
@@ -38,6 +63,26 @@ impl FigureComponent {
         )
     }
 
+    /// Spawns an empty figure container at a given position with a random rotation for its squares.
+    ///
+    /// This function is responsible for creating a figure entity without its individual square children.
+    /// It randomly selects one of three rotation angles (0°, 90°, 180°, or 270°) and applies the rotation to figure.
+    /// It then calculates the bounds of the figure by rotating the first square position,
+    /// and iteratively adjusting the minimum and maximum bounds based on the rotated positions.
+    ///
+    /// The spawned figure entity is also set up to observe the `start_dragging` event.
+    ///
+    /// # Parameters
+    ///
+    /// - `commands`: A mutable reference to Bevy's `Commands`.
+    /// - `position`: A [`Vec2`] indicating where the figure container should be spawned.
+    /// - `squares_position`: A slice of [`Vec2`] positions representing each square's offset relative to the figure's origin
+    ///
+    /// # Returns
+    ///
+    /// Returns a tuple containing:
+    /// - The [`Entity`] of the spawned figure container.
+    /// - The randomly selected [`Quat`] rotation applied to the figure
     pub(crate) fn spawn_empty(
         commands: &mut Commands,
         position: Vec2,
@@ -77,6 +122,42 @@ impl FigureComponent {
         )
     }
 
+    /// Spawns a fully constructed figure at the specified absolute position.
+    ///
+    /// This function builds upon [`spawn_empty`] by first creating an empty figure container and then spawning
+    /// each individual square as a child of the container.  
+    ///
+    /// The steps involved are:
+    /// 1. **Empty Figure Creation:**  
+    ///    Calls [`spawn_empty`] to create the figure container and obtain its rotation.
+    ///
+    /// 2. **Figure Initialization:**  
+    ///    Instantiates a new [`FigureComponent`] with an empty vector for square entities,
+    ///    the provided square positions, an initial animation state of `SpawnUpScaling`, and the provided placeholder.
+    ///
+    /// 3. **Square Spawning:**  
+    ///    Iterates over each offset in `squares_position`, spawning a square as a child of the figure container
+    ///    using [`SquareComponent::spawn_as_child`], and collects the resulting child entities.
+    ///
+    /// 4. **Component Insertion:**  
+    ///    Inserts the completed [`FigureComponent`] and a [`Name`] component (using the given `name`)
+    ///    into the figure container entity (name used for debugging in the Bevy Inspector).
+    ///
+    /// 5. **Logging & Return:**  
+    ///    Logs the successful spawn with details and returns the entity of the spawned figure.
+    ///
+    /// # Parameters
+    ///
+    /// - `commands`: A mutable reference to Bevy's `Commands`.
+    /// - `absolute_position`: A [`Vec2`] indicating where the figure should be spawned.
+    /// - `squares_position`: A slice of [`Vec2`] positions representing each square's offset relative to the figure's origin.
+    /// - `name`: A static string slice representing the name of the figure.
+    /// - `resource`: A reference to the [`FigureSpawnerResource`] for additional configuration during square spawning.
+    /// - `placeholder`: An [`Entity`] used as a placeholder during the figure's construction.
+    ///
+    /// # Returns
+    ///
+    /// Returns the [`Entity`] of the spawned figure.
     pub(crate) fn spawn_figure(
         commands: &mut Commands,
         absolute_position: Vec2,

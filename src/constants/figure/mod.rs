@@ -1,22 +1,24 @@
 pub mod animation;
 pub mod audio;
-pub mod interactive;
 pub mod transform;
 
 pub use animation::*;
 pub use audio::*;
 use bevy::math::Vec2;
-pub use interactive::*;
 pub use transform::*;
 
+/// Metadata about a figure's shape and selection weight.
 pub struct FigureData {
     pub(crate) shape: &'static [Vec2],
     pub(crate) name: &'static str,
     pub(crate) weight: u32,
 }
 
-/// Weight is used to determine the probability of the figure being selected
-/// the higher the weight, the higher the probability
+/// Array of all figure configurations used in random spawning.
+///
+/// `weight` controls the chance of being selected:
+/// - Higher = more common
+/// - Lower = more rare
 pub const FIGURES: [FigureData; 12] = [
     FigureData {
         shape: &C,

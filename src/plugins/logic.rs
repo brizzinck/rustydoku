@@ -1,6 +1,7 @@
 use crate::{events::gameplay::ComboEvent, states::gameplay::GameState, world::gameplay::Gameplay};
 use bevy::prelude::*;
 
+/// The plugin that contains the logic of loss and combination checking
 pub struct RustydokuLogicPlugin;
 
 impl Plugin for RustydokuLogicPlugin {
