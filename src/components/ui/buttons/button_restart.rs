@@ -1,5 +1,5 @@
 use crate::constants::ui::assets::*;
-use crate::constants::ui::restart_button::*;
+use crate::constants::ui::buttons::button_restart::*;
 use crate::states::ui::restart_button::RestartButtonType;
 use bevy::prelude::*;
 

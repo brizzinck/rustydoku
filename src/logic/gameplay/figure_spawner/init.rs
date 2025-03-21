@@ -10,7 +10,7 @@ use bevy::prelude::*;
 impl FigureSpawner {
     pub(crate) fn spawn_zone_figures(
         mut commands: Commands,
-        assets: Res<AssetServer>,
+        resource: Res<FigureSpawner>,
         mut next_state: ResMut<NextState<StatePlaceholderAnimation>>,
         mut event_writer: EventWriter<SpawnFigure>,
     ) {
@@ -18,7 +18,7 @@ impl FigureSpawner {
 
         for &position in PLACEHOLDER_POSITIONS.iter() {
             commands
-                .spawn(Placeholder::create(position, &assets))
+                .spawn(Placeholder::create(position, &resource))
                 .set_parent(parent);
         }
 

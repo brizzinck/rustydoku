@@ -1,4 +1,7 @@
-use crate::constants::{figure::*, square::*};
+use crate::{
+    constants::{figure::*, square::*},
+    resource::figure_spawner::FigureSpawner,
+};
 use bevy::prelude::*;
 
 #[derive(Component, Default)]
@@ -11,11 +14,11 @@ impl Square {
         parent: Entity,
         position: Vec2,
         rotation: Quat,
-        assets: &Res<AssetServer>,
+        resource: &FigureSpawner,
     ) -> impl Bundle {
         (
             Sprite {
-                image: assets.load(SQAURE_IMAGE_DEFAULT_PATH),
+                image: resource.get_square_image(),
                 custom_size: Some(Vec2::new(SQUARE_SIZE, SQUARE_SIZE)),
                 color: SQUARE_COLOR_DEFAULT.into(),
                 ..default()

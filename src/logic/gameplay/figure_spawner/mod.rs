@@ -18,7 +18,6 @@ impl FigureSpawner {
     pub(crate) fn spawn_figures(
         mut commands: Commands,
         mut figure_spawner: ResMut<FigureSpawner>,
-        assets: Res<AssetServer>,
         figure_zone: Query<Entity, With<FigureZone>>,
         placeholder: Query<(Entity, &Transform), With<Placeholder>>,
         mut event_writer: EventWriter<FigureSpawned>,
@@ -29,7 +28,7 @@ impl FigureSpawner {
                 let entity = Figure::random_spawn(
                     &mut commands,
                     Vec2::new(transform.translation.x, transform.translation.y),
-                    &assets,
+                    &figure_spawner,
                     entity,
                 );
 

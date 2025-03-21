@@ -5,6 +5,7 @@ pub mod gameplay;
 pub mod map;
 pub mod music;
 pub mod placeholder;
+pub mod resource;
 pub mod square;
 pub mod states;
 pub mod ui;

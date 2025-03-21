@@ -22,16 +22,21 @@ impl Figure {
             event_writer.send(FigureTriggerDragging(*figure));
             let (camera, camera_transform) = cameras.single();
 
-            if mouse_input.pressed(MouseButton::Left) || touch_input.any_just_pressed() {
-                let window = cursor.single();
-                if let Some(cursor_pos) = window.cursor_position() {
-                    if let Ok(world_pos) = camera.viewport_to_world(camera_transform, cursor_pos) {
-                        if let Ok((mut transform, _, bounds)) = figure_query.get_mut(*figure) {
-                            let desired = Figure::clamp_position(world_pos.origin, bounds);
+            let cursor_pos = if mouse_input.pressed(MouseButton::Left) {
+                cursor.single().cursor_position()
+            } else if let Some(first_touch) = touch_input.iter().next() {
+                Some(first_touch.position())
+            } else {
+                None
+            };
 
-                            transform.translation.x = desired.x;
-                            transform.translation.y = desired.y;
-                        }
+            if let Some(cursor_pos) = cursor_pos {
+                if let Ok(world_pos) = camera.viewport_to_world(camera_transform, cursor_pos) {
+                    if let Ok((mut transform, _, bounds)) = figure_query.get_mut(*figure) {
+                        let desired = Figure::clamp_position(world_pos.origin, bounds);
+
+                        transform.translation.x = desired.x;
+                        transform.translation.y = desired.y;
                     }
                 }
             }

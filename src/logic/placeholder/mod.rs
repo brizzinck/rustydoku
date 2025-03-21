@@ -2,8 +2,8 @@ use bevy::prelude::*;
 
 use crate::{
     components::world::placeholder::Placeholder,
-    constants::placeholder::assets::*,
     events::figure::{FigureCanPlaced, FigureCantPlaced},
+    resource::figure_spawner::FigureSpawner,
 };
 
 impl Placeholder {
@@ -11,27 +11,27 @@ impl Placeholder {
         mut placeholders: Query<&mut Sprite, With<Placeholder>>,
         mut cant_place: EventReader<FigureCantPlaced>,
         mut can_place: EventReader<FigureCanPlaced>,
-        assets: Res<AssetServer>,
+        resource: Res<FigureSpawner>,
     ) {
         for FigureCantPlaced(placeholder) in cant_place.read() {
             if let Ok(mut sprite) = placeholders.get_mut(*placeholder) {
-                sprite.image = assets.load(FIGURE_PLACEHOLDER_IMAGE_RED);
+                sprite.image = resource.get_placeholder_image_deactive();
             }
         }
 
         for FigureCanPlaced(placeholder) in can_place.read() {
             if let Ok(mut sprite) = placeholders.get_mut(*placeholder) {
-                sprite.image = assets.load(FIGURE_PLACEHOLDER_IMAGE_DEFAULT);
+                sprite.image = resource.get_placeholder_image();
             }
         }
     }
 
     pub(crate) fn reset_image(
         mut placeholders: Query<&mut Sprite, With<Placeholder>>,
-        assets: Res<AssetServer>,
+        resource: Res<FigureSpawner>,
     ) {
         for mut sprite in placeholders.iter_mut() {
-            sprite.image = assets.load(FIGURE_PLACEHOLDER_IMAGE_DEFAULT);
+            sprite.image = resource.get_placeholder_image();
         }
     }
 }

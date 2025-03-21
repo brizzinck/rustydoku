@@ -5,7 +5,8 @@ use crate::{
         figure::{square::Square, Figure},
         world::map::Tile,
     },
-    constants::{map::TILE_SIZE, square::assets::SQUARE_IMAGE_HIGHLIGHT_PATH},
+    constants::map::TILE_SIZE,
+    resource::figure_spawner::FigureSpawner,
     states::gameplay::StateGame,
 };
 use bevy::prelude::*;
@@ -16,10 +17,10 @@ impl Square {
         parent: Entity,
         position: Vec2,
         rotation: Quat,
-        assets: &Res<AssetServer>,
+        resource: &FigureSpawner,
     ) -> Entity {
         let child = commands
-            .spawn(Self::create_child(parent, position, rotation, assets))
+            .spawn(Self::create_child(parent, position, rotation, resource))
             .set_parent(parent)
             .id();
         child
@@ -30,7 +31,7 @@ impl Square {
         figure_query: Query<&Figure>,
         mut square_query: Query<(Entity, &GlobalTransform, &mut Square)>,
         current_state: Res<State<StateGame>>,
-        assets: Res<AssetServer>,
+        resource: Res<FigureSpawner>,
     ) {
         for (tile, mut sprite, _, _) in tile_query.iter_mut() {
             sprite.image = tile.default_image.clone();
@@ -59,7 +60,7 @@ impl Square {
                 if highlight_tiles.len() == figure.squares_entity.len() {
                     for tile_entity in highlight_tiles.into_iter() {
                         if let Ok((_, mut sprite, _, _)) = tile_query.get_mut(tile_entity) {
-                            sprite.image = assets.load(SQUARE_IMAGE_HIGHLIGHT_PATH);
+                            sprite.image = resource.get_square_image_highlighted();
                         }
                     }
                 }

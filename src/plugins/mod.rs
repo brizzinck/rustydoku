@@ -7,4 +7,5 @@ pub mod logic;
 pub mod map;
 pub mod music;
 pub mod placeholer;
+pub mod resource;
 pub mod ui;

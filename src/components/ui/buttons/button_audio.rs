@@ -1,5 +1,5 @@
 use crate::constants::ui::assets::*;
-use crate::constants::ui::button_audio::*;
+use crate::constants::ui::buttons::button_audio::*;
 use bevy::prelude::*;
 
 #[derive(Component)]

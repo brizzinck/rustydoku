@@ -1,6 +1,7 @@
 use crate::{
     components::figure::{square::Square, Figure, FigureBounds},
     constants::figure::*,
+    resource::figure_spawner::FigureSpawner,
     states::figure::StateFigureAnimation,
 };
 use bevy::prelude::*;
@@ -10,7 +11,7 @@ impl Figure {
     pub(crate) fn random_spawn(
         commands: &mut Commands,
         absolute_position: Vec2,
-        assets: &Res<AssetServer>,
+        resource: &FigureSpawner,
         placeholder: Entity,
     ) -> Entity {
         let mut rng = thread_rng();
@@ -32,7 +33,7 @@ impl Figure {
             absolute_position,
             selected_figure.shape,
             selected_figure.name,
-            assets,
+            resource,
             placeholder,
         )
     }
@@ -81,7 +82,7 @@ impl Figure {
         absolute_position: Vec2,
         squares_position: &[Vec2],
         name: &'static str,
-        assets: &Res<AssetServer>,
+        resource: &FigureSpawner,
         placeholder: Entity,
     ) -> Entity {
         let (parent, rotation) = Figure::spawn_empty(commands, absolute_position, squares_position);
@@ -94,7 +95,7 @@ impl Figure {
         };
 
         for &offset in squares_position.iter() {
-            let child = Square::spawn_as_child(commands, parent, offset, rotation, assets);
+            let child = Square::spawn_as_child(commands, parent, offset, rotation, resource);
             figure.squares_entity.push(child);
         }
 
