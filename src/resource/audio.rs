@@ -3,9 +3,12 @@ use bevy_kira_audio::AudioSource;
 
 use crate::{
     constants::{
-        audio::assets::*,
+        audio::{assets::*, AUDIO_DEFAULT_VOLUME},
         figure::{FIGURE_DENIED_PLACE_SOUND, FIGURE_PLACE_SOUND},
-        ui::audio::*,
+        ui::{
+            assets::{AUDIO_OFF_BUTTON_IMAGE_PATH, AUDIO_ON_BUTTON_IMAGE_PATH},
+            audio::*,
+        },
     },
     events::audio::ChangeVolumeEvent,
 };
@@ -33,28 +36,11 @@ pub struct RustydokuAudioResource {
     place_sound: Handle<AudioSource>,
     denied_sound: Handle<AudioSource>,
     click_sound: Handle<AudioSource>,
+    icon_off: Handle<Image>,
+    icon_on: Handle<Image>,
 }
 
 impl RustydokuAudioResource {
-    pub(crate) fn new(
-        idle_music: Handle<AudioSource>,
-        lose_music: Handle<AudioSource>,
-        place_sound: Handle<AudioSource>,
-        denied_sound: Handle<AudioSource>,
-        click_sound: Handle<AudioSource>,
-        combo_sound: Handle<AudioSource>,
-    ) -> Self {
-        Self {
-            volume: Volume::Play(0.3),
-            idle_music,
-            lose_music,
-            place_sound,
-            denied_sound,
-            click_sound,
-            combo_sound,
-        }
-    }
-
     pub(crate) fn set_volume(&mut self, volume: f64, event_writer: EventWriter<ChangeVolumeEvent>) {
         self.volume = Volume::Play(volume);
 
@@ -149,22 +135,26 @@ impl RustydokuAudioResource {
         self.click_sound.clone()
     }
 
-    pub(crate) fn init(asset_server: &AssetServer) -> Self {
-        let background_handle = asset_server.load(BACKGROUND_MUSIC);
-        let player_handle = asset_server.load(LOSS_MUSIC);
-        let place_sound = asset_server.load(FIGURE_PLACE_SOUND);
-        let denied_place_sound = asset_server.load(FIGURE_DENIED_PLACE_SOUND);
-        let click_sound = asset_server.load(BUTTON_CLICK_SOUND);
-        let combo_sound = asset_server.load(COMBO_SOUND);
+    pub(crate) fn get_icon_off(&self) -> Handle<Image> {
+        self.icon_off.clone()
+    }
 
-        RustydokuAudioResource::new(
-            background_handle,
-            player_handle,
-            place_sound,
-            denied_place_sound,
-            click_sound,
-            combo_sound,
-        )
+    pub(crate) fn get_icon_on(&self) -> Handle<Image> {
+        self.icon_on.clone()
+    }
+
+    pub(crate) fn init(asset_server: &AssetServer) -> Self {
+        RustydokuAudioResource {
+            volume: Volume::Play(AUDIO_DEFAULT_VOLUME),
+            idle_music: asset_server.load(BACKGROUND_MUSIC),
+            lose_music: asset_server.load(LOSS_MUSIC),
+            place_sound: asset_server.load(FIGURE_PLACE_SOUND),
+            denied_sound: asset_server.load(FIGURE_DENIED_PLACE_SOUND),
+            click_sound: asset_server.load(BUTTON_CLICK_SOUND),
+            combo_sound: asset_server.load(COMBO_SOUND),
+            icon_off: asset_server.load(AUDIO_OFF_BUTTON_IMAGE_PATH),
+            icon_on: asset_server.load(AUDIO_ON_BUTTON_IMAGE_PATH),
+        }
     }
 }
 

@@ -1,6 +1,5 @@
 use crate::{
     components::ui::buttons::button_audio::{AudioImage, ButtonAudio},
-    constants::ui::assets::{AUDIO_OFF_BUTTON_IMAGE_PATH, AUDIO_ON_BUTTON_IMAGE_PATH},
     events::audio::ChangeVolumeEvent,
     resource::audio::RustydokuAudioResource,
 };
@@ -22,16 +21,16 @@ impl ButtonAudio {
     pub(crate) fn read_muted(
         mut button_audio: Query<&mut ImageNode, With<AudioImage>>,
         mut event_reader: EventReader<ChangeVolumeEvent>,
-        assets: Res<AssetServer>,
+        resource: Res<RustydokuAudioResource>,
     ) {
         if let Some(event) = event_reader.read().last() {
             if event.music_volume == 0.0 && event.sound_volume == 0.0 {
                 for mut image in button_audio.iter_mut() {
-                    image.image = assets.load(AUDIO_OFF_BUTTON_IMAGE_PATH);
+                    image.image = resource.get_icon_off();
                 }
             } else {
                 for mut image in button_audio.iter_mut() {
-                    image.image = assets.load(AUDIO_ON_BUTTON_IMAGE_PATH);
+                    image.image = resource.get_icon_on();
                 }
             }
         }

@@ -1,3 +1,3 @@
 pub mod assets;
 
-pub const DEFAULT_VOLUME: f32 = 0.3;
+pub const AUDIO_DEFAULT_VOLUME: f64 = 0.3;
