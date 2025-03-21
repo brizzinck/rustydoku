@@ -1,5 +1,7 @@
 use std::ops::RangeInclusive;
 
+use bevy::color::Color;
+
 /// The total size of the map (width and height in tiles).
 pub const MAP_SIZE: i8 = 9;
 
@@ -25,3 +27,6 @@ pub const TILE_Z_POSITION: f32 = 0.;
 ///
 /// Example: if MAP_SIZE = 9, this range is -4..=4
 pub const MAP_SPAWN_POSITIOM: RangeInclusive<i8> = (-MAP_SIZE / 2)..=(MAP_SIZE / 2);
+
+/// The color of the map tiles.
+pub const TILE_COLOR: Color = Color::srgba(1., 1., 1., 0.75);

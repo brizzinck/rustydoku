@@ -1,8 +1,9 @@
 use crate::{
-    constants::map::{MAP_NAME_HIERARCHY, TILE_SIZE},
+    constants::map::{MAP_NAME_HIERARCHY, TILE_COLOR, TILE_SIZE},
     resource::map::MapComponent,
 };
 use bevy::prelude::*;
+
 #[cfg(feature = "debug-inspector")]
 use bevy_inspector_egui::prelude::*;
 
@@ -31,7 +32,7 @@ impl TileComponent {
             Sprite {
                 custom_size: Some(Vec2::new(TILE_SIZE, TILE_SIZE)),
                 image: image.clone(),
-                color: Color::srgba(1., 1., 1., 0.75),
+                color: TILE_COLOR,
                 ..default()
             },
             Transform::from_translation(position),
