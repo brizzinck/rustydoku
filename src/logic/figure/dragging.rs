@@ -66,3 +66,24 @@ impl Figure {
         desired
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::components::figure::FigureBounds;
+
+    #[test]
+    fn clamp_position_works() {
+        let bounds = FigureBounds {
+            min: Vec2::new(1.0, 1.0),
+            max: Vec2::new(2.0, 2.0),
+        };
+
+        let world_pos = Vec3::new(-2000., 1000., 1.);
+
+        let result = Figure::clamp_position(world_pos, &bounds);
+        let expected_result = Vec3::new(-200.0, 80.0, 1.0);
+
+        assert_eq!(result, expected_result);
+    }
+}
