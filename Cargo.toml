@@ -8,6 +8,11 @@ license = "MIT"
 keywords = ["game", "bevy", "gamedev"]
 categories = ["game-development"]
 readme = "README.md"
+include = [
+    "assets//*",
+    "**/*.rs",
+    "Cargo.toml",
+]
 
 [dependencies]
 bevy = "0.15.3"
