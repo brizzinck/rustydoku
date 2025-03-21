@@ -1,25 +1,25 @@
 use crate::{
     components::{
-        figure::{square::Square, Figure},
-        world::map::Tile,
+        figure::{square::SquareComponent, FigureComponent},
+        world::map::TileComponent,
     },
     constants::square::*,
-    events::figure::FigureDeniedPlacing,
-    states::gameplay::StateGame,
+    events::figure::FigureDeniedPlacingEvent,
+    states::gameplay::GameState,
 };
 use bevy::prelude::*;
 
-impl Figure {
+impl FigureComponent {
     pub(crate) fn placing(
         mut commands: Commands,
-        current_state: Res<State<StateGame>>,
-        mut next_state: ResMut<NextState<StateGame>>,
+        current_state: Res<State<GameState>>,
+        mut next_state: ResMut<NextState<GameState>>,
         mut square_query: Query<(Entity, &GlobalTransform, &mut Transform)>,
-        mut tile_query: Query<(&mut Tile, &GlobalTransform, Entity, &mut Sprite)>,
-        figure_query: Query<&mut Figure>,
-        mut event_denied: EventWriter<FigureDeniedPlacing>,
+        mut tile_query: Query<(&mut TileComponent, &GlobalTransform, Entity, &mut Sprite)>,
+        figure_query: Query<&mut FigureComponent>,
+        mut event_denied: EventWriter<FigureDeniedPlacingEvent>,
     ) {
-        if let StateGame::Placing(figure) = current_state.get() {
+        if let GameState::Placing(figure) = current_state.get() {
             let placed = figure;
             if let Ok(figure) = figure_query.get(*figure) {
                 let all_tiles = tile_query
@@ -31,7 +31,9 @@ impl Figure {
 
                 for &square_entity in figure.squares_entity.iter() {
                     if let Ok((_, transform, _)) = square_query.get_mut(square_entity) {
-                        if let Some(entity) = Square::check_for_place(transform, &all_tiles) {
+                        if let Some(entity) =
+                            SquareComponent::check_for_place(transform, &all_tiles)
+                        {
                             tiles.push(entity);
                         }
                     }
@@ -40,8 +42,8 @@ impl Figure {
                 if tiles.len() != figure.squares_entity.len()
                     || !figure.state_animation.is_default()
                 {
-                    next_state.set(StateGame::Idle);
-                    event_denied.send(FigureDeniedPlacing(*placed));
+                    next_state.set(GameState::Idle);
+                    event_denied.send(FigureDeniedPlacingEvent(*placed));
                     trace!("Figure denied placing.");
                     return;
                 }
@@ -68,7 +70,7 @@ impl Figure {
                     }
                 }
 
-                next_state.set(StateGame::Placed(*placed));
+                next_state.set(GameState::Placed(*placed));
 
                 trace!("Figure placed successfully.");
             }

@@ -1,7 +1,7 @@
-use crate::{components::figure::square::Square, constants::square::*};
+use crate::{components::figure::square::SquareComponent, constants::square::*};
 use bevy::prelude::*;
 
-impl Square {
+impl SquareComponent {
     pub(crate) fn fading_out(color: &mut Color, delta: f32) -> bool {
         let srgb = color.to_srgba().with_alpha(color.alpha().lerp(
             SQUARE_ALPHA_TARGET_COMBO,
@@ -29,7 +29,7 @@ mod tests {
         let mut color = Color::srgb(1., 1., 1.);
         let delta = 0.1;
 
-        let result = super::Square::fading_out(&mut color, delta);
+        let result = super::SquareComponent::fading_out(&mut color, delta);
 
         let expected_result = false;
         assert_eq!(result, expected_result);

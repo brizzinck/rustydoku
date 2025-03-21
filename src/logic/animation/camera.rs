@@ -1,42 +1,42 @@
 use crate::{
-    components::world::camera::RustyCamera2D,
+    components::world::camera::RustyCamera2DComponent,
     constants::{animation::ELAPSED_TIME, world::camera::*},
-    states::world::camera::StateCameraPosition,
+    states::world::camera::CameraPositionState,
 };
 use bevy::prelude::*;
 
-impl RustyCamera2D {
+impl RustyCamera2DComponent {
     pub(crate) fn setting_game_over(
         mut camera: Query<&mut OrthographicProjection, With<Camera2d>>,
         time: Res<Time>,
-        mut next_state: ResMut<NextState<StateCameraPosition>>,
+        mut next_state: ResMut<NextState<CameraPositionState>>,
     ) {
         trace!("Setting camera to game over position");
-        if RustyCamera2D::setting_position(
+        if RustyCamera2DComponent::setting_position(
             &mut camera,
             CAMERA_POSITION_Y_GAME_OVER,
             time.delta_secs(),
             CAMERA_ANIMATION_OUT_POSITION_SPEED,
         ) {
             trace!("Next state is game over position");
-            next_state.set(StateCameraPosition::GameOver);
+            next_state.set(CameraPositionState::GameOver);
         }
     }
 
     pub(crate) fn setting_default(
         mut camera: Query<&mut OrthographicProjection, With<Camera2d>>,
         time: Res<Time>,
-        mut next_state: ResMut<NextState<StateCameraPosition>>,
+        mut next_state: ResMut<NextState<CameraPositionState>>,
     ) {
         trace!("Setting camera to default position");
-        if RustyCamera2D::setting_position(
+        if RustyCamera2DComponent::setting_position(
             &mut camera,
             CAMERA_POSITION_Y_IDLE,
             time.delta_secs(),
             CAMERA_ANIMATION_IN_POSITION_SPEED,
         ) {
             trace!("Next state is default position");
-            next_state.set(StateCameraPosition::Default);
+            next_state.set(CameraPositionState::Default);
         }
     }
 

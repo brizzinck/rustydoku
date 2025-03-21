@@ -1,8 +1,8 @@
 use crate::{
-    components::music::MusicComponent,
-    events::music::ChangeVolume,
-    resource::music::{MusicChannel, SoundChannel},
-    states::gameplay::StateGame,
+    components::music::AudioComponent,
+    events::audio::ChangeVolumeEvent,
+    resource::audio::{MusicChannel, SoundChannel},
+    states::gameplay::GameState,
 };
 use bevy::prelude::*;
 use bevy_kira_audio::{AudioApp, AudioPlugin};
@@ -17,7 +17,7 @@ impl Plugin for RustydokuMusicPlugin {
         app.add_plugins(AudioPlugin);
 
         trace!("Adding event ChangeVolume");
-        app.add_event::<ChangeVolume>();
+        app.add_event::<ChangeVolumeEvent>();
 
         trace!("Adding audio sound channel");
         app.add_audio_channel::<SoundChannel>();
@@ -26,27 +26,27 @@ impl Plugin for RustydokuMusicPlugin {
         app.add_audio_channel::<MusicChannel>();
 
         trace!("Adding system startup");
-        app.add_systems(Startup, (MusicComponent::set_up, MusicComponent::idle));
+        app.add_systems(Startup, (AudioComponent::set_up, AudioComponent::idle));
 
         trace!("Adding system update");
         app.add_systems(
             Update,
             (
-                MusicComponent::pause,
-                MusicComponent::change_volume_by_button,
-                MusicComponent::denied_place,
-                MusicComponent::read_change_volume,
-                MusicComponent::read_combo,
+                AudioComponent::pause,
+                AudioComponent::change_volume_by_button,
+                AudioComponent::denied_place,
+                AudioComponent::read_change_volume,
+                AudioComponent::read_combo,
             ),
         );
 
         trace!("Adding system on exit and on enter");
-        app.add_systems(OnExit(StateGame::GameOver), MusicComponent::idle);
+        app.add_systems(OnExit(GameState::GameOver), AudioComponent::idle);
 
         trace!("Adding system on enter game over");
-        app.add_systems(OnEnter(StateGame::GameOver), MusicComponent::loss);
+        app.add_systems(OnEnter(GameState::GameOver), AudioComponent::loss);
 
         trace!("Adding system on update game over when placed");
-        app.add_systems(Update, MusicComponent::place.run_if(StateGame::when_placed));
+        app.add_systems(Update, AudioComponent::place.run_if(GameState::when_placed));
     }
 }

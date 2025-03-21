@@ -1,7 +1,7 @@
 use bevy::prelude::*;
 
 #[derive(Default, States, Debug, Clone, PartialEq, Eq, Hash)]
-pub enum StateGameOverPanel {
+pub enum GameOverPanelState {
     Showing,
     Showed,
     Hidding,
@@ -9,20 +9,20 @@ pub enum StateGameOverPanel {
     Hidden,
 }
 
-impl StateGameOverPanel {
-    pub fn when_showing(state: Res<State<StateGameOverPanel>>) -> bool {
-        StateGameOverPanel::Showing == *state.get()
+impl GameOverPanelState {
+    pub fn when_showing(state: Res<State<GameOverPanelState>>) -> bool {
+        GameOverPanelState::Showing == *state.get()
     }
 
-    pub fn when_showed(state: Res<State<StateGameOverPanel>>) -> bool {
-        StateGameOverPanel::Showed == *state.get()
+    pub fn when_showed(state: Res<State<GameOverPanelState>>) -> bool {
+        GameOverPanelState::Showed == *state.get()
     }
 
-    pub fn when_hidding(state: Res<State<StateGameOverPanel>>) -> bool {
-        StateGameOverPanel::Hidding == *state.get()
+    pub fn when_hidding(state: Res<State<GameOverPanelState>>) -> bool {
+        GameOverPanelState::Hidding == *state.get()
     }
 
-    pub fn when_hidded(state: Res<State<StateGameOverPanel>>) -> bool {
-        StateGameOverPanel::Hidden == *state.get()
+    pub fn when_hidded(state: Res<State<GameOverPanelState>>) -> bool {
+        GameOverPanelState::Hidden == *state.get()
     }
 }

@@ -1,19 +1,19 @@
 use bevy::prelude::*;
 
 #[derive(Event)]
-pub struct FigureTriggerDragging(pub Entity);
+pub struct FigureTriggerDraggingEvent(pub Entity);
 
 #[derive(Event)]
-pub struct FigureTriggerUp(pub Entity);
+pub struct FigureTriggerUpEvent(pub Entity);
 
 #[derive(Event)]
-pub struct FigureDeniedPlacing(pub Entity);
+pub struct FigureDeniedPlacingEvent(pub Entity);
 
 #[derive(Event)]
-pub struct FigureSpawned(pub Entity);
+pub struct FigureSpawnedEvent(pub Entity);
 
 #[derive(Event)]
-pub struct FigureCantPlaced(pub Entity);
+pub struct FigureCantPlacedEvent(pub Entity);
 
 #[derive(Event)]
-pub struct FigureCanPlaced(pub Entity);
+pub struct FigureCanPlacedEvent(pub Entity);

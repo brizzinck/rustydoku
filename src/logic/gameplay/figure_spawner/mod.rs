@@ -2,30 +2,30 @@ use bevy::prelude::*;
 
 use crate::{
     components::{
-        figure::Figure,
+        figure::FigureComponent,
         ui::header::HeaderUI,
-        world::{figure_zone::FigureZone, placeholder::Placeholder},
+        world::{figure_zone::FigureZoneComponent, placeholder::PlaceholderComponent},
     },
     constants::figure::FIGURE_Z_POSITION,
-    events::{figure::FigureSpawned, figure_spawner::SpawnFigure},
-    resource::figure_spawner::FigureSpawner,
-    states::gameplay::StateGame,
+    events::{figure::FigureSpawnedEvent, figure_spawner::SpawnFigureEvent},
+    resource::figure_spawner::FigureSpawnerResource,
+    states::gameplay::GameState,
 };
 
 pub mod init;
 
-impl FigureSpawner {
+impl FigureSpawnerResource {
     pub(crate) fn spawn_figures(
         mut commands: Commands,
-        mut figure_spawner: ResMut<FigureSpawner>,
-        figure_zone: Query<Entity, With<FigureZone>>,
-        placeholder: Query<(Entity, &Transform), With<Placeholder>>,
-        mut event_writer: EventWriter<FigureSpawned>,
-        mut event_reader: EventReader<SpawnFigure>,
+        mut figure_spawner: ResMut<FigureSpawnerResource>,
+        figure_zone: Query<Entity, With<FigureZoneComponent>>,
+        placeholder: Query<(Entity, &Transform), With<PlaceholderComponent>>,
+        mut event_writer: EventWriter<FigureSpawnedEvent>,
+        mut event_reader: EventReader<SpawnFigureEvent>,
     ) {
         if figure_spawner.figures.is_empty() && event_reader.read().last().is_some() {
             for (entity, &transform) in placeholder.iter() {
-                let entity = Figure::random_spawn(
+                let entity = FigureComponent::random_spawn(
                     &mut commands,
                     Vec2::new(transform.translation.x, transform.translation.y),
                     &figure_spawner,
@@ -43,40 +43,43 @@ impl FigureSpawner {
                     ),
                 );
 
-                event_writer.send(FigureSpawned(entity));
+                event_writer.send(FigureSpawnedEvent(entity));
             }
         }
     }
 
     pub(crate) fn despawn_figure(
         mut commands: Commands,
-        mut figure_spawner: ResMut<FigureSpawner>,
-        state: Res<State<StateGame>>,
-        mut next_state: ResMut<NextState<StateGame>>,
-        mut event_writer: EventWriter<SpawnFigure>,
+        mut figure_spawner: ResMut<FigureSpawnerResource>,
+        state: Res<State<GameState>>,
+        mut next_state: ResMut<NextState<GameState>>,
+        mut event_writer: EventWriter<SpawnFigureEvent>,
     ) {
-        if let StateGame::Placed(entity) = state.get() {
+        if let GameState::Placed(entity) = state.get() {
             commands.entity(*entity).despawn();
             figure_spawner.figures.remove(entity);
-            event_writer.send(SpawnFigure);
-            next_state.set(StateGame::CheckCombo);
+            event_writer.send(SpawnFigureEvent);
+            next_state.set(GameState::CheckCombo);
         }
     }
 
     pub(crate) fn respawn_figures(
         mut commands: Commands,
-        mut figure_spawner: ResMut<FigureSpawner>,
-        mut event_writer: EventWriter<SpawnFigure>,
+        mut figure_spawner: ResMut<FigureSpawnerResource>,
+        mut event_writer: EventWriter<SpawnFigureEvent>,
     ) {
         for (entity, _) in figure_spawner.figures.iter() {
             commands.entity(*entity).despawn_recursive();
         }
 
         figure_spawner.figures.clear();
-        event_writer.send(SpawnFigure);
+        event_writer.send(SpawnFigureEvent);
     }
 
-    pub(crate) fn clear_figures(mut commands: Commands, mut figure_spawner: ResMut<FigureSpawner>) {
+    pub(crate) fn clear_figures(
+        mut commands: Commands,
+        mut figure_spawner: ResMut<FigureSpawnerResource>,
+    ) {
         for (entity, _) in figure_spawner.figures.iter() {
             commands.entity(*entity).despawn_recursive();
         }
@@ -84,7 +87,7 @@ impl FigureSpawner {
     }
 
     pub(crate) fn hide_figures(
-        mut visibility: Query<&mut Visibility, (With<FigureZone>, Without<HeaderUI>)>,
+        mut visibility: Query<&mut Visibility, (With<FigureZoneComponent>, Without<HeaderUI>)>,
     ) {
         for mut vis in visibility.iter_mut() {
             *vis = Visibility::Hidden;
@@ -92,7 +95,7 @@ impl FigureSpawner {
     }
 
     pub(crate) fn show_figures(
-        mut visibility: Query<&mut Visibility, (With<FigureZone>, Without<HeaderUI>)>,
+        mut visibility: Query<&mut Visibility, (With<FigureZoneComponent>, Without<HeaderUI>)>,
     ) {
         for mut vis in visibility.iter_mut() {
             *vis = Visibility::Visible;

@@ -1,29 +1,29 @@
 use crate::{
-    components::{music::MusicComponent, ui::buttons::button_restart::RestartButton},
-    resource::music::{MusicResource, SoundChannel},
-    states::{gameplay::StateGame, ui::restart_button::RestartButtonType},
+    components::{music::AudioComponent, ui::buttons::button_restart::ButtonRestart},
+    resource::audio::{RustydokuAudioResource, SoundChannel},
+    states::{gameplay::GameState, ui::button_restart::RestartButtonType},
 };
 use bevy::prelude::*;
 use bevy_kira_audio::AudioChannel;
 
-impl RestartButton {
+impl ButtonRestart {
     pub(crate) fn handle(
-        mut interaction_query: Query<(&Interaction, &RestartButton), Changed<Interaction>>,
-        mut state: ResMut<NextState<StateGame>>,
-        music: Res<MusicResource>,
+        mut interaction_query: Query<(&Interaction, &ButtonRestart), Changed<Interaction>>,
+        mut state: ResMut<NextState<GameState>>,
+        music: Res<RustydokuAudioResource>,
         sound_channel: Res<AudioChannel<SoundChannel>>,
     ) {
         for (interaction, button) in &mut interaction_query {
             if *interaction == Interaction::Pressed {
-                MusicComponent::click(&music, sound_channel);
+                AudioComponent::click(&music, sound_channel);
 
                 match button.restart_type {
                     RestartButtonType::Default => {
-                        state.set(StateGame::DefaultRestart);
+                        state.set(GameState::DefaultRestart);
                         break;
                     }
                     RestartButtonType::GameOver => {
-                        state.set(StateGame::GameOverRestart);
+                        state.set(GameState::GameOverRestart);
                         break;
                     }
                 }

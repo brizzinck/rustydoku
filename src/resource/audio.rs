@@ -3,11 +3,11 @@ use bevy_kira_audio::AudioSource;
 
 use crate::{
     constants::{
+        audio::assets::*,
         figure::{FIGURE_DENIED_PLACE_SOUND, FIGURE_PLACE_SOUND},
-        music::assets::*,
-        ui::music::*,
+        ui::audio::*,
     },
-    events::music::ChangeVolume,
+    events::audio::ChangeVolumeEvent,
 };
 
 pub(crate) enum Volume {
@@ -25,7 +25,7 @@ impl Volume {
 }
 
 #[derive(Resource)]
-pub struct MusicResource {
+pub struct RustydokuAudioResource {
     volume: Volume,
     idle_music: Handle<AudioSource>,
     lose_music: Handle<AudioSource>,
@@ -35,7 +35,7 @@ pub struct MusicResource {
     click_sound: Handle<AudioSource>,
 }
 
-impl MusicResource {
+impl RustydokuAudioResource {
     pub(crate) fn new(
         idle_music: Handle<AudioSource>,
         lose_music: Handle<AudioSource>,
@@ -55,13 +55,13 @@ impl MusicResource {
         }
     }
 
-    pub(crate) fn set_volume(&mut self, volume: f64, event_writer: EventWriter<ChangeVolume>) {
+    pub(crate) fn set_volume(&mut self, volume: f64, event_writer: EventWriter<ChangeVolumeEvent>) {
         self.volume = Volume::Play(volume);
 
         self.send_change_volume(event_writer);
     }
 
-    pub(crate) fn up_volume(&mut self, event_writer: EventWriter<ChangeVolume>) {
+    pub(crate) fn up_volume(&mut self, event_writer: EventWriter<ChangeVolumeEvent>) {
         if self.volume.get_volume() == 1.0 {
             return;
         }
@@ -72,7 +72,7 @@ impl MusicResource {
         self.send_change_volume(event_writer);
     }
 
-    pub(crate) fn down_volume(&mut self, event_writer: EventWriter<ChangeVolume>) {
+    pub(crate) fn down_volume(&mut self, event_writer: EventWriter<ChangeVolumeEvent>) {
         if self.volume.get_volume() == 0.0 {
             return;
         }
@@ -83,8 +83,8 @@ impl MusicResource {
         self.send_change_volume(event_writer);
     }
 
-    fn send_change_volume(&mut self, mut event_writer: EventWriter<'_, ChangeVolume>) {
-        event_writer.send(ChangeVolume {
+    fn send_change_volume(&mut self, mut event_writer: EventWriter<'_, ChangeVolumeEvent>) {
+        event_writer.send(ChangeVolumeEvent {
             music_volume: self.get_volume_music(),
             sound_volume: self.get_volume_sound(),
         });
@@ -116,7 +116,7 @@ impl MusicResource {
         }
     }
 
-    pub(crate) fn toggle_mute(&mut self, event_writer: EventWriter<ChangeVolume>) {
+    pub(crate) fn toggle_mute(&mut self, event_writer: EventWriter<ChangeVolumeEvent>) {
         match self.volume {
             Volume::Mute(volume) => self.volume = Volume::Play(volume),
             Volume::Play(volume) => self.volume = Volume::Mute(volume),
@@ -157,7 +157,7 @@ impl MusicResource {
         let click_sound = asset_server.load(BUTTON_CLICK_SOUND);
         let combo_sound = asset_server.load(COMBO_SOUND);
 
-        MusicResource::new(
+        RustydokuAudioResource::new(
             background_handle,
             player_handle,
             place_sound,

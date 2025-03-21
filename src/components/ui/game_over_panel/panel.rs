@@ -3,24 +3,26 @@ use crate::{components::ui::buttons::ButtonsPanel, constants::ui::game_over_pane
 use bevy::prelude::*;
 
 #[derive(Component)]
-pub struct GameOverPanel {
+pub struct GameOverPanelComponent {
     pub timer: Timer,
     pub speed: f32,
 }
 
-impl GameOverPanel {
+impl GameOverPanelComponent {
     pub fn spawn(mut commands: Commands, assets: Res<AssetServer>) {
         commands
-            .spawn(GameOverPanel::create_panel())
+            .spawn(GameOverPanelComponent::create_panel())
             .with_children(|parent| {
                 parent
-                    .spawn(GameOverPanel::create_background(&assets))
+                    .spawn(GameOverPanelComponent::create_background(&assets))
                     .with_children(|panel| {
-                        panel.spawn(GameOverPanel::create_header_title(&assets));
+                        panel.spawn(GameOverPanelComponent::create_header_title(&assets));
 
-                        panel.spawn(GameOverMaxScoreText::create_max_score(&assets));
+                        panel.spawn(GameOverMaxScoreTextComponent::create_max_score(&assets));
 
-                        panel.spawn(GameOverCurrentScoreText::create_current_score(&assets));
+                        panel.spawn(GameOverCurrentScoreTextComponent::create_current_score(
+                            &assets,
+                        ));
 
                         ButtonsPanel::spawn_game_over(panel, &assets);
                     });
@@ -44,7 +46,7 @@ impl GameOverPanel {
                 justify_self: GAME_OVER_PANEL_JUSTIFY,
                 ..default()
             },
-            GameOverPanel {
+            GameOverPanelComponent {
                 timer: Timer::from_seconds(GAME_OVER_PANEL_ANIMATION_TIMER, TimerMode::Once),
                 speed: GAME_OVER_PANEL_ANIMATION_SPEED_DEFAULT,
             },

@@ -1,24 +1,24 @@
 use crate::{
     components::{
-        figure::{Figure, FigureBounds},
-        world::map::Tile,
+        figure::{FigureBoundsComponent, FigureComponent},
+        world::map::TileComponent,
     },
     constants::map::{MAP_SPAWN_POSITIOM, TILE_SIZE},
-    events::figure::{FigureCanPlaced, FigureCantPlaced},
-    resource::map::Map,
-    states::gameplay::StateGame,
+    events::figure::{FigureCanPlacedEvent, FigureCantPlacedEvent},
+    resource::map::MapComponent,
+    states::gameplay::GameState,
     world::gameplay::Gameplay,
 };
 use bevy::prelude::*;
 
 impl Gameplay {
     pub(crate) fn check_game_over(
-        figures: Query<(&Transform, &FigureBounds, &Figure)>,
-        map: Res<Map>,
-        tiles: Query<&Tile>,
-        mut next_state: ResMut<NextState<StateGame>>,
-        mut cant_place_writer: EventWriter<FigureCantPlaced>,
-        mut can_place_writer: EventWriter<FigureCanPlaced>,
+        figures: Query<(&Transform, &FigureBoundsComponent, &FigureComponent)>,
+        map: Res<MapComponent>,
+        tiles: Query<&TileComponent>,
+        mut next_state: ResMut<NextState<GameState>>,
+        mut cant_place_writer: EventWriter<FigureCantPlacedEvent>,
+        mut can_place_writer: EventWriter<FigureCanPlacedEvent>,
     ) {
         let mut game_over = true;
 
@@ -58,17 +58,17 @@ impl Gameplay {
             }
 
             if figure_cant_placed {
-                cant_place_writer.send(FigureCantPlaced(figure.placeholder));
+                cant_place_writer.send(FigureCantPlacedEvent(figure.placeholder));
             } else {
-                can_place_writer.send(FigureCanPlaced(figure.placeholder));
+                can_place_writer.send(FigureCanPlacedEvent(figure.placeholder));
             }
         }
 
         if game_over {
-            next_state.set(StateGame::GameOver);
+            next_state.set(GameState::GameOver);
             trace!("Next state is set to StateGame::GameOver");
         } else {
-            next_state.set(StateGame::Idle);
+            next_state.set(GameState::Idle);
             trace!("Next state is set to StateGame::Idle");
         }
     }
@@ -78,8 +78,8 @@ impl Gameplay {
         bounds_min: Vec2,
         offsets: &[Vec2],
         figure_transform: &Transform,
-        map: &Map,
-        tiles: &Query<&Tile>,
+        map: &MapComponent,
+        tiles: &Query<&TileComponent>,
     ) -> bool {
         let placement_translation = grid * TILE_SIZE - bounds_min * TILE_SIZE;
 
@@ -114,7 +114,11 @@ impl Gameplay {
         true
     }
 
-    fn correct_to_place(pos: Vec3, map: &Map, tiles: &Query<&Tile>) -> Option<(i32, i32)> {
+    fn correct_to_place(
+        pos: Vec3,
+        map: &MapComponent,
+        tiles: &Query<&TileComponent>,
+    ) -> Option<(i32, i32)> {
         let tile_coords = (
             (pos.x / TILE_SIZE).round() as i32,
             (pos.y / TILE_SIZE).round() as i32,
@@ -144,7 +148,11 @@ mod tests {
     #[derive(Default, Resource)]
     struct CanPlaceResult(bool);
 
-    fn call_can_place(tiles: Query<&Tile>, map: Res<Map>, mut result: ResMut<CanPlaceResult>) {
+    fn call_can_place(
+        tiles: Query<&TileComponent>,
+        map: Res<MapComponent>,
+        mut result: ResMut<CanPlaceResult>,
+    ) {
         let grid = Vec2::new(1.0, 1.0);
         let bounds_min = Vec2::ZERO;
         let offsets = &[Vec2::ZERO];
@@ -162,19 +170,19 @@ mod tests {
     #[test]
     fn can_place_figure_at_grid_success() {
         let mut app = App::new();
-        app.insert_resource(Map::default());
+        app.insert_resource(MapComponent::default());
         app.insert_resource(CanPlaceResult::default());
 
         let world = app.world_mut();
         let tile_entity = world
             .spawn(())
-            .insert(Tile {
+            .insert(TileComponent {
                 square: None,
                 default_image: Handle::default(),
             })
             .id();
 
-        let mut map = world.resource_mut::<Map>();
+        let mut map = world.resource_mut::<MapComponent>();
         map.0.insert((1, 1), tile_entity);
 
         app.add_systems(Update, call_can_place);
@@ -190,19 +198,19 @@ mod tests {
     #[test]
     fn can_place_figure_at_grid_failure_due_to_occupied_tile() {
         let mut app = App::new();
-        app.insert_resource(Map::default());
+        app.insert_resource(MapComponent::default());
         app.insert_resource(CanPlaceResult::default());
 
         let world = app.world_mut();
         let tile_entity = world
             .spawn(())
-            .insert(Tile {
+            .insert(TileComponent {
                 square: Some(Entity::from_raw(42)),
                 default_image: Handle::default(),
             })
             .id();
 
-        let mut map = world.resource_mut::<Map>();
+        let mut map = world.resource_mut::<MapComponent>();
         map.0.insert((1, 1), tile_entity);
 
         app.add_systems(Update, call_can_place);
@@ -218,7 +226,7 @@ mod tests {
     #[test]
     fn can_place_figure_at_grid_failure_due_to_missing_tile() {
         let mut app = App::new();
-        app.insert_resource(Map::default());
+        app.insert_resource(MapComponent::default());
         app.insert_resource(CanPlaceResult::default());
 
         app.add_systems(Update, call_can_place);

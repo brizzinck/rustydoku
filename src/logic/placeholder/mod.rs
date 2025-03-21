@@ -1,26 +1,26 @@
 use bevy::prelude::*;
 
 use crate::{
-    components::world::placeholder::Placeholder,
-    events::figure::{FigureCanPlaced, FigureCantPlaced},
-    resource::figure_spawner::FigureSpawner,
+    components::world::placeholder::PlaceholderComponent,
+    events::figure::{FigureCanPlacedEvent, FigureCantPlacedEvent},
+    resource::figure_spawner::FigureSpawnerResource,
 };
 
-impl Placeholder {
+impl PlaceholderComponent {
     pub(crate) fn update_image(
-        mut placeholders: Query<&mut Sprite, With<Placeholder>>,
-        mut cant_place: EventReader<FigureCantPlaced>,
-        mut can_place: EventReader<FigureCanPlaced>,
-        resource: Res<FigureSpawner>,
+        mut placeholders: Query<&mut Sprite, With<PlaceholderComponent>>,
+        mut cant_place: EventReader<FigureCantPlacedEvent>,
+        mut can_place: EventReader<FigureCanPlacedEvent>,
+        resource: Res<FigureSpawnerResource>,
     ) {
-        for FigureCantPlaced(placeholder) in cant_place.read() {
+        for FigureCantPlacedEvent(placeholder) in cant_place.read() {
             if let Ok(mut sprite) = placeholders.get_mut(*placeholder) {
                 sprite.image = resource.get_placeholder_image_deactive();
                 trace!("Placeholder {} is deactive", placeholder);
             }
         }
 
-        for FigureCanPlaced(placeholder) in can_place.read() {
+        for FigureCanPlacedEvent(placeholder) in can_place.read() {
             if let Ok(mut sprite) = placeholders.get_mut(*placeholder) {
                 sprite.image = resource.get_placeholder_image();
                 trace!("Placeholder {} is active", placeholder);
@@ -29,8 +29,8 @@ impl Placeholder {
     }
 
     pub(crate) fn reset_image(
-        mut placeholders: Query<&mut Sprite, With<Placeholder>>,
-        resource: Res<FigureSpawner>,
+        mut placeholders: Query<&mut Sprite, With<PlaceholderComponent>>,
+        resource: Res<FigureSpawnerResource>,
     ) {
         trace!("Reset placeholders image");
 

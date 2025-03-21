@@ -1,4 +1,4 @@
 use bevy::prelude::*;
 
 #[derive(Event)]
-pub struct SpawnFigure;
+pub struct SpawnFigureEvent;

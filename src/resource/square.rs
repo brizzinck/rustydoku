@@ -1,11 +1,11 @@
 use bevy::prelude::*;
 
 #[derive(Resource, Default)]
-pub struct SquaresToDespawn {
+pub struct SquaresToDespawnResource {
     pub(crate) squares: Vec<Entity>,
 }
 
-impl SquaresToDespawn {
+impl SquaresToDespawnResource {
     pub(crate) fn add(&mut self, square: Entity) {
         self.squares.push(square);
     }

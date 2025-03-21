@@ -1,14 +1,14 @@
 use crate::constants::ui::assets::*;
 use crate::constants::ui::buttons::button_restart::*;
-use crate::states::ui::restart_button::RestartButtonType;
+use crate::states::ui::button_restart::RestartButtonType;
 use bevy::prelude::*;
 
 #[derive(Component)]
-pub struct RestartButton {
+pub struct ButtonRestart {
     pub(crate) restart_type: RestartButtonType,
 }
 
-impl RestartButton {
+impl ButtonRestart {
     pub(crate) fn new(_type: RestartButtonType) -> Self {
         Self {
             restart_type: _type,
@@ -17,22 +17,22 @@ impl RestartButton {
 
     pub(crate) fn spawn_in_header(commands: &mut ChildBuilder, assets: &AssetServer) {
         commands
-            .spawn(RestartButton::create_button(
-                RestartButton::create_node(),
+            .spawn(ButtonRestart::create_button(
+                ButtonRestart::create_node(),
                 assets,
                 RestartButtonType::Default,
             ))
-            .with_child(RestartButton::create_image(assets));
+            .with_child(ButtonRestart::create_image(assets));
     }
 
     pub(crate) fn spawn_in_game_over(commands: &mut ChildBuilder, assets: &AssetServer) {
         commands
-            .spawn(RestartButton::create_button(
-                RestartButton::create_node(),
+            .spawn(ButtonRestart::create_button(
+                ButtonRestart::create_node(),
                 assets,
                 RestartButtonType::GameOver,
             ))
-            .with_child(RestartButton::create_image(assets));
+            .with_child(ButtonRestart::create_image(assets));
     }
 
     fn create_node() -> Node {
@@ -52,7 +52,7 @@ impl RestartButton {
                 image: assets.load(BUTTON_BACKGROUND_PATH),
                 ..default()
             },
-            RestartButton::new(_type),
+            ButtonRestart::new(_type),
         )
     }
 

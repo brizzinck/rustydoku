@@ -1,20 +1,20 @@
 use crate::{
     constants::{figure::*, square::*},
-    resource::figure_spawner::FigureSpawner,
+    resource::figure_spawner::FigureSpawnerResource,
 };
 use bevy::prelude::*;
 
 #[derive(Component, Default)]
-pub struct Square {
+pub struct SquareComponent {
     pub(crate) parent: Option<Entity>,
 }
 
-impl Square {
+impl SquareComponent {
     pub(crate) fn create_child(
         parent: Entity,
         position: Vec2,
         rotation: Quat,
-        resource: &FigureSpawner,
+        resource: &FigureSpawnerResource,
     ) -> impl Bundle {
         (
             Sprite {
@@ -32,7 +32,7 @@ impl Square {
                 rotation: rotation.inverse(),
                 ..Default::default()
             },
-            Square {
+            SquareComponent {
                 parent: Some(parent),
             },
         )

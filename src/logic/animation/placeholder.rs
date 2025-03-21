@@ -1,18 +1,18 @@
 use crate::{
-    components::world::placeholder::Placeholder, constants::placeholder::*,
-    states::figure::placeholder::StatePlaceholderAnimation,
+    components::world::placeholder::PlaceholderComponent, constants::placeholder::*,
+    states::figure::placeholder::PlaceholderAnimationState,
 };
 use bevy::prelude::*;
 
-impl Placeholder {
-    pub(crate) fn set_bounce_default(mut next_state: ResMut<NextState<StatePlaceholderAnimation>>) {
-        next_state.set(StatePlaceholderAnimation::BouncingDefault);
+impl PlaceholderComponent {
+    pub(crate) fn set_bounce_default(mut next_state: ResMut<NextState<PlaceholderAnimationState>>) {
+        next_state.set(PlaceholderAnimationState::BouncingDefault);
         trace!("Placeholder animation set to BouncingDefault");
     }
 
     pub(crate) fn bouncing_init(
-        mut placeholder_zones: Query<&mut Transform, With<Placeholder>>,
-        mut next_state: ResMut<NextState<StatePlaceholderAnimation>>,
+        mut placeholder_zones: Query<&mut Transform, With<PlaceholderComponent>>,
+        mut next_state: ResMut<NextState<PlaceholderAnimationState>>,
         time: Res<Time>,
     ) {
         let mut all_done = true;
@@ -22,14 +22,14 @@ impl Placeholder {
         }
 
         if all_done {
-            next_state.set(StatePlaceholderAnimation::BouncingDefault);
+            next_state.set(PlaceholderAnimationState::BouncingDefault);
             trace!("Placeholder animation set to BouncingDefault");
         }
     }
 
     pub(crate) fn bouncing_default(
-        mut placeholder_zones: Query<&mut Transform, With<Placeholder>>,
-        mut next_state: ResMut<NextState<StatePlaceholderAnimation>>,
+        mut placeholder_zones: Query<&mut Transform, With<PlaceholderComponent>>,
+        mut next_state: ResMut<NextState<PlaceholderAnimationState>>,
         time: Res<Time>,
     ) {
         let mut all_done = true;
@@ -39,14 +39,14 @@ impl Placeholder {
         }
 
         if all_done {
-            next_state.set(StatePlaceholderAnimation::BouncingPeak);
+            next_state.set(PlaceholderAnimationState::BouncingPeak);
             trace!("Placeholder animation set to BouncingPeak");
         }
     }
 
     pub(crate) fn bouncing_peak(
-        mut placeholder_zones: Query<&mut Transform, With<Placeholder>>,
-        mut next_state: ResMut<NextState<StatePlaceholderAnimation>>,
+        mut placeholder_zones: Query<&mut Transform, With<PlaceholderComponent>>,
+        mut next_state: ResMut<NextState<PlaceholderAnimationState>>,
         time: Res<Time>,
     ) {
         let mut all_done = true;
@@ -56,7 +56,7 @@ impl Placeholder {
         }
 
         if all_done {
-            next_state.set(StatePlaceholderAnimation::Idle);
+            next_state.set(PlaceholderAnimationState::Idle);
             trace!("Placeholder animation set to Idle");
         }
     }
@@ -122,7 +122,7 @@ mod tests {
 
         let mut all_done = true;
 
-        Placeholder::bouncing_peak_logic(delta, &mut all_done, &mut transform);
+        PlaceholderComponent::bouncing_peak_logic(delta, &mut all_done, &mut transform);
 
         let expected_scale = 1.31;
 
@@ -138,7 +138,7 @@ mod tests {
 
         let mut all_done = true;
 
-        Placeholder::bouncing_default_logic(delta, &mut all_done, &mut transform);
+        PlaceholderComponent::bouncing_default_logic(delta, &mut all_done, &mut transform);
 
         let expected_scale = 0.7748;
 
@@ -154,7 +154,7 @@ mod tests {
 
         let mut all_done = true;
 
-        Placeholder::bouncing_init_logic(delta, &mut all_done, &mut transform);
+        PlaceholderComponent::bouncing_init_logic(delta, &mut all_done, &mut transform);
 
         let expected_scale = 0.65;
 

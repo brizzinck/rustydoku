@@ -1,16 +1,16 @@
 use crate::{
-    components::ui::buttons::button_audio::{AudioButton, AudioImage},
+    components::ui::buttons::button_audio::{AudioImage, ButtonAudio},
     constants::ui::assets::{AUDIO_OFF_BUTTON_IMAGE_PATH, AUDIO_ON_BUTTON_IMAGE_PATH},
-    events::music::ChangeVolume,
-    resource::music::MusicResource,
+    events::audio::ChangeVolumeEvent,
+    resource::audio::RustydokuAudioResource,
 };
 use bevy::prelude::*;
 
-impl AudioButton {
+impl ButtonAudio {
     pub(crate) fn handle(
-        interaction_query: Query<(&Interaction, &AudioButton), Changed<Interaction>>,
-        mut music: ResMut<MusicResource>,
-        event_writer: EventWriter<ChangeVolume>,
+        interaction_query: Query<(&Interaction, &ButtonAudio), Changed<Interaction>>,
+        mut music: ResMut<RustydokuAudioResource>,
+        event_writer: EventWriter<ChangeVolumeEvent>,
     ) {
         if let Some((interaction, _)) = interaction_query.into_iter().last() {
             if *interaction == Interaction::Pressed {
@@ -21,7 +21,7 @@ impl AudioButton {
 
     pub(crate) fn read_muted(
         mut button_audio: Query<&mut ImageNode, With<AudioImage>>,
-        mut event_reader: EventReader<ChangeVolume>,
+        mut event_reader: EventReader<ChangeVolumeEvent>,
         assets: Res<AssetServer>,
     ) {
         if let Some(event) = event_reader.read().last() {

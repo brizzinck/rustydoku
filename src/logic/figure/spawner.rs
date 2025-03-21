@@ -1,17 +1,17 @@
 use crate::{
-    components::figure::{square::Square, Figure, FigureBounds},
+    components::figure::{square::SquareComponent, FigureBoundsComponent, FigureComponent},
     constants::figure::*,
-    resource::figure_spawner::FigureSpawner,
-    states::figure::StateFigureAnimation,
+    resource::figure_spawner::FigureSpawnerResource,
+    states::figure::FigureAnimationState,
 };
 use bevy::prelude::*;
 use rand::{distributions::WeightedIndex, prelude::Distribution, thread_rng, Rng};
 
-impl Figure {
+impl FigureComponent {
     pub(crate) fn random_spawn(
         commands: &mut Commands,
         absolute_position: Vec2,
-        resource: &FigureSpawner,
+        resource: &FigureSpawnerResource,
         placeholder: Entity,
     ) -> Entity {
         let mut rng = thread_rng();
@@ -66,12 +66,12 @@ impl Figure {
 
         (
             commands
-                .spawn(Figure::create(
+                .spawn(FigureComponent::create(
                     position,
                     rotation,
-                    FigureBounds::new(bounds_min, bounds_min),
+                    FigureBoundsComponent::new(bounds_min, bounds_min),
                 ))
-                .observe(Figure::start_dragging)
+                .observe(FigureComponent::start_dragging)
                 .id(),
             rotation,
         )
@@ -82,20 +82,22 @@ impl Figure {
         absolute_position: Vec2,
         squares_position: &[Vec2],
         name: &'static str,
-        resource: &FigureSpawner,
+        resource: &FigureSpawnerResource,
         placeholder: Entity,
     ) -> Entity {
-        let (parent, rotation) = Figure::spawn_empty(commands, absolute_position, squares_position);
+        let (parent, rotation) =
+            FigureComponent::spawn_empty(commands, absolute_position, squares_position);
 
-        let mut figure = Figure {
+        let mut figure = FigureComponent {
             squares_entity: Vec::with_capacity(squares_position.len()),
             squares_position: squares_position.to_vec(),
-            state_animation: StateFigureAnimation::SpawnUpScaling,
+            state_animation: FigureAnimationState::SpawnUpScaling,
             placeholder,
         };
 
         for &offset in squares_position.iter() {
-            let child = Square::spawn_as_child(commands, parent, offset, rotation, resource);
+            let child =
+                SquareComponent::spawn_as_child(commands, parent, offset, rotation, resource);
             figure.squares_entity.push(child);
         }
 

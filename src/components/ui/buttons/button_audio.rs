@@ -3,19 +3,19 @@ use crate::constants::ui::buttons::button_audio::*;
 use bevy::prelude::*;
 
 #[derive(Component)]
-pub struct AudioButton;
+pub struct ButtonAudio;
 
 #[derive(Component)]
 pub struct AudioImage;
 
-impl AudioButton {
+impl ButtonAudio {
     pub(crate) fn spawn(commands: &mut ChildBuilder, assets: &AssetServer) {
         commands
-            .spawn(AudioButton::create_button(
-                AudioButton::create_node_game_over(),
+            .spawn(ButtonAudio::create_button(
+                ButtonAudio::create_node_game_over(),
                 assets,
             ))
-            .with_child(AudioButton::create_image(assets));
+            .with_child(ButtonAudio::create_image(assets));
     }
 
     fn create_node_game_over() -> Node {
@@ -31,7 +31,7 @@ impl AudioButton {
         (
             node,
             Button,
-            AudioButton,
+            ButtonAudio,
             ImageNode {
                 image: assets.load(BUTTON_BACKGROUND_PATH),
                 ..default()

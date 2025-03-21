@@ -1,7 +1,7 @@
 use bevy::prelude::*;
 
 use crate::logic::resource::RustydokuResource;
-use crate::states::gameplay::StateGame;
+use crate::states::gameplay::GameState;
 
 pub struct RustydokuResourcePlugin;
 
@@ -10,7 +10,7 @@ impl Plugin for RustydokuResourcePlugin {
         debug!("Building RustydokuResourcePlugin");
 
         trace!("Adding systems to RustydokuResourcePlugin");
-        app.add_systems(OnEnter(StateGame::InitResources), RustydokuResource::init);
+        app.add_systems(OnEnter(GameState::InitResources), RustydokuResource::init);
 
         debug!("RustydokuResourcePlugin built");
     }

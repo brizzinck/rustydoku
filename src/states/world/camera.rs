@@ -1,7 +1,7 @@
 use bevy::prelude::*;
 
 #[derive(Default, States, Debug, Clone, PartialEq, Eq, Hash)]
-pub enum StateCameraPosition {
+pub enum CameraPositionState {
     #[default]
     Default,
     ToDefault,
@@ -9,20 +9,20 @@ pub enum StateCameraPosition {
     GameOver,
 }
 
-impl StateCameraPosition {
-    pub fn when_default(state: Res<State<StateCameraPosition>>) -> bool {
-        StateCameraPosition::Default == *state.get()
+impl CameraPositionState {
+    pub fn when_default(state: Res<State<CameraPositionState>>) -> bool {
+        CameraPositionState::Default == *state.get()
     }
 
-    pub fn when_to_default(state: Res<State<StateCameraPosition>>) -> bool {
-        StateCameraPosition::ToDefault == *state.get()
+    pub fn when_to_default(state: Res<State<CameraPositionState>>) -> bool {
+        CameraPositionState::ToDefault == *state.get()
     }
 
-    pub fn when_to_game_over(state: Res<State<StateCameraPosition>>) -> bool {
-        StateCameraPosition::ToGameOver == *state.get()
+    pub fn when_to_game_over(state: Res<State<CameraPositionState>>) -> bool {
+        CameraPositionState::ToGameOver == *state.get()
     }
 
-    pub fn when_game_over(state: Res<State<StateCameraPosition>>) -> bool {
-        StateCameraPosition::GameOver == *state.get()
+    pub fn when_game_over(state: Res<State<CameraPositionState>>) -> bool {
+        CameraPositionState::GameOver == *state.get()
     }
 }

@@ -1,20 +1,20 @@
 use crate::{
-    components::world::map::Tile,
+    components::world::map::TileComponent,
     constants::{figure::MAX_FIGURE_USIZE_SCALED, map::*},
-    resource::{map::Map, square::SquaresToDespawn},
-    states::gameplay::StateGame,
+    resource::{map::MapComponent, square::SquaresToDespawnResource},
+    states::gameplay::GameState,
 };
 use assets::{TILE_IMAGE_FIRST_DEACTIVATED_PATH, TILE_IMAGE_SECOND_DEACTIVATED_PATH};
 use bevy::{prelude::*, utils::HashMap};
 
-impl Map {
+impl MapComponent {
     pub(crate) fn generate_map(
         mut commands: Commands,
-        mut map: ResMut<Map>,
-        mut next_state: ResMut<NextState<StateGame>>,
+        mut map: ResMut<MapComponent>,
+        mut next_state: ResMut<NextState<GameState>>,
         assets: Res<AssetServer>,
     ) {
-        let parent = commands.spawn(Map::create_map()).id();
+        let parent = commands.spawn(MapComponent::create_map()).id();
 
         let mut hash_titles = HashMap::with_capacity(MAP_SIZE as usize * MAP_SIZE as usize);
         for (zero_x, x) in MAP_SPAWN_POSITIOM.enumerate() {
@@ -32,7 +32,7 @@ impl Map {
                 let position =
                     Vec3::new(x as f32 * TILE_SIZE, y as f32 * TILE_SIZE, TILE_Z_POSITION);
                 let tile = commands
-                    .spawn(Tile::create_tile(image, position))
+                    .spawn(TileComponent::create_tile(image, position))
                     .set_parent(parent)
                     .id();
 
@@ -42,13 +42,13 @@ impl Map {
 
         map.0 = hash_titles;
 
-        next_state.set(StateGame::Idle);
+        next_state.set(GameState::Idle);
         trace!("Next state StateGame::Idle");
     }
 
     pub(crate) fn reset_tiles(
-        mut square_to_despawn: ResMut<SquaresToDespawn>,
-        mut tiles: Query<&mut Tile>,
+        mut square_to_despawn: ResMut<SquaresToDespawnResource>,
+        mut tiles: Query<&mut TileComponent>,
     ) {
         trace!("Reset tiles");
 

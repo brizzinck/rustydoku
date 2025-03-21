@@ -1,4 +1,4 @@
-use crate::{constants::figure::*, states::figure::StateFigureAnimation};
+use crate::{constants::figure::*, states::figure::FigureAnimationState};
 use bevy::prelude::*;
 
 pub mod square;
@@ -9,16 +9,16 @@ use bevy_inspector_egui::prelude::*;
 #[derive(Component, Debug, Copy, Clone)]
 #[cfg_attr(feature = "debug-inspector", derive(Reflect, InspectorOptions))]
 #[cfg_attr(feature = "debug-inspector", reflect(Component, InspectorOptions))]
-pub struct FigureBounds {
+pub struct FigureBoundsComponent {
     pub min: Vec2,
     pub max: Vec2,
 }
 
-impl FigureBounds {
+impl FigureBoundsComponent {
     pub(crate) fn new(min: Vec2, max: Vec2) -> Self {
         Self { min, max }
     }
-    pub(crate) fn from(bounds: FigureBounds) -> Self {
+    pub(crate) fn from(bounds: FigureBoundsComponent) -> Self {
         Self {
             min: bounds.min,
             max: bounds.max,
@@ -27,22 +27,26 @@ impl FigureBounds {
 }
 
 #[derive(Clone, Component, Debug)]
-pub struct Figure {
+pub struct FigureComponent {
     pub squares_entity: Vec<Entity>,
     pub squares_position: Vec<Vec2>,
-    pub state_animation: StateFigureAnimation,
+    pub state_animation: FigureAnimationState,
     pub placeholder: Entity,
 }
 
-impl Figure {
-    pub(crate) fn create(position: Vec2, rotation: Quat, bounds: FigureBounds) -> impl Bundle {
+impl FigureComponent {
+    pub(crate) fn create(
+        position: Vec2,
+        rotation: Quat,
+        bounds: FigureBoundsComponent,
+    ) -> impl Bundle {
         (
             Transform {
                 translation: Vec3::new(position.x, position.y, FIGURE_Z_POSITION),
                 rotation,
                 scale: Vec3::ZERO,
             },
-            FigureBounds::from(bounds),
+            FigureBoundsComponent::from(bounds),
             PickingBehavior::default(),
             InheritedVisibility::default(),
             Sprite {

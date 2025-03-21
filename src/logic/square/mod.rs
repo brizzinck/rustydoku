@@ -2,22 +2,22 @@ pub mod trigger;
 
 use crate::{
     components::{
-        figure::{square::Square, Figure},
-        world::map::Tile,
+        figure::{square::SquareComponent, FigureComponent},
+        world::map::TileComponent,
     },
     constants::map::TILE_SIZE,
-    resource::figure_spawner::FigureSpawner,
-    states::gameplay::StateGame,
+    resource::figure_spawner::FigureSpawnerResource,
+    states::gameplay::GameState,
 };
 use bevy::prelude::*;
 
-impl Square {
+impl SquareComponent {
     pub(crate) fn spawn_as_child(
         commands: &mut Commands,
         parent: Entity,
         position: Vec2,
         rotation: Quat,
-        resource: &FigureSpawner,
+        resource: &FigureSpawnerResource,
     ) -> Entity {
         let child = commands
             .spawn(Self::create_child(parent, position, rotation, resource))
@@ -27,17 +27,17 @@ impl Square {
     }
 
     pub(crate) fn highlight(
-        mut tile_query: Query<(&Tile, &mut Sprite, &GlobalTransform, Entity)>,
-        figure_query: Query<&Figure>,
-        mut square_query: Query<(Entity, &GlobalTransform, &mut Square)>,
-        current_state: Res<State<StateGame>>,
-        resource: Res<FigureSpawner>,
+        mut tile_query: Query<(&TileComponent, &mut Sprite, &GlobalTransform, Entity)>,
+        figure_query: Query<&FigureComponent>,
+        mut square_query: Query<(Entity, &GlobalTransform, &mut SquareComponent)>,
+        current_state: Res<State<GameState>>,
+        resource: Res<FigureSpawnerResource>,
     ) {
         for (tile, mut sprite, _, _) in tile_query.iter_mut() {
             sprite.image = tile.default_image.clone();
         }
 
-        if let StateGame::Dragging(figure) = current_state.get() {
+        if let GameState::Dragging(figure) = current_state.get() {
             let mut highlight_tiles = vec![];
             if let Ok(figure) = figure_query.get(*figure) {
                 if !figure.state_animation.is_default() {
@@ -74,7 +74,7 @@ impl Square {
 
     pub(crate) fn check_for_place(
         transofrm: &GlobalTransform,
-        tile_query: &Vec<(&Tile, &GlobalTransform, Entity)>,
+        tile_query: &Vec<(&TileComponent, &GlobalTransform, Entity)>,
     ) -> Option<Entity> {
         let square_pos = transofrm.translation().truncate();
         let square_grid_x = (square_pos.x / TILE_SIZE).round() as i32;
@@ -115,7 +115,7 @@ mod tests {
         let tile_translation = Vec3::new(TILE_SIZE, TILE_SIZE, 0.0);
         let tile_transform = GlobalTransform::from_translation(tile_translation);
 
-        let tile = Tile {
+        let tile = TileComponent {
             square: None,
             default_image: Handle::default(),
         };
@@ -124,7 +124,7 @@ mod tests {
 
         let tiles = vec![(&tile, &tile_transform, tile_entity)];
 
-        let result = Square::check_for_place(&square_transform, &tiles);
+        let result = SquareComponent::check_for_place(&square_transform, &tiles);
 
         assert_eq!(result, Some(tile_entity));
     }
@@ -137,7 +137,7 @@ mod tests {
         let tile_translation = Vec3::new(TILE_SIZE, TILE_SIZE, 0.0);
         let tile_transform = GlobalTransform::from_translation(tile_translation);
 
-        let tile = Tile {
+        let tile = TileComponent {
             square: None,
             default_image: Handle::default(),
         };
@@ -145,7 +145,7 @@ mod tests {
         let tile_entity = Entity::from_raw(42);
         let tiles = vec![(&tile, &tile_transform, tile_entity)];
 
-        let result = Square::check_for_place(&square_transform, &tiles);
+        let result = SquareComponent::check_for_place(&square_transform, &tiles);
 
         assert_eq!(result, None);
     }
@@ -158,7 +158,7 @@ mod tests {
         let tile_translation = Vec3::new(TILE_SIZE, TILE_SIZE, 0.0);
         let tile_transform = GlobalTransform::from_translation(tile_translation);
 
-        let tile = Tile {
+        let tile = TileComponent {
             square: Some(Entity::from_raw(100)),
             default_image: Handle::default(),
         };
@@ -166,7 +166,7 @@ mod tests {
         let tile_entity = Entity::from_raw(42);
         let tiles = vec![(&tile, &tile_transform, tile_entity)];
 
-        let result = Square::check_for_place(&square_transform, &tiles);
+        let result = SquareComponent::check_for_place(&square_transform, &tiles);
 
         assert_eq!(result, None);
     }

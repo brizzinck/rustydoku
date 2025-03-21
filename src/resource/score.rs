@@ -1,13 +1,13 @@
 use bevy::prelude::*;
 
 #[derive(Resource, Default)]
-pub struct Score {
+pub struct ScoreResource {
     current_value: i32,
     max_value: i32,
 }
 
-impl Score {
-    pub(crate) fn reset_score(mut score: ResMut<Score>) {
+impl ScoreResource {
+    pub(crate) fn reset_score(mut score: ResMut<ScoreResource>) {
         score.current_value = 0;
     }
 
@@ -15,7 +15,7 @@ impl Score {
         self.current_value += value;
     }
 
-    pub(crate) fn update_max_score(mut score: ResMut<Score>) {
+    pub(crate) fn update_max_score(mut score: ResMut<ScoreResource>) {
         score.max_value = score.current_value.max(score.max_value);
     }
 

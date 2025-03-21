@@ -1,7 +1,7 @@
 use crate::constants::ui::buttons::panel::*;
 use bevy::prelude::*;
-use button_audio::AudioButton;
-use button_restart::RestartButton;
+use button_audio::ButtonAudio;
+use button_restart::ButtonRestart;
 
 pub mod button_audio;
 pub mod button_restart;
@@ -18,9 +18,9 @@ impl ButtonsPanel {
                 BUTTONS_PANEL_MAX_HEIGHT_HEADER,
             ))
             .with_children(|panel| {
-                RestartButton::spawn_in_header(panel, assets);
+                ButtonRestart::spawn_in_header(panel, assets);
 
-                AudioButton::spawn(panel, assets);
+                ButtonAudio::spawn(panel, assets);
             });
     }
 
@@ -32,9 +32,9 @@ impl ButtonsPanel {
                 BUTTONS_PANEL_MAX_HEIGHT_GAME_OVER,
             ))
             .with_children(|panel| {
-                RestartButton::spawn_in_game_over(panel, assets);
+                ButtonRestart::spawn_in_game_over(panel, assets);
 
-                AudioButton::spawn(panel, assets);
+                ButtonAudio::spawn(panel, assets);
             });
     }
 

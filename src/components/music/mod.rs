@@ -1,4 +1,4 @@
 use bevy::prelude::*;
 
 #[derive(Component)]
-pub struct MusicComponent;
+pub struct AudioComponent;

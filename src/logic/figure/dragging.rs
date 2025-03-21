@@ -1,26 +1,26 @@
 use crate::{
-    components::figure::{Figure, FigureBounds},
+    components::figure::{FigureBoundsComponent, FigureComponent},
     constants::{figure::*, square::*},
-    events::figure::FigureTriggerDragging,
-    states::gameplay::StateGame,
+    events::figure::FigureTriggerDraggingEvent,
+    states::gameplay::GameState,
     world::game_zone::GameZone,
 };
 use bevy::{prelude::*, window::PrimaryWindow};
 
-impl Figure {
+impl FigureComponent {
     #[allow(clippy::too_many_arguments)]
     pub(crate) fn dragging(
-        mut figure_query: Query<(&mut Transform, &Figure, &FigureBounds)>,
+        mut figure_query: Query<(&mut Transform, &FigureComponent, &FigureBoundsComponent)>,
         mouse_input: Res<ButtonInput<MouseButton>>,
         touch_input: Res<Touches>,
         cursor: Query<&Window, With<PrimaryWindow>>,
         cameras: Query<(&Camera, &GlobalTransform)>,
-        game_state: Res<State<StateGame>>,
-        mut event_writer: EventWriter<FigureTriggerDragging>,
+        game_state: Res<State<GameState>>,
+        mut event_writer: EventWriter<FigureTriggerDraggingEvent>,
     ) {
-        if let StateGame::Dragging(figure) = game_state.get() {
+        if let GameState::Dragging(figure) = game_state.get() {
             trace!("Dragging figure: {:?}", figure);
-            event_writer.send(FigureTriggerDragging(*figure));
+            event_writer.send(FigureTriggerDraggingEvent(*figure));
             let (camera, camera_transform) = cameras.single();
 
             let position = if mouse_input.pressed(MouseButton::Left) {
@@ -36,7 +36,7 @@ impl Figure {
             if let Some(cursor_pos) = position {
                 if let Ok(world_pos) = camera.viewport_to_world(camera_transform, cursor_pos) {
                     if let Ok((mut transform, _, bounds)) = figure_query.get_mut(*figure) {
-                        let desired = Figure::clamp_position(world_pos.origin, bounds);
+                        let desired = FigureComponent::clamp_position(world_pos.origin, bounds);
 
                         transform.translation.x = desired.x;
                         transform.translation.y = desired.y;
@@ -46,7 +46,7 @@ impl Figure {
         }
     }
 
-    fn clamp_position(world_pos: Vec3, bounds: &FigureBounds) -> Vec3 {
+    fn clamp_position(world_pos: Vec3, bounds: &FigureBoundsComponent) -> Vec3 {
         let min_offset = bounds.min * SQUARE_SIZE;
         let max_offset = bounds.max * SQUARE_SIZE;
 
@@ -70,18 +70,18 @@ impl Figure {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::components::figure::FigureBounds;
+    use crate::components::figure::FigureBoundsComponent;
 
     #[test]
     fn clamp_position_works() {
-        let bounds = FigureBounds {
+        let bounds = FigureBoundsComponent {
             min: Vec2::new(1.0, 1.0),
             max: Vec2::new(2.0, 2.0),
         };
 
         let world_pos = Vec3::new(-2000., 1000., 1.);
 
-        let result = Figure::clamp_position(world_pos, &bounds);
+        let result = FigureComponent::clamp_position(world_pos, &bounds);
         let expected_result = Vec3::new(-200.0, 80.0, 1.0);
 
         assert_eq!(result, expected_result);

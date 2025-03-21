@@ -1,15 +1,15 @@
 use crate::{
-    components::music::MusicComponent,
-    events::figure::FigureDeniedPlacing,
-    resource::music::{MusicResource, SoundChannel},
+    components::music::AudioComponent,
+    events::figure::FigureDeniedPlacingEvent,
+    resource::audio::{RustydokuAudioResource, SoundChannel},
 };
 use bevy::prelude::*;
 use bevy_kira_audio::{AudioChannel, AudioControl};
 
-impl MusicComponent {
+impl AudioComponent {
     pub fn denied_place(
-        music: Res<MusicResource>,
-        mut event: EventReader<FigureDeniedPlacing>,
+        music: Res<RustydokuAudioResource>,
+        mut event: EventReader<FigureDeniedPlacingEvent>,
         sound: Res<AudioChannel<SoundChannel>>,
     ) {
         if event.read().last().is_some() {
@@ -18,7 +18,7 @@ impl MusicComponent {
         }
     }
 
-    pub fn place(music: Res<MusicResource>, sound: Res<AudioChannel<SoundChannel>>) {
+    pub fn place(music: Res<RustydokuAudioResource>, sound: Res<AudioChannel<SoundChannel>>) {
         sound.play(music.get_place_sound());
         trace!("Playing place sound");
     }

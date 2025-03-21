@@ -1,10 +1,10 @@
 use crate::{
     components::{
-        ui::{game_over_panel::panel::GameOverPanel, header::HeaderUI},
-        world::placeholder::Placeholder,
+        ui::{game_over_panel::panel::GameOverPanelComponent, header::HeaderUI},
+        world::placeholder::PlaceholderComponent,
     },
-    resource::{figure_spawner::FigureSpawner, map::Map, score::Score},
-    states::{gameplay::StateGame, ui::game_over_panel::StateGameOverPanel},
+    resource::{figure_spawner::FigureSpawnerResource, map::MapComponent, score::ScoreResource},
+    states::{gameplay::GameState, ui::game_over_panel::GameOverPanelState},
 };
 use bevy::{ecs::schedule::SystemConfigs, prelude::*};
 
@@ -12,7 +12,12 @@ pub struct RustydokuGameplayPlugin;
 
 impl RustydokuGameplayPlugin {
     fn general_restart() -> SystemConfigs {
-        (Map::reset_tiles, HeaderUI::show, StateGame::reset_state).chain()
+        (
+            MapComponent::reset_tiles,
+            HeaderUI::show,
+            GameState::reset_state,
+        )
+            .chain()
     }
 }
 
@@ -22,14 +27,14 @@ impl Plugin for RustydokuGameplayPlugin {
 
         trace!("Adding systems when restarting the game");
         app.add_systems(
-            OnEnter(StateGame::DefaultRestart),
+            OnEnter(GameState::DefaultRestart),
             (
                 Self::general_restart(),
                 (
-                    Score::reset_score,
-                    Placeholder::set_bounce_default,
-                    FigureSpawner::respawn_figures,
-                    Placeholder::reset_image,
+                    ScoreResource::reset_score,
+                    PlaceholderComponent::set_bounce_default,
+                    FigureSpawnerResource::respawn_figures,
+                    PlaceholderComponent::reset_image,
                 )
                     .chain(),
             ),
@@ -37,27 +42,31 @@ impl Plugin for RustydokuGameplayPlugin {
 
         trace!("Adding systems when entering the game over state");
         app.add_systems(
-            OnEnter(StateGame::GameOver),
-            (FigureSpawner::clear_figures, FigureSpawner::hide_figures).chain(),
+            OnEnter(GameState::GameOver),
+            (
+                FigureSpawnerResource::clear_figures,
+                FigureSpawnerResource::hide_figures,
+            )
+                .chain(),
         );
 
         trace!("Adding systems when entering the game over restart state");
-        app.add_systems(OnEnter(StateGame::GameOverRestart), Self::general_restart());
+        app.add_systems(OnEnter(GameState::GameOverRestart), Self::general_restart());
 
         trace!("Adding systems when exiting the game over state");
         app.add_systems(
-            OnExit(StateGame::GameOver),
-            (Score::reset_score, GameOverPanel::set_hide).chain(),
+            OnExit(GameState::GameOver),
+            (ScoreResource::reset_score, GameOverPanelComponent::set_hide).chain(),
         );
 
         trace!("Adding systems when exiting the game over hidding state");
         app.add_systems(
-            OnExit(StateGameOverPanel::Hidding),
+            OnExit(GameOverPanelState::Hidding),
             (
-                Placeholder::set_bounce_default,
-                FigureSpawner::show_figures,
-                FigureSpawner::respawn_figures,
-                Placeholder::reset_image,
+                PlaceholderComponent::set_bounce_default,
+                FigureSpawnerResource::show_figures,
+                FigureSpawnerResource::respawn_figures,
+                PlaceholderComponent::reset_image,
             ),
         );
 

@@ -2,9 +2,9 @@ use crate::constants::ui::game_over_panel::*;
 use bevy::prelude::*;
 
 #[derive(Component)]
-pub struct GameOverCurrentScoreText;
+pub struct GameOverCurrentScoreTextComponent;
 
-impl GameOverCurrentScoreText {
+impl GameOverCurrentScoreTextComponent {
     pub(crate) fn create_current_score(assets: &Res<AssetServer>) -> impl Bundle {
         (
             Name::new(SCORE_NAME_HIERARCHY),
@@ -15,15 +15,15 @@ impl GameOverCurrentScoreText {
                 ..default()
             },
             TextColor(SCORE_TEXT_COLOR),
-            GameOverCurrentScoreText,
+            GameOverCurrentScoreTextComponent,
         )
     }
 }
 
 #[derive(Component)]
-pub struct GameOverMaxScoreText;
+pub struct GameOverMaxScoreTextComponent;
 
-impl GameOverMaxScoreText {
+impl GameOverMaxScoreTextComponent {
     pub(crate) fn create_max_score(assets: &Res<AssetServer>) -> impl Bundle {
         (
             Name::new(MAX_SCORE_NAME_HIERARCHY),
@@ -34,7 +34,7 @@ impl GameOverMaxScoreText {
                 ..default()
             },
             TextColor(MAX_SCORE_TEXT_COLOR),
-            GameOverMaxScoreText,
+            GameOverMaxScoreTextComponent,
         )
     }
 }

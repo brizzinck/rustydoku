@@ -1,6 +1,6 @@
 use crate::components::ui::{
     buttons::ButtonsPanel,
-    header::{score_text::HeaderCurrentScoreText, HeaderUI},
+    header::{score_text::HeaderCurrentScoreTextComponent, HeaderUI},
 };
 use bevy::prelude::*;
 
@@ -11,7 +11,7 @@ impl HeaderUI {
         commands
             .spawn(Self::create_header())
             .with_children(|header| {
-                HeaderCurrentScoreText::spawn(header, &assets);
+                HeaderCurrentScoreTextComponent::spawn(header, &assets);
                 ButtonsPanel::spawn_header(header, &assets);
             });
     }

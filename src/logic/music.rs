@@ -1,23 +1,23 @@
 use crate::{
-    components::music::MusicComponent,
-    events::music::ChangeVolume,
-    resource::music::{MusicChannel, MusicResource, SoundChannel},
+    components::music::AudioComponent,
+    events::audio::ChangeVolumeEvent,
+    resource::audio::{MusicChannel, RustydokuAudioResource, SoundChannel},
 };
 use bevy::prelude::*;
 use bevy_kira_audio::{AudioChannel, AudioControl};
 
-impl MusicComponent {
+impl AudioComponent {
     pub fn set_up(
         music_channel: Res<AudioChannel<MusicChannel>>,
         sound_channel: Res<AudioChannel<SoundChannel>>,
-        music: Res<MusicResource>,
+        music: Res<RustydokuAudioResource>,
     ) {
         trace!("Setting up music channel");
         music_channel.set_volume(music.get_volume_music());
         sound_channel.set_volume(music.get_volume_sound());
     }
 
-    pub fn idle(music: Res<MusicResource>, audio: Res<AudioChannel<MusicChannel>>) {
+    pub fn idle(music: Res<RustydokuAudioResource>, audio: Res<AudioChannel<MusicChannel>>) {
         audio.stop();
         audio.play(music.get_idle_music()).looped();
         trace!("Playing idle music");
@@ -25,8 +25,8 @@ impl MusicComponent {
 
     pub fn pause(
         input: Res<ButtonInput<KeyCode>>,
-        mut music: ResMut<MusicResource>,
-        event_write: EventWriter<ChangeVolume>,
+        mut music: ResMut<RustydokuAudioResource>,
+        event_write: EventWriter<ChangeVolumeEvent>,
     ) {
         if input.just_pressed(KeyCode::Space) {
             music.set_volume(0.0, event_write);
@@ -37,7 +37,7 @@ impl MusicComponent {
     pub fn read_change_volume(
         music_channel: Res<AudioChannel<MusicChannel>>,
         sound_channel: Res<AudioChannel<SoundChannel>>,
-        mut event_reader: EventReader<ChangeVolume>,
+        mut event_reader: EventReader<ChangeVolumeEvent>,
     ) {
         if let Some(volume) = event_reader.read().last() {
             music_channel.set_volume(volume.music_volume);
@@ -52,8 +52,8 @@ impl MusicComponent {
 
     pub fn change_volume_by_button(
         keyboard_input: Res<ButtonInput<KeyCode>>,
-        mut audio: ResMut<MusicResource>,
-        event_write: EventWriter<ChangeVolume>,
+        mut audio: ResMut<RustydokuAudioResource>,
+        event_write: EventWriter<ChangeVolumeEvent>,
     ) {
         if keyboard_input.just_pressed(KeyCode::Equal) {
             audio.up_volume(event_write);

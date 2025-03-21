@@ -1,12 +1,12 @@
 use bevy::prelude::*;
 
-use crate::{constants::placeholder::*, resource::figure_spawner::FigureSpawner};
+use crate::{constants::placeholder::*, resource::figure_spawner::FigureSpawnerResource};
 
 #[derive(Component)]
-pub struct Placeholder;
+pub struct PlaceholderComponent;
 
-impl Placeholder {
-    pub(crate) fn create(position: (f32, f32), resource: &FigureSpawner) -> impl Bundle {
+impl PlaceholderComponent {
+    pub(crate) fn create(position: (f32, f32), resource: &FigureSpawnerResource) -> impl Bundle {
         (
             Sprite {
                 image: resource.get_placeholder_image(),
@@ -20,7 +20,7 @@ impl Placeholder {
                 ..default()
             },
             Name::new(PLACEHOLDER_NAME_HIERARCHY),
-            Placeholder,
+            PlaceholderComponent,
         )
     }
 }

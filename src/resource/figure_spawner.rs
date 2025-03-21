@@ -8,7 +8,7 @@ use bevy::{
 };
 
 #[derive(Resource, Default)]
-pub struct FigureSpawner {
+pub struct FigureSpawnerResource {
     pub(crate) figures: HashMap<Entity, Vec3>,
     pub(crate) lerp_figures: HashSet<Entity>,
     pub(crate) bounce_figures: HashSet<Entity>,
@@ -18,14 +18,14 @@ pub struct FigureSpawner {
     pub square_image_highlighted: Handle<Image>,
 }
 
-impl FigureSpawner {
-    pub(crate) fn init(assets: &AssetServer) -> FigureSpawner {
+impl FigureSpawnerResource {
+    pub(crate) fn init(assets: &AssetServer) -> FigureSpawnerResource {
         let placeholder_image = assets.load(FIGURE_PLACEHOLDER_IMAGE_DEFAULT);
         let placeholder_image_deactive = assets.load(FIGURE_PLACEHOLDER_IMAGE_RED);
         let square_image = assets.load(SQAURE_IMAGE_DEFAULT_PATH);
         let square_image_highlighted = assets.load(SQUARE_IMAGE_HIGHLIGHT_PATH);
 
-        FigureSpawner {
+        FigureSpawnerResource {
             placeholder_image,
             square_image,
             placeholder_image_deactive,

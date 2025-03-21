@@ -1,7 +1,7 @@
 use bevy::prelude::*;
 
 #[derive(States, Default, Debug, Clone, PartialEq, Eq, Hash)]
-pub enum StateGame {
+pub enum GameState {
     #[default]
     InitResources,
     GenerateWorld,
@@ -16,20 +16,20 @@ pub enum StateGame {
     GameOverRestart,
 }
 
-impl StateGame {
-    pub fn when_idle(state: Res<State<StateGame>>) -> bool {
-        StateGame::Idle == *state.get()
+impl GameState {
+    pub fn when_idle(state: Res<State<GameState>>) -> bool {
+        GameState::Idle == *state.get()
     }
 
-    pub fn when_draggin(state: Res<State<StateGame>>) -> bool {
-        matches!(state.get(), StateGame::Dragging(_))
+    pub fn when_draggin(state: Res<State<GameState>>) -> bool {
+        matches!(state.get(), GameState::Dragging(_))
     }
 
-    pub fn when_placing(state: Res<State<StateGame>>) -> bool {
-        matches!(state.get(), StateGame::Placing(_))
+    pub fn when_placing(state: Res<State<GameState>>) -> bool {
+        matches!(state.get(), GameState::Placing(_))
     }
 
-    pub fn when_placed(state: Res<State<StateGame>>) -> bool {
-        matches!(state.get(), StateGame::Placed(_))
+    pub fn when_placed(state: Res<State<GameState>>) -> bool {
+        matches!(state.get(), GameState::Placed(_))
     }
 }

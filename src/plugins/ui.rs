@@ -1,15 +1,15 @@
 use crate::{
     components::ui::{
-        buttons::button_audio::AudioButton,
-        buttons::button_restart::RestartButton,
+        buttons::button_audio::ButtonAudio,
+        buttons::button_restart::ButtonRestart,
         game_over_panel::{
-            panel::GameOverPanel,
-            score_text::{GameOverCurrentScoreText, GameOverMaxScoreText},
+            panel::GameOverPanelComponent,
+            score_text::{GameOverCurrentScoreTextComponent, GameOverMaxScoreTextComponent},
         },
-        header::{score_text::HeaderCurrentScoreText, HeaderUI},
+        header::{score_text::HeaderCurrentScoreTextComponent, HeaderUI},
     },
-    resource::score::Score,
-    states::{gameplay::StateGame, ui::game_over_panel::StateGameOverPanel},
+    resource::score::ScoreResource,
+    states::{gameplay::GameState, ui::game_over_panel::GameOverPanelState},
 };
 use bevy::prelude::*;
 
@@ -20,15 +20,15 @@ impl Plugin for RustydokuUIPlugin {
         debug!("Building RustydokuUIPlugin");
 
         trace!("Adding systems startup to RustydokuUIPlugin");
-        app.add_systems(Startup, (HeaderUI::spawn, GameOverPanel::spawn));
+        app.add_systems(Startup, (HeaderUI::spawn, GameOverPanelComponent::spawn));
 
         trace!("Adding systems state on enter game over to RustydokuUIPlugin");
         app.add_systems(
-            OnEnter(StateGame::GameOver),
+            OnEnter(GameState::GameOver),
             (
-                Score::update_max_score,
+                ScoreResource::update_max_score,
                 HeaderUI::hide,
-                GameOverPanel::set_show,
+                GameOverPanelComponent::set_show,
             )
                 .chain(),
         );
@@ -37,30 +37,36 @@ impl Plugin for RustydokuUIPlugin {
         app.add_systems(
             Update,
             (
-                HeaderCurrentScoreText::update,
-                RestartButton::handle,
-                AudioButton::handle,
-                AudioButton::read_muted,
-                GameOverCurrentScoreText::update,
-                GameOverMaxScoreText::update,
+                HeaderCurrentScoreTextComponent::update,
+                ButtonRestart::handle,
+                ButtonAudio::handle,
+                ButtonAudio::read_muted,
+                GameOverCurrentScoreTextComponent::update,
+                GameOverMaxScoreTextComponent::update,
             )
                 .chain(),
         );
 
         trace!("Adding systems state on exit game over to RustydokuUIPlugin");
-        app.add_systems(OnExit(StateGame::GameOver), GameOverPanel::set_hide);
+        app.add_systems(
+            OnExit(GameState::GameOver),
+            GameOverPanelComponent::set_hide,
+        );
 
         trace!("Adding systems when showing game over to RustydokuUIPlugin");
         app.add_systems(
             Update,
-            GameOverPanel::show.run_if(StateGameOverPanel::when_showing),
+            GameOverPanelComponent::show.run_if(GameOverPanelState::when_showing),
         );
 
         trace!("Adding systems when hidding game over to RustydokuUIPlugin");
         app.add_systems(
             Update,
-            GameOverPanel::hide.run_if(StateGameOverPanel::when_hidding),
+            GameOverPanelComponent::hide.run_if(GameOverPanelState::when_hidding),
         );
+
+        trace!("Adding state game over panel");
+        app.insert_state(GameOverPanelState::default());
 
         debug!("RustydokuUIPlugin built");
     }

@@ -1,9 +1,9 @@
 use super::*;
 
 #[derive(Component)]
-pub struct HeaderCurrentScoreText;
+pub struct HeaderCurrentScoreTextComponent;
 
-impl HeaderCurrentScoreText {
+impl HeaderCurrentScoreTextComponent {
     pub(crate) fn create_background() -> Node {
         Node {
             margin: HEADER_SCORE_BACKGROUND_MARGIN,
@@ -31,7 +31,7 @@ impl HeaderCurrentScoreText {
                 )
                 .into(),
             ),
-            HeaderCurrentScoreText,
+            HeaderCurrentScoreTextComponent,
         )
     }
 }

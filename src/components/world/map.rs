@@ -1,6 +1,6 @@
 use crate::{
     constants::map::{MAP_NAME_HIERARCHY, TILE_SIZE},
-    resource::map::Map,
+    resource::map::MapComponent,
 };
 use bevy::prelude::*;
 #[cfg(feature = "debug-inspector")]
@@ -9,12 +9,12 @@ use bevy_inspector_egui::prelude::*;
 #[derive(Component, Default)]
 #[cfg_attr(feature = "debug-inspector", derive(Reflect, InspectorOptions))]
 #[cfg_attr(feature = "debug-inspector", reflect(Component, InspectorOptions))]
-pub struct Tile {
+pub struct TileComponent {
     pub(crate) default_image: Handle<Image>,
     pub(crate) square: Option<Entity>,
 }
 
-impl Tile {
+impl TileComponent {
     pub(crate) fn create_tile(image: Handle<Image>, position: Vec3) -> impl Bundle {
         (
             Name::new(format!("Tile ({}, {})", position.x, position.y)),
@@ -26,7 +26,7 @@ impl Tile {
             Transform::from_translation(position),
             GlobalTransform::default(),
             InheritedVisibility::default(),
-            Tile {
+            TileComponent {
                 default_image: image,
                 square: None,
             },
@@ -34,7 +34,7 @@ impl Tile {
     }
 }
 
-impl Map {
+impl MapComponent {
     pub(crate) fn create_map() -> impl Bundle {
         (
             Name::new(MAP_NAME_HIERARCHY),

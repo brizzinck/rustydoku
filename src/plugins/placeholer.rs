@@ -1,6 +1,6 @@
 use crate::{
-    components::world::placeholder::Placeholder,
-    states::{figure::placeholder::StatePlaceholderAnimation, gameplay::StateGame},
+    components::world::placeholder::PlaceholderComponent,
+    states::{figure::placeholder::PlaceholderAnimationState, gameplay::GameState},
 };
 use bevy::prelude::*;
 
@@ -13,23 +13,29 @@ impl Plugin for RustydokuPlaceholderPlugin {
         trace!("Adding systems to RustydokuPlaceholderPlugin update when bouncing init");
         app.add_systems(
             Update,
-            Placeholder::bouncing_init.run_if(StatePlaceholderAnimation::when_bouncing_init),
+            PlaceholderComponent::bouncing_init
+                .run_if(PlaceholderAnimationState::when_bouncing_init),
         );
 
         trace!("Adding systems to RustydokuPlaceholderPlugin update when bouncing default");
         app.add_systems(
             Update,
-            Placeholder::bouncing_default.run_if(StatePlaceholderAnimation::when_bouncing_default),
+            PlaceholderComponent::bouncing_default
+                .run_if(PlaceholderAnimationState::when_bouncing_default),
         );
 
         trace!("Adding systems to RustydokuPlaceholderPlugin update when bouncing peak");
         app.add_systems(
             Update,
-            Placeholder::bouncing_peak.run_if(StatePlaceholderAnimation::when_bouncing_peak),
+            PlaceholderComponent::bouncing_peak
+                .run_if(PlaceholderAnimationState::when_bouncing_peak),
         );
 
         trace!("Adding systems to RustydokuPlaceholderPlugin on state exit game over");
-        app.add_systems(OnExit(StateGame::CheckGameOver), Placeholder::update_image);
+        app.add_systems(
+            OnExit(GameState::CheckGameOver),
+            PlaceholderComponent::update_image,
+        );
 
         debug!("Finished building RustydokuPlaceholderPlugin");
     }

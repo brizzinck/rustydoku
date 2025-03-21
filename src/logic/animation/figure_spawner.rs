@@ -1,49 +1,49 @@
 use crate::{
-    components::figure::Figure,
+    components::figure::FigureComponent,
     constants::{
         animation::ELAPSED_SCALE,
         figure::*,
         placeholder::{FIGURE_RETURN_SPEED_TO_PLACEHOLDER, FIGURE_SCALE_LERPED},
     },
-    events::figure::{FigureDeniedPlacing, FigureSpawned, FigureTriggerUp},
-    resource::figure_spawner::FigureSpawner,
-    states::figure::StateFigureAnimation,
+    events::figure::{FigureDeniedPlacingEvent, FigureSpawnedEvent, FigureTriggerUpEvent},
+    resource::figure_spawner::FigureSpawnerResource,
+    states::figure::FigureAnimationState,
 };
 use bevy::prelude::*;
-impl FigureSpawner {
+impl FigureSpawnerResource {
     pub(crate) fn adding_lerp_figures(
-        mut event_reader: EventReader<FigureDeniedPlacing>,
-        mut figure_spawner: ResMut<FigureSpawner>,
+        mut event_reader: EventReader<FigureDeniedPlacingEvent>,
+        mut figure_spawner: ResMut<FigureSpawnerResource>,
     ) {
-        for FigureDeniedPlacing(entity) in event_reader.read() {
+        for FigureDeniedPlacingEvent(entity) in event_reader.read() {
             debug!("Adding lerp figure: {:?}", entity);
             figure_spawner.add_lerp_figure(*entity);
         }
     }
 
     pub(crate) fn removig_lerp_figures(
-        mut event_reader: EventReader<FigureTriggerUp>,
-        mut figure_spawner: ResMut<FigureSpawner>,
+        mut event_reader: EventReader<FigureTriggerUpEvent>,
+        mut figure_spawner: ResMut<FigureSpawnerResource>,
     ) {
-        for FigureTriggerUp(entity) in event_reader.read() {
+        for FigureTriggerUpEvent(entity) in event_reader.read() {
             debug!("Removing lerp figure: {:?}", entity);
             figure_spawner.remove_lerp_figure(*entity);
         }
     }
 
     pub(crate) fn adding_upscaling_figures(
-        mut event_reader: EventReader<FigureSpawned>,
-        mut figure_spawner: ResMut<FigureSpawner>,
+        mut event_reader: EventReader<FigureSpawnedEvent>,
+        mut figure_spawner: ResMut<FigureSpawnerResource>,
     ) {
-        for FigureSpawned(entity) in event_reader.read() {
+        for FigureSpawnedEvent(entity) in event_reader.read() {
             debug!("Adding upscaling figure: {:?}", entity);
             figure_spawner.add_upscaling_figure(*entity);
         }
     }
 
     pub(crate) fn lerping_figures(
-        mut figure_spawner: ResMut<FigureSpawner>,
-        mut figures: Query<(&mut Figure, &mut Transform)>,
+        mut figure_spawner: ResMut<FigureSpawnerResource>,
+        mut figures: Query<(&mut FigureComponent, &mut Transform)>,
         time: Res<Time>,
     ) {
         let mut to_remove = Vec::new();
@@ -70,10 +70,10 @@ impl FigureSpawner {
 
                 if transform.scale.distance(FIGURE_SCALE_LERPED) < ELAPSED_SCALE {
                     transform.scale = FIGURE_SCALE_LERPED;
-                    figure.state_animation = StateFigureAnimation::default();
+                    figure.state_animation = FigureAnimationState::default();
                 } else {
                     remove = false;
-                    figure.state_animation = StateFigureAnimation::BackLerping;
+                    figure.state_animation = FigureAnimationState::BackLerping;
                 }
 
                 if remove {
@@ -88,8 +88,8 @@ impl FigureSpawner {
     }
 
     pub(crate) fn upscaling_figures(
-        mut figure_spawner: ResMut<FigureSpawner>,
-        mut figures: Query<(&mut Figure, &mut Transform)>,
+        mut figure_spawner: ResMut<FigureSpawnerResource>,
+        mut figures: Query<(&mut FigureComponent, &mut Transform)>,
         time: Res<Time>,
     ) {
         let mut to_remove = Vec::new();
@@ -113,10 +113,10 @@ impl FigureSpawner {
 
                 if transform.scale.distance(FIGURE_IDLE_SCALE_VEC3) < ELAPSED_SCALE {
                     transform.scale = FIGURE_IDLE_SCALE_VEC3;
-                    figure.state_animation = StateFigureAnimation::default();
+                    figure.state_animation = FigureAnimationState::default();
                 } else {
                     remove = false;
-                    figure.state_animation = StateFigureAnimation::SpawnUpScaling;
+                    figure.state_animation = FigureAnimationState::SpawnUpScaling;
                 }
 
                 if remove {

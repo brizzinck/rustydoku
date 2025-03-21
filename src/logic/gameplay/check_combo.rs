@@ -1,9 +1,9 @@
 use crate::{
-    components::world::map::Tile,
+    components::world::map::TileComponent,
     constants::{figure::MAX_FIGURE_USIZE_SCALED, map::*},
-    events::gameplay::Combo,
-    resource::{score::Score, square::SquaresToDespawn},
-    states::gameplay::StateGame,
+    events::gameplay::ComboEvent,
+    resource::{score::ScoreResource, square::SquaresToDespawnResource},
+    states::gameplay::GameState,
     world::gameplay::Gameplay,
 };
 use bevy::prelude::*;
@@ -11,11 +11,11 @@ use bevy::prelude::*;
 impl Gameplay {
     /// Runs all checks combination and updates the score
     pub(crate) fn check_combination(
-        mut tiles: Query<(&mut Tile, &Transform)>,
-        mut score: ResMut<Score>,
-        mut next_game_state: ResMut<NextState<StateGame>>,
-        mut squares_to_despawn: ResMut<SquaresToDespawn>,
-        mut evemt_writer: EventWriter<Combo>,
+        mut tiles: Query<(&mut TileComponent, &Transform)>,
+        mut score: ResMut<ScoreResource>,
+        mut next_game_state: ResMut<NextState<GameState>>,
+        mut squares_to_despawn: ResMut<SquaresToDespawnResource>,
+        mut evemt_writer: EventWriter<ComboEvent>,
     ) {
         let grid = Self::build_grid(tiles.iter());
         let mut tiles_to_clear = Vec::new();
@@ -27,18 +27,18 @@ impl Gameplay {
         Self::update_score(score.as_mut(), &tiles_to_clear);
 
         if !tiles_to_clear.is_empty() {
-            evemt_writer.send(Combo);
+            evemt_writer.send(ComboEvent);
         }
 
         Self::clear_tiles(&mut tiles, &tiles_to_clear, &mut squares_to_despawn);
 
-        next_game_state.set(StateGame::CheckGameOver);
+        next_game_state.set(GameState::CheckGameOver);
     }
 
     /// Builds a 9x9 grid representation from the tile states
     fn build_grid<'a, I>(tiles: I) -> [[bool; MAP_SIZE_USIZE]; MAP_SIZE_USIZE]
     where
-        I: Iterator<Item = (&'a Tile, &'a Transform)>,
+        I: Iterator<Item = (&'a TileComponent, &'a Transform)>,
     {
         let mut grid = [[false; MAP_SIZE_USIZE]; MAP_SIZE_USIZE];
 
@@ -115,7 +115,7 @@ impl Gameplay {
     }
 
     /// Updates the score based on cleared tiles
-    fn update_score(score: &mut Score, tiles_to_clear: &[(usize, usize)]) {
+    fn update_score(score: &mut ScoreResource, tiles_to_clear: &[(usize, usize)]) {
         if !tiles_to_clear.is_empty() {
             let combinations = tiles_to_clear.len();
             score.add_score(combinations as i32);
@@ -125,9 +125,9 @@ impl Gameplay {
 
     /// Clears marked tiles and sets them to free
     fn clear_tiles(
-        tiles: &mut Query<(&mut Tile, &Transform)>,
+        tiles: &mut Query<(&mut TileComponent, &Transform)>,
         tiles_to_clear: &[(usize, usize)],
-        squares_to_despawn: &mut ResMut<SquaresToDespawn>,
+        squares_to_despawn: &mut ResMut<SquaresToDespawnResource>,
     ) {
         for (mut tile, transform) in tiles.iter_mut() {
             if let Some(square) = tile.square {
@@ -162,16 +162,19 @@ mod tests {
 
         let entity = world.spawn(()).id();
         world.spawn((
-            Tile {
+            TileComponent {
                 square: Some(entity),
                 ..default()
             },
             Transform::from_xyz(0.0, 0.0, 0.0),
         ));
 
-        world.spawn((Tile::default(), Transform::from_xyz(TILE_SIZE, 0.0, 0.0)));
+        world.spawn((
+            TileComponent::default(),
+            Transform::from_xyz(TILE_SIZE, 0.0, 0.0),
+        ));
 
-        let mut tiles = world.query::<(&Tile, &Transform)>();
+        let mut tiles = world.query::<(&TileComponent, &Transform)>();
         let grid = Gameplay::build_grid(tiles.iter(&world));
 
         assert!(grid[4][4], "Expected tile at ({},{}) to be occupied", 4, 4);
@@ -226,9 +229,9 @@ mod tests {
     #[test]
     fn update_score_works() {
         let mut world = World::new();
-        world.insert_resource(Score::default());
+        world.insert_resource(ScoreResource::default());
 
-        let mut score = world.resource_mut::<Score>();
+        let mut score = world.resource_mut::<ScoreResource>();
 
         let tiles_to_clear = vec![(0, 0), (1, 0), (5, 0), (6, 0), (7, 0), (8, 0)];
 

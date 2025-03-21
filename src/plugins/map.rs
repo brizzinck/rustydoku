@@ -1,4 +1,4 @@
-use crate::{resource::map::Map, states::gameplay::StateGame};
+use crate::{resource::map::MapComponent, states::gameplay::GameState};
 use bevy::prelude::*;
 #[cfg(feature = "debug-inspector")]
 use bevy_inspector_egui::prelude::*;
@@ -10,10 +10,13 @@ impl Plugin for RustydokuMapPlugin {
         debug!("Building RustydokuMapPlugin");
 
         trace!("Adding systems to AppBuilder");
-        app.add_systems(OnEnter(StateGame::GenerateWorld), Map::generate_map);
+        app.add_systems(
+            OnEnter(GameState::GenerateWorld),
+            MapComponent::generate_map,
+        );
         #[cfg(feature = "debug-inspector")]
         {
-            use crate::components::world::map::Tile;
+            use crate::components::world::map::TileComponent;
             app.register_type::<Tile>();
         }
 
