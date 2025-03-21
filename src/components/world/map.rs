@@ -31,6 +31,7 @@ impl TileComponent {
             Sprite {
                 custom_size: Some(Vec2::new(TILE_SIZE, TILE_SIZE)),
                 image: image.clone(),
+                color: Color::srgba(1., 1., 1., 0.75).into(),
                 ..default()
             },
             Transform::from_translation(position),
