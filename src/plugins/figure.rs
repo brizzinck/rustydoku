@@ -52,7 +52,7 @@ impl Plugin for RustydokuFigurePlugin {
         #[cfg(feature = "debug-inspector")]
         {
             use crate::components::figure::FigureBoundsComponent;
-            app.register_type::<FigureBounds>();
+            app.register_type::<FigureBoundsComponent>();
         }
 
         debug!("RustydokuFigurePlugin built");

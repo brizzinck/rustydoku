@@ -18,7 +18,7 @@ impl Plugin for RustydokuMapPlugin {
         #[cfg(feature = "debug-inspector")]
         {
             use crate::components::world::map::TileComponent;
-            app.register_type::<Tile>();
+            app.register_type::<TileComponent>();
         }
 
         debug!("RustydokuMapPlugin built");
