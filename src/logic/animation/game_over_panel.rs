@@ -24,6 +24,27 @@ impl GameOverPanel {
 
         let (mut style, mut panel) = query.single_mut();
 
+        Self::show_logic(&mut style, &mut panel, &mut next_state, &time);
+    }
+
+    pub(crate) fn hide(
+        time: Res<Time>,
+        mut query: Query<(&mut Node, &mut GameOverPanel)>,
+        mut next_state: ResMut<NextState<StateGameOverPanel>>,
+    ) {
+        trace!("Hidding game over panel");
+
+        let (mut style, mut panel) = query.single_mut();
+
+        Self::hide_logic(&mut style, &mut panel, &mut next_state, &time);
+    }
+
+    fn show_logic(
+        style: &mut Node,
+        panel: &mut GameOverPanel,
+        next_state: &mut NextState<StateGameOverPanel>,
+        time: &Time,
+    ) {
         if panel.timer.finished() {
             panel.timer.reset();
             panel.speed = GAME_OVER_PANEL_ANIMATION_SPEED_DEFAULT;
@@ -50,15 +71,12 @@ impl GameOverPanel {
         );
     }
 
-    pub(crate) fn hide(
-        time: Res<Time>,
-        mut query: Query<(&mut Node, &mut GameOverPanel)>,
-        mut next_state: ResMut<NextState<StateGameOverPanel>>,
+    fn hide_logic(
+        style: &mut Node,
+        panel: &mut GameOverPanel,
+        next_state: &mut NextState<StateGameOverPanel>,
+        time: &Time,
     ) {
-        trace!("Hidding game over panel");
-
-        let (mut style, mut panel) = query.single_mut();
-
         if panel.timer.finished() {
             panel.timer.reset();
             panel.speed = GAME_OVER_PANEL_ANIMATION_SPEED_DEFAULT;
@@ -83,5 +101,73 @@ impl GameOverPanel {
             progress,
             speed
         );
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use std::time::Duration;
+
+    #[test]
+    fn show_logic_works() {
+        let time = Time::default();
+
+        let mut next_state = NextState::default();
+        next_state.set(StateGameOverPanel::Showing);
+
+        let mut node = Node {
+            top: Val::Percent(GAME_OVER_PANEL_TOP_DEFAULT_VALUE),
+            ..Default::default()
+        };
+
+        let mut panel = GameOverPanel {
+            timer: Timer::from_seconds(GAME_OVER_PANEL_ANIMATION_TIMER, TimerMode::Once),
+            speed: GAME_OVER_PANEL_ANIMATION_SPEED_DEFAULT,
+        };
+
+        panel.timer.tick(Duration::from_secs_f32(
+            GAME_OVER_PANEL_ANIMATION_TIMER / 2.0,
+        ));
+
+        let elapsed_before = panel.timer.elapsed_secs();
+
+        GameOverPanel::show_logic(&mut node, &mut panel, &mut next_state, &time);
+
+        let progress = elapsed_before / panel.timer.duration().as_secs_f32();
+        let expected_top = GAME_OVER_PANEL_TOP_DEFAULT_VALUE - GAME_OVER_PANEL_TOP_END * progress;
+
+        assert_eq!(node.top, Val::Percent(expected_top));
+    }
+
+    #[test]
+    fn hide_logic_works() {
+        let time = Time::default();
+
+        let mut next_state = NextState::default();
+        next_state.set(StateGameOverPanel::Hidding);
+
+        let mut node = Node {
+            top: Val::Percent(GAME_OVER_PANEL_TOP_END_REVERSED),
+            ..Default::default()
+        };
+
+        let mut panel = GameOverPanel {
+            timer: Timer::from_seconds(GAME_OVER_PANEL_ANIMATION_TIMER, TimerMode::Once),
+            speed: GAME_OVER_PANEL_ANIMATION_SPEED_DEFAULT,
+        };
+
+        panel.timer.tick(Duration::from_secs_f32(
+            GAME_OVER_PANEL_ANIMATION_TIMER / 2.0,
+        ));
+
+        let elapsed_before = panel.timer.elapsed_secs();
+
+        GameOverPanel::hide_logic(&mut node, &mut panel, &mut next_state, &time);
+
+        let progress = elapsed_before / panel.timer.duration().as_secs_f32();
+        let expected_top = GAME_OVER_PANEL_TOP_END_REVERSED + GAME_OVER_PANEL_TOP_END * progress;
+
+        assert_eq!(node.top, Val::Percent(expected_top));
     }
 }
