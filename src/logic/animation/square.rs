@@ -54,7 +54,7 @@ mod tests {
         let expected_result = false;
         assert_eq!(result, expected_result);
 
-        let expected_color = Color::srgba(1., 1., 1., 0.8);
+        let expected_color = Color::srgba(1., 1., 1., 0.5);
         assert_eq!(color, expected_color);
     }
 }

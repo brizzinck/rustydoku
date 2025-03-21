@@ -10,6 +10,7 @@ use crate::{
     states::figure::FigureAnimationState,
 };
 use bevy::prelude::*;
+
 impl FigureSpawnerResource {
     /// Adds figure entities to the lerp queue when placement is denied.
     ///
@@ -84,34 +85,13 @@ impl FigureSpawnerResource {
         let mut to_remove = Vec::new();
         for entity in figure_spawner.lerp_figures.iter() {
             if let Ok((mut figure, mut transform)) = figures.get_mut(*entity) {
-                let mut remove = true;
-                if let Some(position) = figure_spawner.figures.get(entity) {
-                    transform.translation = transform.translation.lerp(
-                        *position,
-                        time.delta_secs() * FIGURE_RETURN_SPEED_TO_PLACEHOLDER,
-                    );
-
-                    if transform.translation.distance(*position) < ELAPSED_SCALE {
-                        transform.translation = *position;
-                    } else {
-                        remove = false;
-                    }
-                }
-
-                transform.scale = transform.scale.lerp(
-                    FIGURE_SCALE_LERPED,
-                    time.delta_secs() * FIGURE_RETURN_SPEED_TO_PLACEHOLDER,
-                );
-
-                if transform.scale.distance(FIGURE_SCALE_LERPED) < ELAPSED_SCALE {
-                    transform.scale = FIGURE_SCALE_LERPED;
-                    figure.state_animation = FigureAnimationState::default();
-                } else {
-                    remove = false;
-                    figure.state_animation = FigureAnimationState::BackLerping;
-                }
-
-                if remove {
+                if Self::lerping_figure_logic(
+                    &figure_spawner,
+                    &mut figure,
+                    &mut transform,
+                    entity,
+                    time.delta_secs(),
+                ) {
                     to_remove.push(*entity);
                 }
             }
@@ -120,6 +100,66 @@ impl FigureSpawnerResource {
         figure_spawner
             .lerp_figures
             .retain(|entity| !to_remove.contains(entity));
+    }
+
+    /// Animates a figure’s translation and scale toward its target values.
+    ///
+    /// This function performs two separate linear interpolations:
+    ///
+    /// 1. **Translation Lerp:** It retrieves the target position for the given entity
+    ///    from the spawner’s `figures` map and lerps the current translation towards it.
+    ///    If the distance between the new translation and the target is below `ELAPSED_SCALE`,
+    ///    it snaps the translation exactly to the target.
+    ///
+    /// 2. **Scale Lerp:** Independently, it lerps the current scale toward a predefined target scale
+    ///    (`FIGURE_SCALE_LERPED`). Similarly, if the scale is close enough (within `ELAPSED_SCALE`),
+    ///    it snaps to the target and resets the figure’s animation state to default.
+    ///    Otherwise, it sets the state to `BackLerping` to indicate the animation is ongoing.
+    ///
+    /// # Parameters
+    /// - `spawner`: Reference to the figure spawner containing the target positions.
+    /// - `figure`: Mutable reference to the figure component to update its animation state.
+    /// - `transform`: Mutable reference to the figure’s transform (position and scale).
+    /// - `entity`: The entity ID of the figure.
+    /// - `delta`: The time delta (in seconds) since the last update.
+    ///
+    /// # Returns
+    /// - `true` if both translation and scale have reached their targets and the figure
+    ///   should be removed from the lerp queue; `false` otherwise.
+    fn lerping_figure_logic(
+        spawner: &FigureSpawnerResource,
+        figure: &mut FigureComponent,
+        transform: &mut Transform,
+        entity: &Entity,
+        delta: f32,
+    ) -> bool {
+        let mut remove = true;
+        if let Some(position) = spawner.figures.get(entity) {
+            transform.translation = transform
+                .translation
+                .lerp(*position, delta * FIGURE_RETURN_SPEED_TO_PLACEHOLDER);
+
+            if transform.translation.distance(*position) < ELAPSED_SCALE {
+                transform.translation = *position;
+            } else {
+                remove = false;
+            }
+        }
+
+        transform.scale = transform.scale.lerp(
+            FIGURE_SCALE_LERPED,
+            delta * FIGURE_RETURN_SPEED_TO_PLACEHOLDER,
+        );
+
+        if transform.scale.distance(FIGURE_SCALE_LERPED) < ELAPSED_SCALE {
+            transform.scale = FIGURE_SCALE_LERPED;
+            figure.state_animation = FigureAnimationState::default();
+        } else {
+            figure.state_animation = FigureAnimationState::BackLerping;
+            remove = false;
+        }
+
+        remove
     }
 
     /// Animates figures in the upscaling queue during their spawn-up phase.
@@ -149,23 +189,7 @@ impl FigureSpawnerResource {
                     continue;
                 }
 
-                let mut remove = true;
-                transform.scale = transform.scale.lerp(
-                    FIGURE_IDLE_SCALE_VEC3,
-                    time.delta_secs()
-                        * FIGURE_SPAWN_UPSCALE_SPEED
-                        * (FIGURE_UPSCALE_SPEED_INCREMENT_PER_FRAME + transform.scale.x),
-                );
-
-                if transform.scale.distance(FIGURE_IDLE_SCALE_VEC3) < ELAPSED_SCALE {
-                    transform.scale = FIGURE_IDLE_SCALE_VEC3;
-                    figure.state_animation = FigureAnimationState::default();
-                } else {
-                    remove = false;
-                    figure.state_animation = FigureAnimationState::SpawnUpScaling;
-                }
-
-                if remove {
+                if Self::upscaling_figure_logic(&mut figure, &mut transform, time.delta_secs()) {
                     to_remove.push(*entity);
                 }
             }
@@ -174,5 +198,115 @@ impl FigureSpawnerResource {
         figure_spawner
             .upscaling_figures
             .retain(|entity| !to_remove.contains(entity));
+    }
+
+    /// Animates a figure’s scale during its spawn-up phase.
+    ///
+    /// This function linearly interpolates the figure's scale toward the idle scale (`FIGURE_IDLE_SCALE_VEC3`).
+    /// It uses a dynamic interpolation factor that depends on the elapsed time (`delta`),
+    /// a base speed, and the figure's current scale. If the new scale is within `ELAPSED_SCALE`
+    /// of the target, the scale is snapped to the idle scale and the animation state is reset.
+    ///
+    /// # Parameters
+    /// - `figure`: Mutable reference to the figure component to update its animation state.
+    /// - `transform`: Mutable reference to the figure’s transform to update its scale.
+    /// - `delta`: The time delta (in seconds) since the last update.
+    ///
+    /// # Returns
+    /// - `true` if the figure's scale has reached the idle scale (animation complete); `false` otherwise.
+    fn upscaling_figure_logic(
+        figure: &mut FigureComponent,
+        transform: &mut Transform,
+        delta: f32,
+    ) -> bool {
+        transform.scale = transform.scale.lerp(
+            FIGURE_IDLE_SCALE_VEC3,
+            delta
+                * FIGURE_SPAWN_UPSCALE_SPEED
+                * (FIGURE_UPSCALE_SPEED_INCREMENT_PER_FRAME + transform.scale.x),
+        );
+
+        if transform.scale.distance(FIGURE_IDLE_SCALE_VEC3) < ELAPSED_SCALE {
+            transform.scale = FIGURE_IDLE_SCALE_VEC3;
+            figure.state_animation = FigureAnimationState::default();
+            true
+        } else {
+            figure.state_animation = FigureAnimationState::SpawnUpScaling;
+            false
+        }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    fn dummy_entity(id: u32) -> Entity {
+        Entity::from_raw(id)
+    }
+
+    impl Default for FigureComponent {
+        fn default() -> Self {
+            Self {
+                squares_entity: Default::default(),
+                squares_position: Default::default(),
+                state_animation: Default::default(),
+                placeholder: dummy_entity(1),
+            }
+        }
+    }
+    #[test]
+    fn lerping_figure_logic_works() {
+        let entity = dummy_entity(2);
+        let target_position = Vec3::splat(20.);
+        let mut spawner = FigureSpawnerResource::default();
+        spawner.figures.insert(entity, target_position);
+
+        let mut figure = FigureComponent::default();
+        figure.state_animation = FigureAnimationState::SpawnUpScaling;
+        let mut transform = Transform::from_translation(Vec3::new(10., 10., 10.));
+
+        let delta = 0.09;
+
+        let completed = FigureSpawnerResource::lerping_figure_logic(
+            &spawner,
+            &mut figure,
+            &mut transform,
+            &entity,
+            delta,
+        );
+
+        let expected_completed = false;
+        assert_eq!(completed, expected_completed);
+
+        let expected_translation = Vec3::splat(17.2);
+        assert_eq!(transform.translation, expected_translation);
+
+        let expected_scale = FigureAnimationState::BackLerping;
+        assert_eq!(figure.state_animation, expected_scale);
+    }
+
+    #[test]
+    fn upscaling_figure_logic_works() {
+        let mut figure = FigureComponent::default();
+        figure.state_animation = FigureAnimationState::SpawnUpScaling;
+        let mut transform = Transform {
+            scale: FIGURE_IDLE_SCALE_VEC3 + Vec3::splat(1.),
+            ..Default::default()
+        };
+
+        let delta = 0.08;
+
+        let completed =
+            FigureSpawnerResource::upscaling_figure_logic(&mut figure, &mut transform, delta);
+
+        let expected_completed = false;
+        assert_eq!(completed, expected_completed);
+
+        let expected_scale = Vec3::splat(0.5600002);
+        assert_eq!(transform.scale, expected_scale);
+
+        let expected_state = FigureAnimationState::SpawnUpScaling;
+        assert_eq!(figure.state_animation, expected_state);
     }
 }
