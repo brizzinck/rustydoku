@@ -1,7 +1,4 @@
-use crate::{
-    logic::gameplay::{check_combo::check_combination, check_game_over::check_game_over},
-    states::gameplay::StateGame,
-};
+use crate::{states::gameplay::StateGame, world::gameplay::Gameplay};
 use bevy::prelude::*;
 
 pub struct RustydokuLogicPlugin;
@@ -11,10 +8,10 @@ impl Plugin for RustydokuLogicPlugin {
         debug!("Building RustydokuLogicPlugin");
 
         trace!("Adding systems to the app on state check combo");
-        app.add_systems(OnEnter(StateGame::CheckCombo), check_combination);
+        app.add_systems(OnEnter(StateGame::CheckCombo), Gameplay::check_combination);
 
         trace!("Adding systems to the app on state check game over");
-        app.add_systems(OnEnter(StateGame::CheckGameOver), check_game_over);
+        app.add_systems(OnEnter(StateGame::CheckGameOver), Gameplay::check_game_over);
 
         debug!("RustydokuLogicPlugin built");
     }
