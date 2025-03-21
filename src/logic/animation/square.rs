@@ -19,3 +19,22 @@ impl Square {
         }
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use bevy::prelude::*;
+
+    #[test]
+    fn fading_out_works() {
+        let mut color = Color::srgb(1., 1., 1.);
+        let delta = 0.1;
+
+        let result = super::Square::fading_out(&mut color, delta);
+
+        let expected_result = false;
+        assert_eq!(result, expected_result);
+
+        let expected_color = Color::srgba(1., 1., 1., 0.8);
+        assert_eq!(color, expected_color);
+    }
+}
