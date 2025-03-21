@@ -49,6 +49,10 @@ impl Square {
                     .map(|(tile, _, transform, entity)| (tile, transform, entity))
                     .collect::<Vec<_>>();
 
+                trace!("Figure squares len: {:?}", figure.squares_entity.len());
+
+                trace!("Highlighting tiles len: {:?}", highlight_tiles.len());
+
                 for &square_entity in figure.squares_entity.iter() {
                     if let Ok((_, square_transform, _)) = square_query.get_mut(square_entity) {
                         if let Some(tile_entity) = Self::check_for_place(square_transform, &tiles) {
@@ -87,6 +91,13 @@ impl Square {
                 return Some(*tile_entity);
             }
         }
+
+        trace!(
+            "No place for square found at {:?} | ({:?}, {:?})",
+            square_pos,
+            square_grid_x,
+            square_grid_y
+        );
 
         None
     }

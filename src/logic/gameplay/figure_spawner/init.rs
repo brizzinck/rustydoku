@@ -14,6 +14,7 @@ impl FigureSpawner {
         mut next_state: ResMut<NextState<StatePlaceholderAnimation>>,
         mut event_writer: EventWriter<SpawnFigure>,
     ) {
+        trace!("Spawning zone figures");
         let parent = commands.spawn(FigureZone::create()).id();
 
         for &position in PLACEHOLDER_POSITIONS.iter() {
@@ -23,6 +24,9 @@ impl FigureSpawner {
         }
 
         next_state.set(StatePlaceholderAnimation::BouncingInit);
+        trace!("Zone figures spawned");
+
         event_writer.send(SpawnFigure);
+        trace!("SpawnFigure event sent");
     }
 }

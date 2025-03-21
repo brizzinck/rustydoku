@@ -149,7 +149,7 @@ impl MusicResource {
         self.click_sound.clone()
     }
 
-    pub(crate) fn load_assets(mut commands: Commands, asset_server: Res<AssetServer>) {
+    pub(crate) fn init(asset_server: &AssetServer) -> Self {
         let background_handle = asset_server.load(BACKGROUND_MUSIC);
         let player_handle = asset_server.load(LOSS_MUSIC);
         let place_sound = asset_server.load(FIGURE_PLACE_SOUND);
@@ -157,14 +157,14 @@ impl MusicResource {
         let click_sound = asset_server.load(BUTTON_CLICK_SOUND);
         let combo_sound = asset_server.load(COMBO_SOUND);
 
-        commands.insert_resource(MusicResource::new(
+        MusicResource::new(
             background_handle,
             player_handle,
             place_sound,
             denied_place_sound,
             click_sound,
             combo_sound,
-        ));
+        )
     }
 }
 

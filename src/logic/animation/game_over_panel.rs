@@ -7,10 +7,12 @@ use bevy::prelude::*;
 impl GameOverPanel {
     pub(crate) fn set_show(mut next_state: ResMut<NextState<StateGameOverPanel>>) {
         next_state.set(StateGameOverPanel::Showing);
+        debug!("Next state set to StateGameOverPanel::Showing");
     }
 
     pub(crate) fn set_hide(mut next_state: ResMut<NextState<StateGameOverPanel>>) {
         next_state.set(StateGameOverPanel::Hidding);
+        debug!("Next state set to StateGameOverPanel::Hidding");
     }
 
     pub(crate) fn show(
@@ -18,12 +20,15 @@ impl GameOverPanel {
         mut query: Query<(&mut Node, &mut GameOverPanel)>,
         mut next_state: ResMut<NextState<StateGameOverPanel>>,
     ) {
+        trace!("Showing game over panel");
+
         let (mut style, mut panel) = query.single_mut();
 
         if panel.timer.finished() {
             panel.timer.reset();
             panel.speed = GAME_OVER_PANEL_ANIMATION_SPEED_DEFAULT;
             next_state.set(StateGameOverPanel::Showed);
+            trace!("Game over panel showed");
             return;
         }
 
@@ -36,6 +41,13 @@ impl GameOverPanel {
 
         style.top =
             Val::Percent(GAME_OVER_PANEL_TOP_DEFAULT_VALUE - GAME_OVER_PANEL_TOP_END * progress);
+
+        trace!(
+            "Game over panel top: {:?}, progress: {:?}, speed: {:?}",
+            style.top,
+            progress,
+            speed
+        );
     }
 
     pub(crate) fn hide(
@@ -43,12 +55,15 @@ impl GameOverPanel {
         mut query: Query<(&mut Node, &mut GameOverPanel)>,
         mut next_state: ResMut<NextState<StateGameOverPanel>>,
     ) {
+        trace!("Hidding game over panel");
+
         let (mut style, mut panel) = query.single_mut();
 
         if panel.timer.finished() {
             panel.timer.reset();
             panel.speed = GAME_OVER_PANEL_ANIMATION_SPEED_DEFAULT;
             next_state.set(StateGameOverPanel::Hidden);
+            trace!("Game over panel hidden");
             return;
         }
 
@@ -61,5 +76,12 @@ impl GameOverPanel {
 
         style.top =
             Val::Percent(GAME_OVER_PANEL_TOP_END_REVERSED + GAME_OVER_PANEL_TOP_END * progress);
+
+        trace!(
+            "Game over panel top: {:?}, progress: {:?}, speed: {:?}",
+            style.top,
+            progress,
+            speed
+        );
     }
 }

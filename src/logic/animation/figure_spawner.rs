@@ -16,6 +16,7 @@ impl FigureSpawner {
         mut figure_spawner: ResMut<FigureSpawner>,
     ) {
         for FigureDeniedPlacing(entity) in event_reader.read() {
+            debug!("Adding lerp figure: {:?}", entity);
             figure_spawner.add_lerp_figure(*entity);
         }
     }
@@ -25,6 +26,7 @@ impl FigureSpawner {
         mut figure_spawner: ResMut<FigureSpawner>,
     ) {
         for FigureTriggerUp(entity) in event_reader.read() {
+            debug!("Removing lerp figure: {:?}", entity);
             figure_spawner.remove_lerp_figure(*entity);
         }
     }
@@ -34,6 +36,7 @@ impl FigureSpawner {
         mut figure_spawner: ResMut<FigureSpawner>,
     ) {
         for FigureSpawned(entity) in event_reader.read() {
+            debug!("Adding upscaling figure: {:?}", entity);
             figure_spawner.add_upscaling_figure(*entity);
         }
     }

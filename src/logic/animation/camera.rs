@@ -11,12 +11,14 @@ impl RustyCamera2D {
         time: Res<Time>,
         mut next_state: ResMut<NextState<StateCameraPosition>>,
     ) {
+        trace!("Setting camera to game over position");
         if RustyCamera2D::setting_position(
             &mut camera,
             CAMERA_POSITION_Y_GAME_OVER,
             time.delta_secs(),
             CAMERA_ANIMATION_OUT_POSITION_SPEED,
         ) {
+            trace!("Next state is game over position");
             next_state.set(StateCameraPosition::GameOver);
         }
     }
@@ -26,12 +28,14 @@ impl RustyCamera2D {
         time: Res<Time>,
         mut next_state: ResMut<NextState<StateCameraPosition>>,
     ) {
+        trace!("Setting camera to default position");
         if RustyCamera2D::setting_position(
             &mut camera,
             CAMERA_POSITION_Y_IDLE,
             time.delta_secs(),
             CAMERA_ANIMATION_IN_POSITION_SPEED,
         ) {
+            trace!("Next state is default position");
             next_state.set(StateCameraPosition::Default);
         }
     }

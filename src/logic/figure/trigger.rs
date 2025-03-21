@@ -24,6 +24,8 @@ impl Figure {
             );
 
             figure_spawner.remove_lerp_figure(entity);
+
+            trace!("Removed lerp figure {:?}", entity);
         }
     }
 
@@ -42,10 +44,12 @@ impl Figure {
             if let Some(parent) = square.parent {
                 if let Ok(entity) = figures.get(parent) {
                     state_figure.set(StateGame::Dragging(entity));
+                    trace!("Next state: {:?}", state_figure);
                 }
             }
         } else if let Ok(entity) = figures.get(trigger.target) {
             state_figure.set(StateGame::Dragging(entity));
+            trace!("Next state: {:?}", state_figure);
         }
     }
 
@@ -59,7 +63,10 @@ impl Figure {
         if mouse_input.just_released(MouseButton::Left) || touch_input.any_just_released() {
             if let StateGame::Dragging(figure) = current_state.get() {
                 next_state.set(StateGame::Placing(*figure));
+                trace!("Next state: {:?}", next_state);
+
                 event_writer.send(FigureTriggerUp(*figure));
+                trace!("FigureTriggerUp sent");
             }
         }
     }

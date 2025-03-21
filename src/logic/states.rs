@@ -4,5 +4,6 @@ use bevy::prelude::*;
 impl StateGame {
     pub(crate) fn reset_state(mut state: ResMut<NextState<StateGame>>) {
         state.set(StateGame::Idle);
+        trace!("Next state StateGame::Idle");
     }
 }

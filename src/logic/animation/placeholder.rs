@@ -7,6 +7,7 @@ use bevy::prelude::*;
 impl Placeholder {
     pub(crate) fn set_bounce_default(mut next_state: ResMut<NextState<StatePlaceholderAnimation>>) {
         next_state.set(StatePlaceholderAnimation::BouncingDefault);
+        trace!("Placeholder animation set to BouncingDefault");
     }
 
     pub(crate) fn bouncing_init(
@@ -34,6 +35,7 @@ impl Placeholder {
 
         if all_done {
             next_state.set(StatePlaceholderAnimation::BouncingDefault);
+            trace!("Placeholder animation set to BouncingDefault");
         }
     }
 
@@ -62,6 +64,7 @@ impl Placeholder {
 
         if all_done {
             next_state.set(StatePlaceholderAnimation::BouncingPeak);
+            trace!("Placeholder animation set to BouncingPeak");
         }
     }
 
@@ -89,6 +92,7 @@ impl Placeholder {
 
         if all_done {
             next_state.set(StatePlaceholderAnimation::Idle);
+            trace!("Placeholder animation set to Idle");
         }
     }
 }

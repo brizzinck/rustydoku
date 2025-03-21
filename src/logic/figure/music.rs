@@ -14,10 +14,12 @@ impl MusicComponent {
     ) {
         if event.read().last().is_some() {
             sound.play(music.get_denied_sound());
+            trace!("Playing denied sound");
         }
     }
 
     pub fn place(music: Res<MusicResource>, sound: Res<AudioChannel<SoundChannel>>) {
         sound.play(music.get_place_sound());
+        trace!("Playing place sound");
     }
 }

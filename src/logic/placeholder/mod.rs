@@ -16,12 +16,14 @@ impl Placeholder {
         for FigureCantPlaced(placeholder) in cant_place.read() {
             if let Ok(mut sprite) = placeholders.get_mut(*placeholder) {
                 sprite.image = resource.get_placeholder_image_deactive();
+                trace!("Placeholder {} is deactive", placeholder);
             }
         }
 
         for FigureCanPlaced(placeholder) in can_place.read() {
             if let Ok(mut sprite) = placeholders.get_mut(*placeholder) {
                 sprite.image = resource.get_placeholder_image();
+                trace!("Placeholder {} is active", placeholder);
             }
         }
     }
@@ -30,6 +32,8 @@ impl Placeholder {
         mut placeholders: Query<&mut Sprite, With<Placeholder>>,
         resource: Res<FigureSpawner>,
     ) {
+        trace!("Reset placeholders image");
+
         for mut sprite in placeholders.iter_mut() {
             sprite.image = resource.get_placeholder_image();
         }

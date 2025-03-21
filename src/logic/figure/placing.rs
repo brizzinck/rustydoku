@@ -42,7 +42,7 @@ impl Figure {
                 {
                     next_state.set(StateGame::Idle);
                     event_denied.send(FigureDeniedPlacing(*placed));
-                    info!("Invalid placement, returning to idle state.");
+                    trace!("Figure denied placing.");
                     return;
                 }
 
@@ -69,6 +69,8 @@ impl Figure {
                 }
 
                 next_state.set(StateGame::Placed(*placed));
+
+                trace!("Figure placed successfully.");
             }
         }
     }

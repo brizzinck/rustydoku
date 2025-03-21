@@ -19,6 +19,7 @@ impl MusicComponent {
     ) {
         if event_read.read().last().is_some() {
             audio.play(music.get_combo_sound());
+            trace!("Playing combo sound");
         }
     }
 }

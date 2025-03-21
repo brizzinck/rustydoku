@@ -21,9 +21,11 @@ pub(crate) fn check_game_over(
     let mut game_over = true;
 
     for (transform, bounds, figure) in figures.iter() {
-        info!(
+        trace!(
             "Checking figure {:?} with bounds.min={:?}, squares_offset={:?}",
-            transform.translation, bounds.min, figure.squares_position
+            transform.translation,
+            bounds.min,
+            figure.squares_position
         );
 
         let mut figure_cant_placed = true;
@@ -39,12 +41,15 @@ pub(crate) fn check_game_over(
                     &map,
                     &tiles,
                 ) {
-                    info!(
+                    trace!(
                         "Found a valid placement for figure at grid=({}, {}) => Game continues!",
-                        grid_x, grid_y
+                        grid_x,
+                        grid_y
                     );
+
                     figure_cant_placed = false;
                     game_over = false;
+
                     break 'outer;
                 }
             }
@@ -58,11 +63,11 @@ pub(crate) fn check_game_over(
     }
 
     if game_over {
-        info!("No valid placement found for any figure => GAME OVER!");
         next_state.set(StateGame::GameOver);
+        trace!("Next state is set to StateGame::GameOver");
     } else {
-        info!("At least one figure can be placed => continuing game!");
         next_state.set(StateGame::Idle);
+        trace!("Next state is set to StateGame::Idle");
     }
 }
 
@@ -76,27 +81,34 @@ fn can_place_figure_at_grid(
 ) -> bool {
     let placement_translation = grid * TILE_SIZE - bounds_min * TILE_SIZE;
 
-    info!(
+    trace!(
         "Trying grid=({:.0}, {:.0}); computed placement_translation={:?}",
-        grid.x, grid.y, placement_translation
+        grid.x,
+        grid.y,
+        placement_translation
     );
 
     for offset in offsets {
         let rotated_offset = figure_transform.rotation * offset.extend(0.0);
         let candidate_pos = placement_translation + rotated_offset.truncate() * TILE_SIZE;
 
-        info!(
+        trace!(
             " -> Checking square offset={:?}; rotated_offset={:?}; candidate_pos={:?}",
-            offset, rotated_offset, candidate_pos
+            offset,
+            rotated_offset,
+            candidate_pos
         );
 
         if correct_to_place(candidate_pos.extend(0.0), map, tiles).is_none() {
-            info!("Cannot place at {:?}", candidate_pos);
+            trace!("Cannot place at {:?}", candidate_pos);
             return false;
         }
-        info!("Square can be placed at {:?}", candidate_pos);
+
+        trace!("Square can be placed at {:?}", candidate_pos);
     }
-    info!("All squares OK at grid=({:.0}, {:.0})", grid.x, grid.y);
+
+    trace!("All squares OK at grid=({:.0}, {:.0})", grid.x, grid.y);
+
     true
 }
 
@@ -111,13 +123,13 @@ fn correct_to_place(pos: Vec3, map: &Map, tiles: &Query<&Tile>) -> Option<(i32, 
             if tile.square.is_none() {
                 return Some(tile_coords);
             } else {
-                info!("Tile at {:?} is occupied by {:?}", tile_coords, tile.square);
+                trace!("Tile at {:?} is occupied by {:?}", tile_coords, tile.square);
             }
         } else {
-            info!("Could not query tile at {:?}", tile_coords);
+            trace!("Could not query tile at {:?}", tile_coords);
         }
     } else {
-        info!("No tile found in the map for {:?}", tile_coords);
+        trace!("No tile found in the map for {:?}", tile_coords);
     }
     None
 }

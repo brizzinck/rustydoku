@@ -1,15 +1,10 @@
-use crate::components::world::background::Background;
 use crate::constants::world::window::{WINDOW_HEIGHT_SCALED_FACTOR, WINDOW_WIDTH_SCALED_FACTOR};
 use bevy::prelude::*;
 use bevy::window::WindowPlugin;
 
-pub struct RustydokuDefault;
+pub struct RustydokuDefaultPlugin;
 
-impl RustydokuDefault {
-    fn spawn_background(mut commands: Commands, assets: Res<AssetServer>) {
-        commands.spawn(Background::create_background(&assets));
-    }
-
+impl RustydokuDefaultPlugin {
     fn fit_window_to_viewport(
         mut windows: Query<&mut bevy::window::Window>,
         mut cameras: Query<&mut OrthographicProjection, With<Camera2d>>,
@@ -34,8 +29,11 @@ impl RustydokuDefault {
     }
 }
 
-impl Plugin for RustydokuDefault {
+impl Plugin for RustydokuDefaultPlugin {
     fn build(&self, app: &mut App) {
+        debug!("Building RustydokuDefaultPlugin");
+
+        trace!("Setting up default window");
         app.add_plugins(DefaultPlugins.set(WindowPlugin {
             primary_window: Some(bevy::window::Window {
                 title: "Rustydoku".to_string(),
@@ -44,7 +42,9 @@ impl Plugin for RustydokuDefault {
             ..default()
         }));
 
-        app.add_systems(Startup, Self::spawn_background);
+        trace!("Setting up fit window to viewport system");
         app.add_systems(Update, Self::fit_window_to_viewport);
+
+        debug!("RustydokuDefaultPlugin built");
     }
 }

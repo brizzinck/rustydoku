@@ -4,15 +4,19 @@ use crate::{
 };
 use bevy::prelude::*;
 
-pub struct FigureSpawnerPlugin;
+pub struct RustydokuFigureSpawnerPlugin;
 
-impl Plugin for FigureSpawnerPlugin {
+impl Plugin for RustydokuFigureSpawnerPlugin {
     fn build(&self, app: &mut App) {
+        debug!("Building RustydokuFigureSpawnerPlugin");
+
+        trace!("Adding systems when generating world");
         app.add_systems(
             OnEnter(StateGame::GenerateWorld),
             FigureSpawner::spawn_zone_figures,
         );
 
+        trace!("Adding systems just updating");
         app.add_systems(Update, FigureSpawner::spawn_figures);
 
         app.add_systems(
@@ -25,6 +29,7 @@ impl Plugin for FigureSpawnerPlugin {
                 .chain(),
         );
 
+        trace!("Adding systems when placing figures");
         app.add_systems(
             Update,
             (
@@ -36,9 +41,12 @@ impl Plugin for FigureSpawnerPlugin {
                 .chain(),
         );
 
+        trace!("Adding systems when placed figures");
         app.add_systems(
             Update,
             FigureSpawner::despawn_figure.run_if(StateGame::when_placed),
         );
+
+        debug!("RustydokuFigureSpawnerPlugin built");
     }
 }

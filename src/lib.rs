@@ -9,15 +9,17 @@ use events::figure::{
 };
 use events::figure_spawner::SpawnFigure;
 use events::gameplay::Combo;
-use plugins::default::RustydokuDefault;
-use plugins::firure_spawner::FigureSpawnerPlugin;
-use plugins::gameplay::RustydokuGameplay;
+use plugins::default::RustydokuDefaultPlugin;
+use plugins::firure_spawner::RustydokuFigureSpawnerPlugin;
+use plugins::gameplay::RustydokuGameplayPlugin;
 use plugins::logic::RustydokuLogicPlugin;
-use plugins::music::MusicPlugin;
-use plugins::placeholer::PlaceholderPlugin;
+use plugins::music::RustydokuMusicPlugin;
+use plugins::placeholer::RustydokuPlaceholderPlugin;
 use plugins::resource::RustydokuResourcePlugin;
 use plugins::ui::RustydokuUIPlugin;
-use plugins::{camera::CameraPlugin, figure::FigurePlugin, map::MapPlugin};
+use plugins::{
+    camera::RustydokuCameraPlugin, figure::RustydokuFigurePlugin, map::RustydokuMapPlugin,
+};
 use states::figure::placeholder::StatePlaceholderAnimation;
 use states::gameplay::StateGame;
 use states::ui::game_over_panel::StateGameOverPanel;
@@ -44,16 +46,16 @@ pub fn run() {
     game.add_event::<SpawnFigure>();
     game.add_event::<Combo>();
 
-    game.add_plugins(RustydokuDefault);
-    game.add_plugins(MapPlugin);
-    game.add_plugins(MusicPlugin);
-    game.add_plugins(CameraPlugin);
-    game.add_plugins(FigurePlugin);
-    game.add_plugins(FigureSpawnerPlugin);
-    game.add_plugins(PlaceholderPlugin);
+    game.add_plugins(RustydokuDefaultPlugin);
+    game.add_plugins(RustydokuMapPlugin);
+    game.add_plugins(RustydokuMusicPlugin);
+    game.add_plugins(RustydokuCameraPlugin);
+    game.add_plugins(RustydokuFigurePlugin);
+    game.add_plugins(RustydokuFigureSpawnerPlugin);
+    game.add_plugins(RustydokuPlaceholderPlugin);
     game.add_plugins(RustydokuUIPlugin);
     game.add_plugins(RustydokuLogicPlugin);
-    game.add_plugins(RustydokuGameplay);
+    game.add_plugins(RustydokuGameplayPlugin);
 
     #[cfg(feature = "debug-inspector")]
     game.add_plugins(WorldInspectorPlugin::new());

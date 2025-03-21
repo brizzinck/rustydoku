@@ -19,18 +19,21 @@ impl Figure {
         mut event_writer: EventWriter<FigureTriggerDragging>,
     ) {
         if let StateGame::Dragging(figure) = game_state.get() {
+            trace!("Dragging figure: {:?}", figure);
             event_writer.send(FigureTriggerDragging(*figure));
             let (camera, camera_transform) = cameras.single();
 
-            let cursor_pos = if mouse_input.pressed(MouseButton::Left) {
+            let position = if mouse_input.pressed(MouseButton::Left) {
+                trace!("Mouse pressed");
                 cursor.single().cursor_position()
-            } else if let Some(first_touch) = touch_input.iter().next() {
-                Some(first_touch.position())
             } else {
-                None
+                trace!("Touch pressed");
+                touch_input.iter().next().map(|touch| touch.position())
             };
 
-            if let Some(cursor_pos) = cursor_pos {
+            trace!("Interaction position: {:?}", position);
+
+            if let Some(cursor_pos) = position {
                 if let Ok(world_pos) = camera.viewport_to_world(camera_transform, cursor_pos) {
                     if let Ok((mut transform, _, bounds)) = figure_query.get_mut(*figure) {
                         let desired = Figure::clamp_position(world_pos.origin, bounds);
@@ -57,6 +60,8 @@ impl Figure {
         desired.y = (desired.y
             + (FIGURE_DRAG_OFFSET_Y - bounds.min.y * FIGURE_DRAG_OFFSET_Y_MULTIPLIER))
             .clamp(min_y, max_y);
+
+        trace!("Clamped position: {:?}", desired);
 
         desired
     }

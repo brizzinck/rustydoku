@@ -4,9 +4,11 @@ use bevy::prelude::*;
 impl RustyCamera2D {
     pub(crate) fn set_camera_game_over(mut next_state: ResMut<NextState<StateCameraPosition>>) {
         next_state.set(StateCameraPosition::ToGameOver);
+        trace!("Next state StateCameraPosition::ToGameOver");
     }
 
     pub(crate) fn set_camera_default(mut next_state: ResMut<NextState<StateCameraPosition>>) {
         next_state.set(StateCameraPosition::ToDefault);
+        trace!("Next state StateCameraPosition::ToDefault");
     }
 }

@@ -43,12 +43,15 @@ impl Map {
         map.0 = hash_titles;
 
         next_state.set(StateGame::Idle);
+        trace!("Next state StateGame::Idle");
     }
 
     pub(crate) fn reset_tiles(
         mut square_to_despawn: ResMut<SquaresToDespawn>,
         mut tiles: Query<&mut Tile>,
     ) {
+        trace!("Reset tiles");
+
         for mut tile in tiles.iter_mut() {
             if let Some(square) = tile.square {
                 square_to_despawn.add(square);

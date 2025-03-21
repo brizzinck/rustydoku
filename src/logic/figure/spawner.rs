@@ -102,6 +102,13 @@ impl Figure {
         commands.entity(parent).insert(figure);
         commands.entity(parent).insert(Name::new(name));
 
+        trace!(
+            "Figure {} spawned, position: {:?}, rotation: {:?}",
+            name,
+            absolute_position,
+            rotation
+        );
+
         parent
     }
 }
