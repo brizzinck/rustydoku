@@ -24,7 +24,6 @@ bevy_kira_audio = "0.22.0"
 
 [features]
 default = ["mp3"]
-dynamic = ["bevy/dynamic_linking"]
 debug-inspector = ["bevy-inspector-egui"]
 mp3 = ["bevy/mp3"]
 wasm = ["getrandom/js"]
