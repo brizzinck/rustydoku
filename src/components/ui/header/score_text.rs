@@ -1,3 +1,5 @@
+use crate::constants::ui::DynamicText;
+
 use super::*;
 
 /// Component for displaying the current score in the game header.
@@ -44,6 +46,11 @@ impl HeaderCurrentScoreTextComponent {
                 .into(),
             ),
             HeaderCurrentScoreTextComponent,
+            DynamicText::new(
+                HEADER_SCORE_FONT_SIZE,
+                HEADER_SCORE_FACTOR_FONT_SIZED,
+                HEADER_SCORE_MAX_FONT_SIZE,
+            ),
         )
     }
 }

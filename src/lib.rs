@@ -1,6 +1,6 @@
 use bevy::prelude::*;
-
 use bevy_embedded_assets::{EmbeddedAssetPlugin, PluginMode};
+
 #[cfg(feature = "debug-inspector")]
 use bevy_inspector_egui::quick::WorldInspectorPlugin;
 
@@ -16,6 +16,7 @@ use plugins::ui::RustydokuUIPlugin;
 use plugins::{
     camera::RustydokuCameraPlugin, figure::RustydokuFigurePlugin, map::RustydokuMapPlugin,
 };
+use wasm_bindgen::prelude::wasm_bindgen;
 
 pub mod components;
 pub mod constants;
@@ -27,11 +28,12 @@ pub mod states;
 pub mod world;
 
 /// The main entry point for the game
+#[wasm_bindgen]
 pub fn run() {
     let mut game = App::new();
 
     game.add_plugins(EmbeddedAssetPlugin {
-        mode: PluginMode::AutoLoad,
+        mode: PluginMode::ReplaceDefault,
     });
     game.add_plugins(RustydokuDefaultPlugin);
     game.add_plugins(RustydokuLoggerPlugin);

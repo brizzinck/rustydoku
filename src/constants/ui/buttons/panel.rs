@@ -41,10 +41,10 @@ pub const BUTTONS_PANEL_WIDTH: Val = Val::Auto;
 pub const BUTTONS_PANEL_HEIGHT: Val = Val::Auto;
 
 /// Maximum width for the buttons panel in the header.
-pub const BUTTONS_PANEL_MAX_WIDTH_HEADER: Val = Val::Vw(25.);
+pub const BUTTONS_PANEL_MAX_WIDTH_HEADER: Val = Val::Auto;
 
 /// Maximum height for the buttons panel in the header.
-pub const BUTTONS_PANEL_MAX_HEIGHT_HEADER: Val = Val::Vh(8.);
+pub const BUTTONS_PANEL_MAX_HEIGHT_HEADER: Val = Val::Auto;
 
 /// Maximum width for the buttons panel in the game over panel.
 pub const BUTTONS_PANEL_MAX_WIDTH_GAME_OVER: Val = Val::Auto;

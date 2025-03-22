@@ -1,4 +1,4 @@
-use crate::constants::ui::game_over_panel::*;
+use crate::constants::ui::{game_over_panel::*, DynamicText};
 use bevy::prelude::*;
 
 /// UI component for displaying the current score in the game over panel.
@@ -26,6 +26,11 @@ impl GameOverCurrentScoreTextComponent {
             },
             TextColor(SCORE_TEXT_COLOR),
             GameOverCurrentScoreTextComponent,
+            DynamicText::new(
+                SCORE_TEXT_FONT_SIZE,
+                SCORE_FACTOR_FONT_SIZED,
+                SCORE_MAX_FONT_SIZE,
+            ),
         )
     }
 }
@@ -55,6 +60,11 @@ impl GameOverMaxScoreTextComponent {
             },
             TextColor(MAX_SCORE_TEXT_COLOR),
             GameOverMaxScoreTextComponent,
+            DynamicText::new(
+                MAX_SCORE_TEXT_FONT_SIZE,
+                MAX_SCORE_FACTOR_FONT_SIZED,
+                MAX_SCORE_MAX_FONT_SIZE,
+            ),
         )
     }
 }

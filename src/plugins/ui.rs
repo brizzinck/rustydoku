@@ -1,13 +1,13 @@
 use crate::{
     components::ui::{
-        buttons::button_audio::ButtonAudio,
-        buttons::button_restart::ButtonRestart,
+        buttons::{button_audio::ButtonAudio, button_restart::ButtonRestart},
         game_over_panel::{
             panel::GameOverPanelComponent,
             score_text::{GameOverCurrentScoreTextComponent, GameOverMaxScoreTextComponent},
         },
         header::{score_text::HeaderCurrentScoreTextComponent, HeaderUI},
     },
+    constants::ui::DynamicText,
     resource::score::ScoreResource,
     states::{gameplay::GameState, ui::game_over_panel::GameOverPanelState},
 };
@@ -39,6 +39,7 @@ impl Plugin for RustydokuUIPlugin {
             Update,
             (
                 HeaderCurrentScoreTextComponent::update,
+                DynamicText::sized,
                 ButtonRestart::handle,
                 ButtonAudio::handle,
                 ButtonAudio::read_muted,

@@ -19,3 +19,9 @@ pub const HEADER_SCORE_TEXT_CONTENT: &str = "SCORE";
 
 /// The color of the score header.
 pub const HEADER_SCORE_TEXT_COLOR: (u8, u8, u8) = (177, 177, 177);
+
+/// Factor sized for font
+pub const HEADER_SCORE_FACTOR_FONT_SIZED: f32 = 1.;
+
+/// Max font size for the score header.
+pub const HEADER_SCORE_MAX_FONT_SIZE: f32 = 47.;

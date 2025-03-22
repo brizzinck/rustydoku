@@ -10,9 +10,9 @@ impl Plugin for RustydokuLoggerPlugin {
         let filter =
             EnvFilter::try_from_default_env().unwrap_or(EnvFilter::new("error,rustydoku=debug"));
 
-        let subscriber = tracing_subscriber::registry()
-            .with(filter)
-            .with(fmt::layer());
+        let fmt_layer = fmt::layer().without_time();
+
+        let subscriber = tracing_subscriber::registry().with(filter).with(fmt_layer);
 
         subscriber.init();
     }

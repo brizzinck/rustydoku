@@ -3813,16 +3813,16 @@ dependencies = [
 
 [[package]]
 name = "rustydoku"
-version = "0.1.10"
+version = "0.1.11"
 dependencies = [
  "bevy",
  "bevy-inspector-egui",
  "bevy_embedded_assets",
  "bevy_kira_audio",
- "getrandom",
  "once_cell",
  "rand",
  "tracing-subscriber",
+ "wasm-bindgen",
 ]
 
 [[package]]

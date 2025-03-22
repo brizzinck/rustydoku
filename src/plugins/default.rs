@@ -17,7 +17,7 @@ impl RustydokuDefaultPlugin {
             let height = window.resolution.height();
 
             let (effective_width, effective_height) = if width > height {
-                (height, height)
+                (height, width)
             } else {
                 (width, height)
             };
@@ -42,6 +42,7 @@ impl Plugin for RustydokuDefaultPlugin {
                 .set(WindowPlugin {
                     primary_window: Some(bevy::window::Window {
                         title: "Rustydoku".to_string(),
+                        canvas: Some("#rustycanvas".into()),
                         ..default()
                     }),
                     ..default()

@@ -1,3 +1,4 @@
 /target
 /web-build
 *.dev*
+*.zip

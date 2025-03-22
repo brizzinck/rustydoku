@@ -4,13 +4,13 @@ pub mod animation;
 pub mod assets;
 pub mod background;
 pub mod header_title;
-pub mod score_text;
+pub mod score;
 
 pub use animation::*;
 pub use assets::*;
 pub use background::*;
 pub use header_title::*;
-pub use score_text::*;
+pub use score::*;
 
 /// Name used in the UI hierarchy for the game over panel.
 pub const GAME_OVER_PANEL_NAME_HIERARCHY: &str = "GameOverPanel UI";
@@ -34,10 +34,10 @@ pub const GAME_OVER_PANEL_TOP_DEFAULT_VALUE: f32 = 120.;
 pub const GAME_OVER_PANEL_TOP_DEFAULT: Val = Val::Percent(GAME_OVER_PANEL_TOP_DEFAULT_VALUE);
 
 /// Width of the game over panel as a percentage of the window width.
-pub const GAME_OVER_PANEL_WIDTH: Val = Val::Percent(132.);
+pub const GAME_OVER_PANEL_WIDTH: Val = Val::VMin(80.);
 
 /// Height of the game over panel as a percentage of the window height.
-pub const GAME_OVER_PANEL_HEIGHT: Val = Val::Percent(26.);
+pub const GAME_OVER_PANEL_HEIGHT: Val = Val::VMin(40.);
 
 /// Margin for the game over panel.
 pub const GAME_OVER_PANEL_MARGIN: UiRect = UiRect {
@@ -48,10 +48,10 @@ pub const GAME_OVER_PANEL_MARGIN: UiRect = UiRect {
 };
 
 /// Maximum width of the game over panel.
-pub const GAME_OVER_PANEL_MAX_WIDTH: Val = Val::Px(500.);
+pub const GAME_OVER_PANEL_MAX_WIDTH: Val = Val::VMax(50.);
 
 /// Maximum height of the game over panel.
-pub const GAME_OVER_PANEL_MAX_HEIGHT: Val = Val::Px(255.);
+pub const GAME_OVER_PANEL_MAX_HEIGHT: Val = Val::VMax(25.);
 
 /// Justification for the game over panel's position.
 pub const GAME_OVER_PANEL_JUSTIFY: JustifySelf = JustifySelf::Center;

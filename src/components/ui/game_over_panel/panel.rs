@@ -1,5 +1,8 @@
 use super::score_text::*;
-use crate::{components::ui::buttons::ButtonsPanel, constants::ui::game_over_panel::*};
+use crate::{
+    components::ui::buttons::ButtonsPanel,
+    constants::ui::{game_over_panel::*, DynamicText},
+};
 use bevy::prelude::*;
 
 /// UI component for the game over panel.
@@ -117,6 +120,11 @@ impl GameOverPanelComponent {
                 ..default()
             },
             TextColor(HEADER_TITLE_COLOR),
+            DynamicText::new(
+                HEADER_TITLE_FONT_SIZE,
+                HEADER_TITLE_FACTOR_FONT_SIZED,
+                HEADER_TITLE_MAX_FONT_SIZE,
+            ),
         )
     }
 }
