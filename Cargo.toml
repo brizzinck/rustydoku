@@ -1,6 +1,6 @@
 [package]
 name = "rustydoku"
-version = "0.1.3"
+version = "0.1.4"
 edition = "2021"
 authors = ["Skalse <lavrishkovlad@gmail.com>"]
 description = "A puzzle game built with Bevy, inspired by Woodoku. Strategically place blocks, clear the board, and earn points!"
@@ -21,6 +21,7 @@ rand = "0.8.5"
 getrandom = "0.2"
 once_cell = "1.21.1"
 bevy_kira_audio = "0.22.0"
+bevy_embedded_assets = "0.12.0"
 
 [features]
 default = ["mp3"]

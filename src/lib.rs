@@ -1,5 +1,6 @@
 use bevy::prelude::*;
 
+use bevy_embedded_assets::EmbeddedAssetPlugin;
 #[cfg(feature = "debug-inspector")]
 use bevy_inspector_egui::quick::WorldInspectorPlugin;
 
@@ -39,6 +40,7 @@ pub fn run() {
     game.add_plugins(RustydokuLogicPlugin);
     game.add_plugins(RustydokuGameplayPlugin);
     game.add_plugins(RustydokuResourcePlugin);
+    game.add_plugins(EmbeddedAssetPlugin::default());
 
     #[cfg(feature = "debug-inspector")]
     game.add_plugins(WorldInspectorPlugin::new());
