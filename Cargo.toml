@@ -11,7 +11,7 @@ categories = ["game-development"]
 readme = "README.md"
 include = [
     "assets/**",
-    "*/**.rs",
+    "src/**",
     "Cargo.toml",
     "README.md",
 ]
