@@ -3,6 +3,7 @@ name = "rustydoku"
 version = "0.1.0"
 edition = "2021"
 authors = ["Skalse <lavrishkovlad@gmail.com>"]
+description = "A puzzle game built with Bevy, inspired by Woodoku. Strategically place blocks, clear the board, and earn points!"
 repository = "https://github.com/brizzinck/rustydoku.git"
 license = "MIT"
 keywords = ["game", "bevy", "gamedev"]
