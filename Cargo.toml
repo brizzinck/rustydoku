@@ -9,6 +9,9 @@ license = "MIT"
 keywords = ["game", "bevy", "gamedev"]
 categories = ["game-development"]
 readme = "README.md"
+exclude = [
+    "*.dev*",
+]
 include = [
     "assets/**",
     "src/**",
