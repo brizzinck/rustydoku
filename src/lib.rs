@@ -31,7 +31,7 @@ pub fn run() {
     let mut game = App::new();
 
     game.add_plugins(EmbeddedAssetPlugin {
-        mode: PluginMode::ReplaceDefault,
+        mode: PluginMode::AutoLoad,
     });
     game.add_plugins(RustydokuDefaultPlugin);
     game.add_plugins(RustydokuLoggerPlugin);

@@ -7,7 +7,7 @@ use crate::{
         figure::{FIGURE_DENIED_PLACE_SOUND, FIGURE_PLACE_SOUND},
         ui::{
             assets::{AUDIO_OFF_BUTTON_IMAGE_PATH, AUDIO_ON_BUTTON_IMAGE_PATH},
-            audio::*,
+            audio::assets::*,
         },
     },
     events::audio::ChangeVolumeEvent,
