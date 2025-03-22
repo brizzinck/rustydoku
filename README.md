@@ -9,9 +9,12 @@ It combines the gameplay of Woodoku with a modern design and fast performance fo
 - [How to Play](#how-to-play)
   - [Objective](#objective)
   - [Controls](#controls)
+- [Play Online](#play-online)
 - [Installation](#installation)
   - [Running via GitHub](#running-via-github)
+  - [Install as a CLI Binary](#install-as-a-cli-binary)
 - [FAQ](#faq)
+- [Tips](#tips)
 - [Contributing](#contributing)
 - [License](#license)
 
@@ -45,7 +48,7 @@ Clear cells by creating specific combinations and enjoy the challenge as the boa
 ### Controls
 
 - **Start Game:**  
-  The game starts automatically when you run `cargo run`.
+  The game begins automatically when you run `cargo run` from the terminal (desktop version) or click the **Start** button in the browser (web version).
 
 - **Move Pieces:**  
   Use your mouse (or your finger on touch devices) to drag and place the pieces.
@@ -55,6 +58,14 @@ Clear cells by creating specific combinations and enjoy the challenge as the boa
 
 - **Mute Audio:**  
   Click the audio button at the top-right corner to toggle sound on or off. If you lose, you can also mute audio from the Game Over panel.
+
+## Play Online
+
+You can also play **Rustydoku** directly in your browser via **Itch.io**:
+
+[Play Rustydoku on Itch.io](https://skalse.itch.io/rustydoku)
+
+No installation needed — just click and start playing!
 
 ## Installation
 
@@ -75,13 +86,81 @@ Clear cells by creating specific combinations and enjoy the challenge as the boa
 
 3. **Enjoy the game!**
 
+### Install as a CLI Binary
+
+You can install Rustydoku system-wide (for your user) using Cargo, so you can run it from anywhere like a regular command:
+
+1. **Clone the repository (if not done yet):**
+
+    ```bash
+    git clone https://github.com/brizzinck/rustydoku.git
+    cd rustydoku
+    ```
+
+2. **Install the binary to `~/.cargo/bin`:**
+
+    ```bash
+    cargo install --path .
+    ```
+
+3. **Run the game from anywhere:**
+
+    ```bash
+    rustydoku
+    ```
+
+This installs the game like a normal terminal command, so you can launch it easily without re-entering the project folder each time.
+
 ## FAQ
 
 - **For Linux Users:**  
-  - **What do if i can't run?**  
-    Ensure you have the latest Vulkan or OpenGL libraries installed.
-    If you encounter performance issues, update your GPU drivers.
-    Running the game from a terminal may provide useful logs if troubleshooting is needed.
+  - **What if I can't run the game?**  
+    Ensure you have the latest **Vulkan** or **OpenGL** libraries installed.  
+    If you encounter performance issues or crashes:
+
+    1. Update your GPU drivers.
+    2. Try explicitly setting the rendering backend. For example, to force Vulkan:
+
+        ```bash
+        export WGPU_BACKEND=vulkan
+        ```
+
+        You can also try `gl` depending on your system.
+
+    3. Run the game from a terminal to view logs and error messages:
+
+        ```bash
+        rustydoku
+        ```
+
+        or, if you haven't installed it as a binary:
+
+        ```bash
+        cargo run --release
+        ```
+
+## Tips
+
+- **Run the Game Without Blocking the Terminal (Linux/macOS):**  
+  If you're using **Linux** or **macOS**, you can launch **Rustydoku** without locking your terminal (so you can keep using it) by running it in the background:
+
+    ```bash
+    rustydoku &
+    ```
+
+    or, if you haven't installed it as a binary:
+
+    ```bash
+    cargo run --release &
+    ```
+
+  This will allow you to continue using the terminal while the game runs in the background.
+
+  To completely detach the game from the terminal and suppress any output:
+
+    ```bash
+    nohup rustydoku > /dev/null 2>&1 &
+    ```
 
 ## Contributing
 
