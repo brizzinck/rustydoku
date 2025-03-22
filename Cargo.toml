@@ -1,6 +1,6 @@
 [package]
 name = "rustydoku"
-version = "0.1.4"
+version = "0.1.5"
 edition = "2021"
 authors = ["Skalse <lavrishkovlad@gmail.com>"]
 description = "A puzzle game built with Bevy, inspired by Woodoku. Strategically place blocks, clear the board, and earn points!"
