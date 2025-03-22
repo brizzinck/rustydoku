@@ -3,6 +3,8 @@
 **Rustydoku** is a game based on Woodoku on the classic puzzle genre developed in [Rust](https://www.rust-lang.org/). 
 It combines the gameplay of Woodoku with a modern design and fast performance for Rustaceans)
 
+https://github.com/user-attachments/assets/91a8f7ff-446b-43cc-9f8f-e9cf4ed717a8
+
 ## Table of Contents
 
 - [Overview](#overview)
