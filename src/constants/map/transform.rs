@@ -29,4 +29,4 @@ pub const TILE_Z_POSITION: f32 = 0.;
 pub const MAP_SPAWN_POSITIOM: RangeInclusive<i8> = (-MAP_SIZE / 2)..=(MAP_SIZE / 2);
 
 /// The color of the map tiles.
-pub const TILE_COLOR: Color = Color::srgba(1., 1., 1., 0.75);
+pub const TILE_COLOR: Color = Color::srgba(1., 1., 1., 0.73);

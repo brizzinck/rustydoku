@@ -5,7 +5,7 @@ use bevy::color::Srgba;
 pub const FIGURE_DRAG_OFFSET_Y: f32 = 55.;
 
 /// Multiplier applied to offset Y-axis when dragging based on the figure's bounding box.
-pub const FIGURE_DRAG_OFFSET_Y_MULTIPLIER: f32 = 10.;
+pub const FIGURE_DRAG_OFFSET_Y_MULTIPLIER: f32 = 20.;
 
 /// Maximum figure size in world units, used for placeholder sizing or layout.
 pub static MAX_FIGURE_SIZE: f32 = SQUARE_SIZE * 3.;
