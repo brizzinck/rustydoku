@@ -1,4 +1,5 @@
 use crate::constants::world::window::{WINDOW_HEIGHT_SCALED_FACTOR, WINDOW_WIDTH_SCALED_FACTOR};
+use bevy::log::LogPlugin;
 use bevy::prelude::*;
 use bevy::window::WindowPlugin;
 
@@ -36,13 +37,18 @@ impl Plugin for RustydokuDefaultPlugin {
         debug!("Building RustydokuDefaultPlugin");
 
         trace!("Setting up default window");
-        app.add_plugins(DefaultPlugins.set(WindowPlugin {
-            primary_window: Some(bevy::window::Window {
-                title: "Rustydoku".to_string(),
-                ..default()
-            }),
-            ..default()
-        }));
+        app.add_plugins(
+            DefaultPlugins
+                .set(WindowPlugin {
+                    primary_window: Some(bevy::window::Window {
+                        title: "Rustydoku".to_string(),
+                        ..default()
+                    }),
+                    ..default()
+                })
+                .build()
+                .disable::<LogPlugin>(),
+        );
 
         trace!("Setting up fit window to viewport system");
         app.add_systems(Update, Self::fit_window_to_viewport);

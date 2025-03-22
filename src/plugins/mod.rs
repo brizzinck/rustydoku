@@ -3,6 +3,7 @@ pub mod default;
 pub mod figure;
 pub mod firure_spawner;
 pub mod gameplay;
+pub mod logger;
 pub mod logic;
 pub mod map;
 pub mod music;

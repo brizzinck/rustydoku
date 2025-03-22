@@ -3822,6 +3822,7 @@ dependencies = [
  "getrandom",
  "once_cell",
  "rand",
+ "tracing-subscriber",
 ]
 
 [[package]]

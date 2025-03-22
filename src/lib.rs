@@ -7,6 +7,7 @@ use bevy_inspector_egui::quick::WorldInspectorPlugin;
 use plugins::default::RustydokuDefaultPlugin;
 use plugins::firure_spawner::RustydokuFigureSpawnerPlugin;
 use plugins::gameplay::RustydokuGameplayPlugin;
+use plugins::logger::RustydokuLoggerPlugin;
 use plugins::logic::RustydokuLogicPlugin;
 use plugins::music::RustydokuAudioPlugin;
 use plugins::placeholer::RustydokuPlaceholderPlugin;
@@ -30,6 +31,8 @@ pub fn run() {
     let mut game = App::new();
 
     game.add_plugins(RustydokuDefaultPlugin);
+    game.add_plugins(RustydokuLoggerPlugin);
+    game.add_plugins(EmbeddedAssetPlugin::default());
     game.add_plugins(RustydokuMapPlugin);
     game.add_plugins(RustydokuAudioPlugin);
     game.add_plugins(RustydokuCameraPlugin);
@@ -40,7 +43,6 @@ pub fn run() {
     game.add_plugins(RustydokuLogicPlugin);
     game.add_plugins(RustydokuGameplayPlugin);
     game.add_plugins(RustydokuResourcePlugin);
-    game.add_plugins(EmbeddedAssetPlugin::default());
 
     #[cfg(feature = "debug-inspector")]
     game.add_plugins(WorldInspectorPlugin::new());
