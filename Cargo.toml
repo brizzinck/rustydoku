@@ -1,6 +1,6 @@
 [package]
 name = "rustydoku"
-version = "0.1.9"
+version = "0.1.10"
 edition = "2021"
 authors = ["Skalse <lavrishkovlad@gmail.com>"]
 description = "A puzzle game built with Bevy, inspired by Woodoku. Strategically place blocks, clear the board, and earn points!"
@@ -11,7 +11,7 @@ categories = ["game-development"]
 readme = "README.md"
 include = [
     "assets/**",
-    "src/**",
+    "*/**.rs",
     "Cargo.toml",
     "README.md",
 ]
