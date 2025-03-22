@@ -1,6 +1,6 @@
 use bevy::prelude::*;
 
-use bevy_embedded_assets::EmbeddedAssetPlugin;
+use bevy_embedded_assets::{EmbeddedAssetPlugin, PluginMode};
 #[cfg(feature = "debug-inspector")]
 use bevy_inspector_egui::quick::WorldInspectorPlugin;
 
@@ -30,9 +30,11 @@ pub mod world;
 pub fn run() {
     let mut game = App::new();
 
+    game.add_plugins(EmbeddedAssetPlugin {
+        mode: PluginMode::ReplaceDefault,
+    });
     game.add_plugins(RustydokuDefaultPlugin);
     game.add_plugins(RustydokuLoggerPlugin);
-    game.add_plugins(EmbeddedAssetPlugin::default());
     game.add_plugins(RustydokuMapPlugin);
     game.add_plugins(RustydokuAudioPlugin);
     game.add_plugins(RustydokuCameraPlugin);
