@@ -35,10 +35,26 @@
       max-height: 100%;
       box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
     }
+
+    #loader {
+      display: none;
+      text-align: center;
+      color: white;
+      margin-bottom: 20px;
+    }
+
+    progress {
+      width: 200px;
+      height: 20px;
+    }
   </style>
 </head>
 <body>
   <button id="start-button">▶ Start Game</button>
+  <div id="loader">
+    <progress id="loader-progress"></progress>
+    <div>Loading...</div>
+  </div>
   <canvas id="rustycanvas"></canvas>
 
   <script type="module">
@@ -46,6 +62,7 @@
 
     const startButton = document.getElementById('start-button');
     const canvas = document.getElementById('rustycanvas');
+    const loader = document.getElementById('loader');
 
     startButton.addEventListener('click', () => {
       const hasWebGL2 = !!canvas.getContext('webgl2');
@@ -55,13 +72,17 @@
       }
 
       startButton.style.display = 'none';
+      loader.style.display = 'block';
       canvas.style.display = 'block';
 
-      init().catch((error) => {
+      init().then(() => {
+        loader.style.display = 'none';
+      }).catch((error) => {
         if (!error.message.startsWith("Using exceptions for control flow")) {
           console.error("WASM Init Error:", error);
           alert("Failed to initialize the game");
         }
+        loader.style.display = 'none';
       });
     });
   </script>
