@@ -33,7 +33,7 @@ impl DynamicText {
                 let scale_x = window.width() / (WINDOW_WIDTH_SCALED_FACTOR * text.get_factor());
                 let scale_y = window.height() / (WINDOW_HEIGHT_SCALED_FACTOR * text.get_factor());
                 let scale = scale_x.min(scale_y);
-                font.font_size = 42f32.min(text.get_font_size() * scale);
+                font.font_size = text.get_max_font_size().min(text.get_font_size() * scale);
             }
         }
     }

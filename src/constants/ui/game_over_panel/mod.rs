@@ -48,10 +48,10 @@ pub const GAME_OVER_PANEL_MARGIN: UiRect = UiRect {
 };
 
 /// Maximum width of the game over panel.
-pub const GAME_OVER_PANEL_MAX_WIDTH: Val = Val::VMax(50.);
+pub const GAME_OVER_PANEL_MAX_WIDTH: Val = Val::Vh(50.);
 
 /// Maximum height of the game over panel.
-pub const GAME_OVER_PANEL_MAX_HEIGHT: Val = Val::VMax(25.);
+pub const GAME_OVER_PANEL_MAX_HEIGHT: Val = Val::Percent(25.);
 
 /// Justification for the game over panel's position.
 pub const GAME_OVER_PANEL_JUSTIFY: JustifySelf = JustifySelf::Center;

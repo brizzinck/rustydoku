@@ -13,10 +13,10 @@ pub const SCORE_FACTOR_FONT_SIZED: f32 = 1.5;
 pub const MAX_SCORE_FACTOR_FONT_SIZED: f32 = 1.5;
 
 /// Max font size for the score header.
-pub const SCORE_MAX_FONT_SIZE: f32 = 32.;
+pub const SCORE_MAX_FONT_SIZE: f32 = 52.;
 
 /// Max font size for the score header.
-pub const MAX_SCORE_MAX_FONT_SIZE: f32 = 32.;
+pub const MAX_SCORE_MAX_FONT_SIZE: f32 = 52.;
 
 /// Label text for the current score.
 pub const SCORE_TEXT_CONTENT: &str = "SCORE";

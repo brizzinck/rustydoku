@@ -21,4 +21,4 @@ pub const HEADER_TITLE_COLOR: Color = Color::srgb(0.9, 0.1, 0.1);
 pub const HEADER_TITLE_FACTOR_FONT_SIZED: f32 = 1.3;
 
 /// Max font size for the header title.
-pub const HEADER_TITLE_MAX_FONT_SIZE: f32 = 40.;
+pub const HEADER_TITLE_MAX_FONT_SIZE: f32 = 62.;
