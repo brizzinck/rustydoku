@@ -48,12 +48,19 @@
     const canvas = document.getElementById('rustycanvas');
 
     startButton.addEventListener('click', () => {
-      startButton.style.display = 'none';  
-      canvas.style.display = 'block';      
+      const hasWebGL2 = !!canvas.getContext('webgl2');
+      if (!hasWebGL2) {
+        alert("WebGL2 is not supported or disabled in your browser.\n\nPlease try using Chrome or enable WebGL2 in your browser settings.");
+        return;
+      }
+
+      startButton.style.display = 'none';
+      canvas.style.display = 'block';
 
       init().catch((error) => {
         if (!error.message.startsWith("Using exceptions for control flow")) {
           console.error("WASM Init Error:", error);
+          alert("Failed to initialize the game");
         }
       });
     });

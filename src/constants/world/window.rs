@@ -7,4 +7,4 @@ pub const WINDOW_WIDTH_SCALED_FACTOR: f32 = 420.;
 pub const WINDOW_HEIGHT_SCALED_FACTOR: f32 = 645.;
 
 /// The icon used for the window.
-pub const WINDOW_ICON_PATH: &str = "assets/figure/ferris.png";
+pub const WINDOW_ICON_PATH: &[u8] = include_bytes!("../../../assets/figure/ferris.png");

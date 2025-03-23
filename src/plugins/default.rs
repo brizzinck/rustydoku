@@ -49,8 +49,8 @@ impl RustydokuDefaultPlugin {
         if let Ok(primary_entity) = primary.get_single() {
             if let Some(primary_window) = windows.get_window(primary_entity) {
                 let (icon_rgba, icon_width, icon_height) = {
-                    let image = image::open(WINDOW_ICON_PATH)
-                        .expect("Failed to open icon path")
+                    let image = image::load_from_memory(WINDOW_ICON_PATH)
+                        .expect("Failed to load embedded icon")
                         .into_rgba8();
 
                     let (width, height) = image.dimensions();
