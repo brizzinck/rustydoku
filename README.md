@@ -115,31 +115,99 @@ This installs the game like a normal terminal command, so you can launch it easi
 
 ## FAQ
 
-- **For Linux Users:**  
-  - **What if I can't run the game?**  
-    Ensure you have the latest **Vulkan** or **OpenGL** libraries installed.  
-    If you encounter performance issues or crashes:
+- **Arch/Manjaro Linux (Wayland) Users Can't Launch**
 
-    1. Update your GPU drivers.
-    2. Try explicitly setting the rendering backend. For example, to force Vulkan:
+  If you're using **Wayland** on Arch or Manjaro and Rustydoku fails to launch due to GPU detection issues, follow these steps to ensure proper GPU and Vulkan support for Bevy:
 
+  1. **Install Essential Dependencies:**
+
+      Update your system and install the required packages:
+      
+      ```bash
+      sudo pacman -Syu
+      sudo pacman -S libx11 pkgconf alsa-lib wayland libxkbcommon
+      ```
+      
+      *Note:* Depending on your sound server, you might also need `pipewire-alsa` or `pulseaudio-alsa`. For Vulkan support, install the ICD loaders:
+      
+      ```bash
+      sudo pacman -S vulkan-icd-loader lib32-vulkan-icd-loader
+      ```
+
+  2. **Set the Rendering Backend (Optional):**
+
+      If you experience GPU detection issues, try forcing the Vulkan backend:
+      
+      ```bash
+      export WGPU_BACKEND=vulkan
+      ```
+
+  3. **Troubleshoot GPU Detection Issues:**
+
+      If you see errors like:
+      
+      ```
+      Unable to find a GPU! Make sure you have installed required drivers!
+      ```
+      or
+      ```
+      vkEnumeratePhysicalDevices failed with ERROR_INITIALIZATION_FAILED
+      ```
+      
+      - **Verify Your GPU:**  
+        Run the following command to ensure your NVIDIA GPU is recognized:
+        
         ```bash
-        export WGPU_BACKEND=vulkan
+        lspci -k | grep -A 2 -E "(VGA|3D)"
+        ```
+        
+        ```
+        09:00.0 VGA compatible controller: NVIDIA Corporation TU106 [GeForce RTX 2060 SUPER] (rev a1)
+	        Subsystem: Micro-Star International Co., Ltd. [MSI] Device c757
+	        Kernel driver in use: nvidia
         ```
 
-        You can also try `gl` depending on your system.
-
-    3. Run the game from a terminal to view logs and error messages:
-
+      - **Check Vulkan Installation:**  
+        Run `vulkaninfo` to verify that Vulkan detects your GPU:
+        
         ```bash
-        rustydoku
+        vulkaninfo
+        ```
+        
+        If it fails, try:
+        
+        ```bash
+        prime-run vulkaninfo
+        ```
+      
+      - **Set the Vulkan ICD Loader:**  
+        Ensure the Vulkan ICD loader uses NVIDIA’s driver by exporting:
+        
+        ```bash
+        export VK_ICD_FILENAMES=/usr/share/vulkan/icd.d/nvidia_icd.json
         ```
 
-        or, if you haven't installed it as a binary:
+  4. **Reinstall and Update NVIDIA Drivers:**
 
-        ```bash
-        cargo run --release
-        ```
+      If necessary, reinstall the NVIDIA drivers:
+      
+      ```bash
+      sudo pacman -S nvidia nvidia-utils
+      sudo mkinitcpio -P
+      sudo reboot
+      ```
+
+  5. **Try a Different Kernel:**
+
+      Some users report better compatibility with the LTS kernel:
+      
+      ```bash
+      sudo pacman -S linux-lts linux-lts-headers
+      sudo mkinitcpio -P
+      sudo reboot
+      ```
+
+  Following these steps should help resolve GPU detection issues on Wayland setups and ensure that Rustydoku runs on your system.
 
 ## Tips
 

@@ -1,10 +1,14 @@
-use crate::constants::world::window::{
-    WINDOW_HEIGHT_SCALED_FACTOR, WINDOW_ICON_PATH, WINDOW_WIDTH_SCALED_FACTOR,
-};
+#[cfg(not(target_arch = "wasm32"))]
+use crate::constants::world::window::WINDOW_ICON_PATH;
+use crate::constants::world::window::{WINDOW_HEIGHT_SCALED_FACTOR, WINDOW_WIDTH_SCALED_FACTOR};
 use bevy::log::LogPlugin;
 use bevy::prelude::*;
-use bevy::window::{PrimaryWindow, WindowPlugin};
+#[cfg(not(target_arch = "wasm32"))]
+use bevy::window::PrimaryWindow;
+use bevy::window::WindowPlugin;
+#[cfg(not(target_arch = "wasm32"))]
 use bevy::winit::WinitWindows;
+#[cfg(not(target_arch = "wasm32"))]
 use winit::window::Icon;
 
 /// The default plugin window app for Rustydoku
@@ -37,6 +41,7 @@ impl RustydokuDefaultPlugin {
     // Parameters:
     // - `windows`: NonSend<WinitWindows> - The windows query
     // - `primary`: Query<Entity, With<PrimaryWindow>> - The primary window query
+    #[cfg(not(target_arch = "wasm32"))]
     fn set_window_icon(
         windows: NonSend<WinitWindows>,
         primary: Query<Entity, With<PrimaryWindow>>,
@@ -82,8 +87,11 @@ impl Plugin for RustydokuDefaultPlugin {
                 .disable::<LogPlugin>(),
         );
 
-        trace!("Setting up set window icon system");
-        app.add_systems(Startup, Self::set_window_icon);
+        #[cfg(not(target_arch = "wasm32"))]
+        {
+            trace!("Setting up set window icon system");
+            app.add_systems(Startup, Self::set_window_icon);
+        }
 
         trace!("Setting up fit window to viewport system");
         app.add_systems(Update, Self::fit_window_to_viewport);
