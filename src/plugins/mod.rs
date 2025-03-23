@@ -1,3 +1,4 @@
+pub mod audio;
 pub mod camera;
 pub mod default;
 pub mod figure;
@@ -6,7 +7,6 @@ pub mod gameplay;
 pub mod logger;
 pub mod logic;
 pub mod map;
-pub mod music;
 pub mod placeholer;
 pub mod resource;
 pub mod ui;

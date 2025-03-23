@@ -4,18 +4,20 @@ use bevy_embedded_assets::{EmbeddedAssetPlugin, PluginMode};
 #[cfg(feature = "debug-inspector")]
 use bevy_inspector_egui::quick::WorldInspectorPlugin;
 
+use plugins::audio::RustydokuAudioPlugin;
 use plugins::default::RustydokuDefaultPlugin;
 use plugins::firure_spawner::RustydokuFigureSpawnerPlugin;
 use plugins::gameplay::RustydokuGameplayPlugin;
 use plugins::logger::RustydokuLoggerPlugin;
 use plugins::logic::RustydokuLogicPlugin;
-use plugins::music::RustydokuAudioPlugin;
 use plugins::placeholer::RustydokuPlaceholderPlugin;
 use plugins::resource::RustydokuResourcePlugin;
 use plugins::ui::RustydokuUIPlugin;
 use plugins::{
     camera::RustydokuCameraPlugin, figure::RustydokuFigurePlugin, map::RustydokuMapPlugin,
 };
+
+#[cfg(target_arch = "wasm32")]
 use wasm_bindgen::prelude::wasm_bindgen;
 
 pub mod components;
@@ -28,7 +30,6 @@ pub mod states;
 pub mod world;
 
 /// The main entry point for the game
-#[wasm_bindgen]
 pub fn run() {
     let mut game = App::new();
 
@@ -52,4 +53,18 @@ pub fn run() {
     game.add_plugins(WorldInspectorPlugin::new());
 
     game.run();
+}
+
+/// The main entry point for the game for WebAssembly builds
+#[cfg(target_arch = "wasm32")]
+#[wasm_bindgen]
+fn wasm_main() {
+    run();
+}
+
+/// The main entry point for the game for Android native builds
+#[cfg(target_os = "android")]
+#[bevy_main]
+fn main() {
+    run();
 }

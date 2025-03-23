@@ -3,7 +3,7 @@ use crate::{
     events::audio::ChangeVolumeEvent,
     resource::audio::{MusicChannel, RustydokuAudioResource, SoundChannel},
 };
-use bevy::prelude::*;
+use bevy::{prelude::*, window::WindowFocused};
 use bevy_kira_audio::{AudioChannel, AudioControl};
 
 impl AudioComponent {
@@ -59,6 +59,29 @@ impl AudioComponent {
         if input.just_pressed(KeyCode::Space) {
             audio.toggle_mute(event_write);
             trace!("Pausing music");
+        }
+    }
+
+    /// Mutes the audio when the window is unfocused and unmutes when focused if not full muted.
+    ///
+    /// This function listens for [`WindowFocused`] events and mutes the audio when the window
+    /// is unfocused. When the window is focused again, the audio is unmuted.
+    ///
+    /// # Parameters
+    /// - `window_focus_events`: Event reader for window focus events.
+    /// - `audio`: Mutable reference to the audio resource.
+    /// - `event_write`: Event writer to notify other systems of the volume change.
+    pub fn mute_when_window_unfocused(
+        mut window_focus_events: EventReader<WindowFocused>,
+        mut audio: ResMut<RustydokuAudioResource>,
+        event_write: EventWriter<ChangeVolumeEvent>,
+    ) {
+        if let Some(event) = window_focus_events.read().next() {
+            if event.focused {
+                audio.window_un_mute(event_write);
+            } else {
+                audio.window_mute(event_write);
+            }
         }
     }
 

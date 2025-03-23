@@ -38,6 +38,7 @@ impl Plugin for RustydokuAudioPlugin {
                 AudioComponent::denied_place,
                 AudioComponent::read_change_volume,
                 AudioComponent::read_combo,
+                AudioComponent::mute_when_window_unfocused,
             ),
         );
 

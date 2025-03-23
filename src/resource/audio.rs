@@ -23,8 +23,10 @@ pub struct SoundChannel;
 
 /// The state of the volume
 pub(crate) enum Volume {
+    /// The volume is muted for the window if it is not focused, contains the last volume before muting
+    WindowMute(f64),
     /// The volume is muted, contains the last volume before muting
-    Mute(f64),
+    FullMute(f64),
     /// The volume is playing, contains the current volume
     Play(f64),
 }
@@ -33,7 +35,8 @@ impl Volume {
     /// Returns the current volume
     pub(crate) fn get_volume(&self) -> f64 {
         match self {
-            Volume::Mute(volume) => *volume,
+            Volume::WindowMute(volume) => *volume,
+            Volume::FullMute(volume) => *volume,
             Volume::Play(volume) => *volume,
         }
     }
@@ -148,14 +151,9 @@ impl RustydokuAudioResource {
     /// - A `f64` value representing the effective sound volume.
     pub(crate) fn get_volume_sound(&self) -> f64 {
         match self.volume {
-            Volume::Mute(_) => 0.0,
-            Volume::Play(volume) => {
-                if volume < 0.25 {
-                    0.0
-                } else {
-                    volume
-                }
-            }
+            Volume::WindowMute(_) => 0.,
+            Volume::FullMute(_) => 0.,
+            Volume::Play(volume) => Self::sound_volume_logic(volume),
         }
     }
 
@@ -167,14 +165,43 @@ impl RustydokuAudioResource {
     /// - A `f64` value representing the effective music volume.
     pub(crate) fn get_volume_music(&self) -> f64 {
         match self.volume {
-            Volume::Mute(_) => 0.0,
-            Volume::Play(volume) => {
-                if volume < 0.25 {
-                    0.0
-                } else {
-                    volume - 0.25
-                }
-            }
+            Volume::WindowMute(_) => 0.,
+            Volume::FullMute(_) => 0.,
+            Volume::Play(volume) => Self::music_volume_logic(volume),
+        }
+    }
+
+    /// Returns the effective sound volume, considering the volume level.
+    ///
+    /// If the volume is below `0.25`, this returns `0.0` to effectively mute quiet effects.
+    ///
+    /// # Parameters
+    /// - `volume`: The current volume level.
+    ///
+    /// # Returns
+    /// - A `f64` value representing the effective sound volume.
+    fn sound_volume_logic(volume: f64) -> f64 {
+        if volume < 0.25 {
+            0.0
+        } else {
+            volume
+        }
+    }
+
+    /// Returns the effective music volume, considering the volume level.
+    ///
+    /// If the volume is below `0.25`, this returns `0.0`. Otherwise, it subtracts `0.25` to make background music quieter.
+    ///
+    /// # Parameters
+    /// - `volume`: The current volume level.
+    ///
+    /// # Returns
+    /// - A `f64` value representing the effective music volume.
+    fn music_volume_logic(volume: f64) -> f64 {
+        if volume < 0.25 {
+            0.0
+        } else {
+            volume - 0.25
         }
     }
 
@@ -188,8 +215,45 @@ impl RustydokuAudioResource {
     /// - `event_writer`: Event writer used to notify about the volume change.
     pub(crate) fn toggle_mute(&mut self, event_writer: EventWriter<ChangeVolumeEvent>) {
         match self.volume {
-            Volume::Mute(volume) => self.volume = Volume::Play(volume),
-            Volume::Play(volume) => self.volume = Volume::Mute(volume),
+            Volume::WindowMute(volume) => self.volume = Volume::Play(volume),
+            Volume::FullMute(volume) => self.volume = Volume::Play(volume),
+            Volume::Play(volume) => self.volume = Volume::FullMute(volume),
+        }
+
+        self.send_change_volume(event_writer);
+    }
+
+    /// Un-mutes the volume for the window, when the window is focused. if not full muted.
+    ///
+    /// If the volume is already playing, this function does nothing.
+    /// Otherwise, it restores the previous volume and plays it.
+    /// Then emits a [`ChangeVolumeEvent`] with the updated state.
+    ///
+    /// # Parameters
+    /// - `event_writer`: Event writer used to notify about the volume change.
+    pub(crate) fn window_un_mute(&mut self, event_writer: EventWriter<ChangeVolumeEvent>) {
+        match self.volume {
+            Volume::WindowMute(volume) => self.volume = Volume::Play(volume),
+            Volume::FullMute(volume) => self.volume = Volume::FullMute(volume),
+            Volume::Play(volume) => self.volume = Volume::Play(volume),
+        }
+
+        self.send_change_volume(event_writer);
+    }
+
+    /// Mutes the volume for the window, when the window is unfocused.
+    ///
+    /// If the volume is already muted, this function does nothing.
+    /// Otherwise, it stores the current volume and mutes it.
+    /// Then emits a [`ChangeVolumeEvent`] with the updated state.
+    ///
+    /// # Parameters
+    /// - `event_writer`: Event writer used to notify about the volume change.
+    pub(crate) fn window_mute(&mut self, event_writer: EventWriter<ChangeVolumeEvent>) {
+        match self.volume {
+            Volume::WindowMute(volume) => self.volume = Volume::WindowMute(volume),
+            Volume::FullMute(volume) => self.volume = Volume::FullMute(volume),
+            Volume::Play(volume) => self.volume = Volume::WindowMute(volume),
         }
 
         self.send_change_volume(event_writer);

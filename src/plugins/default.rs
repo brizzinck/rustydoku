@@ -1,14 +1,14 @@
-#[cfg(not(target_arch = "wasm32"))]
+#[cfg(all(not(target_os = "android"), not(target_arch = "wasm32")))]
 use crate::constants::world::window::WINDOW_ICON_PATH;
 use crate::constants::world::window::{WINDOW_HEIGHT_SCALED_FACTOR, WINDOW_WIDTH_SCALED_FACTOR};
 use bevy::log::LogPlugin;
 use bevy::prelude::*;
-#[cfg(not(target_arch = "wasm32"))]
+#[cfg(all(not(target_os = "android"), not(target_arch = "wasm32")))]
 use bevy::window::PrimaryWindow;
-use bevy::window::WindowPlugin;
-#[cfg(not(target_arch = "wasm32"))]
+use bevy::window::{PresentMode, WindowPlugin};
+#[cfg(all(not(target_os = "android"), not(target_arch = "wasm32")))]
 use bevy::winit::WinitWindows;
-#[cfg(not(target_arch = "wasm32"))]
+#[cfg(all(not(target_os = "android"), not(target_arch = "wasm32")))]
 use winit::window::Icon;
 
 /// The default plugin window app for Rustydoku
@@ -41,7 +41,7 @@ impl RustydokuDefaultPlugin {
     // Parameters:
     // - `windows`: NonSend<WinitWindows> - The windows query
     // - `primary`: Query<Entity, With<PrimaryWindow>> - The primary window query
-    #[cfg(not(target_arch = "wasm32"))]
+    #[cfg(all(not(target_os = "android"), not(target_arch = "wasm32")))]
     fn set_window_icon(
         windows: NonSend<WinitWindows>,
         primary: Query<Entity, With<PrimaryWindow>>,
@@ -79,6 +79,7 @@ impl Plugin for RustydokuDefaultPlugin {
                     primary_window: Some(bevy::window::Window {
                         title: "Rustydoku".to_string(),
                         canvas: Some("#rustycanvas".into()),
+                        present_mode: PresentMode::AutoVsync,
                         ..default()
                     }),
                     ..default()
@@ -87,7 +88,7 @@ impl Plugin for RustydokuDefaultPlugin {
                 .disable::<LogPlugin>(),
         );
 
-        #[cfg(not(target_arch = "wasm32"))]
+        #[cfg(all(not(target_os = "android"), not(target_arch = "wasm32")))]
         {
             trace!("Setting up set window icon system");
             app.add_systems(Startup, Self::set_window_icon);
