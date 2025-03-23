@@ -17,11 +17,24 @@ pub struct FigureBoundsComponent {
 
 impl FigureBoundsComponent {
     /// Creates a new bounds component from min and max vectors.
+    ///
+    /// Parameters:
+    /// - `min`: The minimum local coordinates of the figure.
+    /// - `max`: The maximum local coordinates of the figure.
+    ///
+    /// Returns:
+    /// A new bounds component with the specified min and max values.
     pub(crate) fn new(min: Vec2, max: Vec2) -> Self {
         Self { min, max }
     }
 
     /// Creates a new bounds component from another bounds instance.
+    ///
+    /// Parameters:
+    /// - `bounds`: The bounds component to copy from.
+    ///
+    /// Returns:
+    /// A new bounds component with the same min and max values as the input.
     pub(crate) fn from(bounds: FigureBoundsComponent) -> Self {
         Self {
             min: bounds.min,

@@ -99,12 +99,12 @@ impl FigureComponent {
 
         let rotation = Quat::from_rotation_z(rotation_angle);
 
-        let first_rotated = (rotation * squares_position[0].extend(0.)).truncate();
+        let first_rotated = (rotation * squares_position[0].extend(1.)).truncate();
         let mut bounds_min = first_rotated;
         let mut bounds_max = first_rotated;
 
-        for &offset in squares_position.iter() {
-            let rotated = (rotation * offset.extend(0.)).truncate();
+        for &offset in squares_position.iter().skip(1) {
+            let rotated = (rotation * offset.extend(1.)).truncate();
             bounds_min = bounds_min.min(rotated);
             bounds_max = bounds_max.max(rotated);
         }
@@ -114,7 +114,7 @@ impl FigureComponent {
                 .spawn(FigureComponent::create(
                     position,
                     rotation,
-                    FigureBoundsComponent::new(bounds_min, bounds_min),
+                    FigureBoundsComponent::new(bounds_min, bounds_max),
                 ))
                 .observe(FigureComponent::start_dragging)
                 .id(),

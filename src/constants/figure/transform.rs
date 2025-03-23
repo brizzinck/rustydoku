@@ -1,14 +1,14 @@
 use crate::constants::square::transform::SQUARE_SIZE;
 use bevy::color::Srgba;
 
-/// Y-axis offset applied when a figure is being dragged.
-pub const FIGURE_DRAG_OFFSET_Y: f32 = 55.;
+/// Y-axis offset applied when a figure is being dragged by finger.
+pub const FIGURE_DRAG_OFFSET_Y_FINGER: f32 = 75.;
 
-/// Multiplier applied to offset Y-axis when finger dragging based on the figure's bounding box.
-pub const FIGURE_DRAG_OFFSET_Y_MULTIPLIER_FINGER: f32 = 40.;
+/// Y-axis offset applied when a figure is being dragged by mouse.
+pub const FIGURE_DRAG_OFFSET_Y_MOUSE: f32 = 55.;
 
 /// Multiplier applied to offset Y-axis when mouse dragging based on the figure's bounding box.
-pub const FIGURE_DRAG_OFFSET_Y_MULTIPLIER_MOUSE: f32 = 12.;
+pub const FIGURE_DRAG_OFFSET_Y_MIN_MULTIPLIER: f32 = 1.4;
 
 /// Maximum figure size in world units, used for placeholder sizing or layout.
 pub static MAX_FIGURE_SIZE: f32 = SQUARE_SIZE * 3.;
