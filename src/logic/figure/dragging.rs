@@ -48,12 +48,18 @@ impl FigureComponent {
 
             // Determine the input position: use mouse input if the left button is pressed,
             // otherwise fall back to touch input.
-            let position = if mouse_input.pressed(MouseButton::Left) {
+            let (position, y_offset_multiplier) = if mouse_input.pressed(MouseButton::Left) {
                 trace!("Mouse pressed");
-                cursor.single().cursor_position()
+                (
+                    cursor.single().cursor_position(),
+                    FIGURE_DRAG_OFFSET_Y_MULTIPLIER_MOUSE,
+                )
             } else {
                 trace!("Touch pressed");
-                touch_input.iter().next().map(|touch| touch.position())
+                (
+                    touch_input.iter().next().map(|touch| touch.position()),
+                    FIGURE_DRAG_OFFSET_Y_MULTIPLIER_FINGER,
+                )
             };
 
             trace!("Interaction position: {:?}", position);
@@ -61,7 +67,11 @@ impl FigureComponent {
             if let Some(cursor_pos) = position {
                 if let Ok(world_pos) = camera.viewport_to_world(camera_transform, cursor_pos) {
                     if let Ok((mut transform, _, bounds)) = figure_query.get_mut(*figure) {
-                        let desired = FigureComponent::clamp_position(world_pos.origin, bounds);
+                        let desired = FigureComponent::clamp_position(
+                            world_pos.origin,
+                            bounds,
+                            y_offset_multiplier,
+                        );
 
                         transform.translation.x = desired.x;
                         transform.translation.y = desired.y;
@@ -87,7 +97,11 @@ impl FigureComponent {
     /// # Returns
     ///
     /// A new [`Vec3`] representing the clamped position within the allowed boundaries.
-    fn clamp_position(world_pos: Vec3, bounds: &FigureBoundsComponent) -> Vec3 {
+    fn clamp_position(
+        world_pos: Vec3,
+        bounds: &FigureBoundsComponent,
+        y_offset_multplier: f32,
+    ) -> Vec3 {
         let min_offset = bounds.min * SQUARE_SIZE;
         let max_offset = bounds.max * SQUARE_SIZE;
 
@@ -98,8 +112,7 @@ impl FigureComponent {
 
         let mut desired = world_pos;
         desired.x = desired.x.clamp(min_x, max_x);
-        desired.y = (desired.y
-            + (FIGURE_DRAG_OFFSET_Y - bounds.min.y * FIGURE_DRAG_OFFSET_Y_MULTIPLIER))
+        desired.y = (desired.y + (FIGURE_DRAG_OFFSET_Y - bounds.min.y * y_offset_multplier))
             .clamp(min_y, max_y);
 
         trace!("Clamped position: {:?}", desired);
@@ -123,7 +136,11 @@ mod tests {
 
         let world_pos = Vec3::new(-2000., 1000., 1.);
 
-        let result = FigureComponent::clamp_position(world_pos, &bounds);
+        let result = FigureComponent::clamp_position(
+            world_pos,
+            &bounds,
+            FIGURE_DRAG_OFFSET_Y_MULTIPLIER_MOUSE,
+        );
         let expected_result = Vec3::new(-200.0, 80.0, 1.0);
 
         assert_eq!(result, expected_result);
