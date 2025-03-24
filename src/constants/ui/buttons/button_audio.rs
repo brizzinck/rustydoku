@@ -15,16 +15,16 @@ pub const HEADER_AUDIO_BUTTON_MARGIN: UiRect = UiRect {
 };
 
 /// Width of the audio button in the game over panel.
-pub const GAME_OVER_AUDIO_BUTTON_WIDTH: Val = Val::VMax(6.8);
+pub const GAME_OVER_AUDIO_BUTTON_WIDTH: Val = Val::Auto;
 
 /// Height of the audio button in the game over panel.
-pub const GAME_OVER_AUDIO_BUTTON_HEIGHT: Val = Val::VMax(6.8);
+pub const GAME_OVER_AUDIO_BUTTON_HEIGHT: Val = Val::Auto;
 
 /// Max width of the audio button in the game over panel.
-pub const GAME_OVER_AUDIO_BUTTON_MAX_WIDTH: Val = Val::Px(80.);
+pub const GAME_OVER_AUDIO_BUTTON_MAX_WIDTH: Val = Val::VMax(6.8);
 
 /// Max height of the audio button in the game over panel.
-pub const GAME_OVER_AUDIO_BUTTON_MAX_HEIGHT: Val = Val::Px(80.);
+pub const GAME_OVER_AUDIO_BUTTON_MAX_HEIGHT: Val = Val::VMax(6.8);
 
 /// Horizontal alignment of the audio button in the game over panel.
 pub const GAME_OVER_AUDIO_BUTTON_JUSTIFY: JustifyContent = JustifyContent::Center;
