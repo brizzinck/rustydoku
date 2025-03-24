@@ -73,7 +73,7 @@ wasm-bindgen = "0.2.100"
 bevy = { version = "0.15.3", default-features = false, features = ["android-native-activity", "android_shared_stdcxx"] }
 
 [profile.release]
-opt-level = 3  
+opt-level = "z"  
 lto = "thin"   
 codegen-units = 1
 panic = "unwind"
@@ -88,8 +88,8 @@ resources = "android-deploy/app/src/main/res"
 build_targets = ["aarch64-linux-android", "armv7-linux-androideabi"]
 
 [package.metadata.android.sdk]
-min_sdk_version = 26
-target_sdk_version = 33
+min_sdk_version = 21
+target_sdk_version = 34
 
 [package.metadata.android.application]
 label = "Rustydoku"
