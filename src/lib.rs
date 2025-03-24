@@ -58,7 +58,7 @@ pub fn run() {
 /// The main entry point for the game for WebAssembly builds
 #[cfg(target_arch = "wasm32")]
 #[wasm_bindgen]
-fn wasm_main() {
+pub fn wasm_main() {
     run();
 }
 
