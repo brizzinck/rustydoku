@@ -33,8 +33,10 @@ impl ButtonAudio {
     /// A `Node` configured for styling the audio button container.
     fn create_node_game_over() -> Node {
         Node {
-            max_width: GAME_OVER_AUDIO_BUTTON_WIDTH,
-            max_height: GAME_OVER_AUDIO_BUTTON_HEIGHT,
+            width: GAME_OVER_AUDIO_BUTTON_WIDTH,
+            height: GAME_OVER_AUDIO_BUTTON_HEIGHT,
+            max_width: GAME_OVER_AUDIO_BUTTON_MAX_WIDTH,
+            max_height: GAME_OVER_AUDIO_BUTTON_MAX_HEIGHT,
             justify_content: GAME_OVER_AUDIO_BUTTON_JUSTIFY,
             ..default()
         }

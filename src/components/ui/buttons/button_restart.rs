@@ -72,8 +72,10 @@ impl ButtonRestart {
     /// A configured `Node` object.
     fn create_node() -> Node {
         Node {
-            max_width: GAME_OVER_RESTART_BUTTON_WIDTH,
-            max_height: GAME_OVER_RESTART_BUTTON_HEIGHT,
+            width: GAME_OVER_RESTART_BUTTON_WIDTH,
+            height: GAME_OVER_RESTART_BUTTON_HEIGHT,
+            max_width: GAME_OVER_RESTART_BUTTON_MAX_WIDTH,
+            max_height: GAME_OVER_RESTART_BUTTON_MAX_HEIGHT,
             justify_content: GAME_OVER_RESTART_BUTTON_JUSTIFY,
             ..default()
         }
