@@ -1,4 +1,16 @@
 /target
 /web-build
+
+build
+
+.gradle
+
 *.dev*
+
 *.zip
+*.so
+*.apk
+*.aab
+*.apks
+*.jar
+*.jks

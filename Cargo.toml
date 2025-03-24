@@ -70,7 +70,7 @@ bevy = { version = "0.15.3", default-features = false, features = ["webgl2"] }
 wasm-bindgen = "0.2.100"
 
 [target.'cfg(target_os = "android")'.dependencies]
-bevy = { version = "0.15.3", default-features = false, features = [ "android-native-activity", "android_shared_stdcxx",] }
+bevy = { version = "0.15.3", default-features = false, features = ["android-native-activity", "android_shared_stdcxx"] }
 
 [profile.release]
 opt-level = 3  
@@ -84,7 +84,7 @@ package = "org.skalse.rustydoku"
 apk_name = "rustydoku"
 strip = "strip"
 assets = "assets"
-resources = "android/res"
+resources = "android-deploy/app/src/main/res"
 build_targets = ["aarch64-linux-android", "armv7-linux-androideabi"]
 
 [package.metadata.android.sdk]
@@ -93,7 +93,7 @@ target_sdk_version = 33
 
 [package.metadata.android.application]
 label = "Rustydoku"
-icon = "@drawable/icon"
+icon = "@mipmap/icon"
 theme = "@style/RustydokuTheme"
 
 [package.metadata.android.application.activity]

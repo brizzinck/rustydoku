@@ -1,8 +1,6 @@
 name: Rust CI Check
 
 on:
-  push:
-    branches: [ "main", "master", "dev", "develop" ]
   pull_request:
     branches: ["main", "master", "dev", "develop"]
 

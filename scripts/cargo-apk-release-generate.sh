@@ -4,17 +4,8 @@
 # This script temporarily replaces Cargo.toml with a generated version that 
 # includes signing credentials, builds and runs the Android app using cargo-apk,
 # and then restores the original Cargo.toml.
-#
-# IMPORTANT:
-# - Do not commit real credentials into your repository.
-# - Ensure that the following environment variables are set with your secure values:
-#     RUSTYDOKU_KEYSTORE_PATH, RUSTYDOKU_KEYSTORE_PASSWORD, RUSTYDOKU_KEY_ALIAS
-# -----------------------------------------------------------------------------
 
-# Set environment variables for signing (replace these with your actual secure values).
-export RUSTYDOKU_KEYSTORE_PATH="example.jks"
-export RUSTYDOKU_KEYSTORE_PASSWORD="P@$$W0rd"
-export RUSTYDOKU_KEY_ALIAS="alias-example"
+source "$(dirname "$0")/env.dev.sh"
 
 # Backup the original Cargo.toml.
 cp Cargo.toml Cargo.toml.bak

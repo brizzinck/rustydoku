@@ -1,0 +1,28 @@
+*.sh         text eol=lf
+*.rs         text eol=lf
+Cargo.*      text eol=lf
+*.toml       text eol=lf
+
+*.gradle     text eol=lf
+*.gradle.kts text eol=lf
+*.properties text eol=lf
+
+*.md         text eol=lf
+*.html       text eol=lf
+*.xml        text eol=lf
+
+*.json       text eol=lf
+*.txt        text eol=lf
+
+*.kt         text eol=lf
+
+*.bat        text eol=crlf
+gradlew.bat  text eol=crlf
+
+gradlew      text eol=lf
+
+*.png        binary
+
+*.mp3        binary
+
+*.otf        binary
