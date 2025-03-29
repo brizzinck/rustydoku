@@ -69,7 +69,14 @@ You can also play **Rustydoku** directly in your browser via **Itch.io**:
 
 No installation needed — just click and start playing!
 
+
 ## Installation
+
+### Running via Play Market
+
+You can also download and play Rustydoku on your Android device via Google Play:
+
+[Play Rustydoku on Play Market](https://play.google.com/store/apps/details?id=org.skalse.rustydoku)
 
 ### Running via GitHub
 
