@@ -210,7 +210,7 @@ mod tests {
             bounds_min,
             offsets,
             &figure_transform,
-            &*map,
+            &map,
             &tiles,
         );
     }

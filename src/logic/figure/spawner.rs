@@ -90,7 +90,7 @@ impl FigureComponent {
     ) -> (Entity, Quat) {
         let mut rng = rand::thread_rng();
 
-        let rotation_angle = match rng.gen_range(0..3) {
+        let rotation_angle = match rng.gen_range(0..=3) {
             0 => 90.0_f32.to_radians(),
             1 => 180.0_f32.to_radians(),
             2 => 270.0_f32.to_radians(),
