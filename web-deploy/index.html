@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Rustydoku</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      background-color: #000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+    }
+
+    #start-button {
+      padding: 1em 2em;
+      font-size: 1.2em;
+      margin-bottom: 20px;
+      cursor: pointer;
+      background-color: #1e1e1e;
+      color: white;
+      border: 2px solid white;
+      border-radius: 8px;
+      z-index: 2;
+    }
+
+    canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      display: none;
+      box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+      touch-action: none;
+    }
+
+    #loader {
+      display: none;
+      text-align: center;
+      color: white;
+      margin-bottom: 20px;
+      z-index: 2;
+    }
+
+    progress {
+      width: 200px;
+      height: 20px;
+    }
+  </style>
+</head>
+<body>
+  <button id="start-button">▶ Start Game</button>
+  <div id="loader">
+    <progress id="loader-progress"></progress>
+    <div>Loading...</div>
+  </div>
+  <canvas id="rustycanvas"></canvas>
+
+  <script type="module">
+    import init from './rustydoku.js';
+
+    const startButton = document.getElementById('start-button');
+    const canvas = document.getElementById('rustycanvas');
+    const loader = document.getElementById('loader');
+
+    function resizeCanvas() {
+      const dpr = window.devicePixelRatio || 1;
+      canvas.width = window.innerWidth * dpr;
+      canvas.height = window.innerHeight * dpr;
+      canvas.style.width = window.innerWidth + 'px';
+      canvas.style.height = window.innerHeight + 'px';
+    }
+
+    startButton.addEventListener('click', () => {
+      const hasWebGL2 = !!canvas.getContext('webgl2');
+      if (!hasWebGL2) {
+        alert("WebGL2 is not supported or disabled in your browser.\n\nPlease try using Chrome or enable WebGL2 in your browser settings.");
+        return;
+      }
+
+      startButton.style.display = 'none';
+      loader.style.display = 'block';
+      canvas.style.display = 'block';
+
+      resizeCanvas();
+      window.addEventListener('resize', resizeCanvas);
+
+      init().then(() => {
+        loader.style.display = 'none';
+      }).catch((error) => {
+        if (!error.message.startsWith("Using exceptions for control flow")) {
+          console.error("WASM Init Error:", error);
+          alert("Failed to initialize the game");
+        }
+        loader.style.display = 'none';
+        resizeCanvas();
+      });
+    });
+  </script>
+</body>
+</html>

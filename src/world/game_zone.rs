@@ -1,0 +1,32 @@
+use crate::constants::{
+    map::{HALF_MAP_SIZE, HALF_TILE_SIZE, TILE_SIZE},
+    world::game_zone::DUMP_DOWN_SCALED_FACTOR,
+};
+use bevy::prelude::*;
+use once_cell::sync::OnceCell;
+
+static GAME_ZONE_LAZY: OnceCell<GameZone> = OnceCell::new();
+
+/// The game zone, which contains the left-up and right-down corners
+pub struct GameZone {
+    /// The left-up corner of the game zone
+    pub left_up: Vec2,
+    /// The right-down corner of the game zone
+    pub right_down: Vec2,
+}
+
+impl GameZone {
+    /// Get the game zone instance
+    pub fn get() -> &'static GameZone {
+        GAME_ZONE_LAZY.get_or_init(|| GameZone {
+            left_up: Vec2::new(
+                -HALF_MAP_SIZE + HALF_TILE_SIZE,
+                HALF_MAP_SIZE - HALF_TILE_SIZE,
+            ),
+            right_down: Vec2::new(
+                HALF_MAP_SIZE - HALF_TILE_SIZE,
+                -HALF_MAP_SIZE + HALF_TILE_SIZE - TILE_SIZE * DUMP_DOWN_SCALED_FACTOR,
+            ),
+        })
+    }
+}
